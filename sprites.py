@@ -15,6 +15,7 @@ class Player(pg.sprite.Sprite):
         self.y = y
 
     def move(self, dx=0, dy=0):
+        # Refactor needed
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, "img")
         if not self.collide_with_walls(dx, dy):
