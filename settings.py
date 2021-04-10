@@ -1,3 +1,5 @@
+import pygame as pg
+
 # define some colors (R, G, B)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -22,3 +24,5 @@ PLAYER_IMG_L = "player_left.png"
 PLAYER_IMG_R = "player_right.png"
 PLAYER_IMG_U = "player_up.png"
 PLAYER_IMG_D = "player_down.png"
+
+PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)

@@ -10,7 +10,7 @@ class Player(pg.sprite.Sprite):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.player_img
-        self.rect = self.image.get_rect()
+        self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
         self.x = x
         self.y = y
 
@@ -31,8 +31,12 @@ class Player(pg.sprite.Sprite):
             self.image = pg.image.load(path.join(img_folder, PLAYER_IMG_U))
 
     def collide_with_walls(self, dx=0, dy=0):
+        rect_copy = self.rect
+        rect_copy.x += dx * TILESIZE
+        rect_copy.y += dy * TILESIZE
+        # pygame.rect.collidelistall instead of for loop
         for wall in self.game.walls:
-            if wall.x == self.x + dx and wall.y == self.y + dy:
+            if rect_copy.colliderect(wall.rect):
                 return True
         return False
 
@@ -40,15 +44,16 @@ class Player(pg.sprite.Sprite):
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
 
+
 class Wall(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.walls
+    def __init__(self, game, x, y, w, h):
+        self.groups = game.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
+        # self.image = pg.Surface((w, h))
+        # self.image.fill(GREEN)
+        self.rect = pg.Rect(x, y, w, h)
         self.x = x
         self.y = y
-        self.rect.x = x * TILESIZE
-        self.rect.y = y * TILESIZE
+        self.rect.x = x
+        self.rect.y = y

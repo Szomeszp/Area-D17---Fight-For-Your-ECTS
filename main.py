@@ -37,6 +37,11 @@ class Game:
         #             Wall(self, col, row)
         #         if tile == 'P':
         #             self.player = Player(self, col, row)
+        for tile_object in self.map.tmxdata.objects:
+            if tile_object.name == "player":
+                self.player = Player(self, tile_object.x, tile_object.y)
+            if tile_object.name == "wall":
+                Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
         self.player = Player(self, 5, 5)
         self.camera = Camera(self.map.width, self.map.height)
 
