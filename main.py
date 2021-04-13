@@ -1,7 +1,3 @@
-# KidsCanCode - Game Development with Pygame video series
-# Tile-based game - Part 2
-# Collisions and Tilemaps
-# Video link: https://youtu.be/ajR4BZBKTr4
 import pygame as pg
 import sys
 from os import path
@@ -25,7 +21,7 @@ class Game:
         self.map = TiledMap(path.join(map_folder, 'map_alpha.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
-        self.player_img = pg.image.load(path.join(img_folder, PLAYER_IMG_D))
+        self.player_img = PlayerImg.DOWN
 
     def new(self):
         # initialize all variables and do all the setup for a new game

@@ -1,4 +1,5 @@
 import pygame as pg
+from enum import Enum
 
 # define some colors (R, G, B)
 WHITE = (255, 255, 255)
@@ -20,9 +21,20 @@ TILESIZE = 32
 GRIDWIDTH = WIDTH / TILESIZE
 GRIDHEIGHT = HEIGHT / TILESIZE
 
-PLAYER_IMG_L = "player_left.png"
-PLAYER_IMG_R = "player_right.png"
-PLAYER_IMG_U = "player_up.png"
-PLAYER_IMG_D = "player_down.png"
+
+class PlayerImg(Enum):
+    LEFT = "player_left.png"
+    RIGHT = "player_right.png"
+    UP = "player_up.png"
+    DOWN = "player_down.png"
+    LEFT2 = "player_left2.png"
+    RIGHT2 = "player_right2.png"
+    UP2 = "player_up2.png"
+    DOWN2 = "player_down2.png"
+    STATIC_LEFT = "player_left2.png"
+    STATIC_RIGHT = "player_right2.png"
+    STATIC_UP = "player_up2.png"
+    STATIC_DOWN = "player_down2.png"
+
 
 PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)

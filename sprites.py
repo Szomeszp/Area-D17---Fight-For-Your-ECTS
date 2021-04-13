@@ -9,26 +9,34 @@ class Player(pg.sprite.Sprite):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = game.player_img
+        self.game_folder = path.dirname(__file__)
+        self.img_folder = path.join(self.game_folder, "img")
+        self.image_type = game.player_img
+        self.image = pg.image.load(path.join(self.img_folder, game.player_img.value))
         self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
         self.x = x
         self.y = y
 
     def move(self, dx=0, dy=0):
-        # Refactor needed
-        game_folder = path.dirname(__file__)
-        img_folder = path.join(game_folder, "img")
         if not self.collide_with_walls(dx, dy):
             self.x += dx
             self.y += dy
         if dx == 1:
-            self.image = pg.image.load(path.join(img_folder, PLAYER_IMG_R))
+            self.change_player_img(PlayerImg.RIGHT2, PlayerImg.RIGHT)
         if dx == -1:
-            self.image = pg.image.load(path.join(img_folder, PLAYER_IMG_L))
+            self.change_player_img(PlayerImg.LEFT2, PlayerImg.LEFT)
         if dy == 1:
-            self.image = pg.image.load(path.join(img_folder, PLAYER_IMG_D))
+            self.change_player_img(PlayerImg.DOWN2, PlayerImg.DOWN)
         if dy == -1:
-            self.image = pg.image.load(path.join(img_folder, PLAYER_IMG_U))
+            self.change_player_img(PlayerImg.UP2, PlayerImg.UP)
+
+    def change_player_img(self, image1, image2):
+        if self.image_type == image1:
+            self.image_type = image2
+            self.image = pg.image.load(path.join(self.img_folder, image2.value))
+        else:
+            self.image_type = image1
+            self.image = pg.image.load(path.join(self.img_folder, image1.value))
 
     def collide_with_walls(self, dx=0, dy=0):
         rect_copy = self.rect
