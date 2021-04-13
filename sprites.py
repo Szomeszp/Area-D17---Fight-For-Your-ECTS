@@ -30,6 +30,20 @@ class Player(pg.sprite.Sprite):
         if dy == -1:
             self.change_player_img(PlayerImg.UP2, PlayerImg.UP)
 
+    def stand(self):
+        if self.image_type == PlayerImg.RIGHT or self.image_type == PlayerImg.RIGHT2:
+            self.image_type = PlayerImg.STATIC_RIGHT
+            self.image = pg.image.load(path.join(self.img_folder, PlayerImg.STATIC_RIGHT.value))
+        elif self.image_type == PlayerImg.LEFT or self.image_type == PlayerImg.LEFT2:
+            self.image_type = PlayerImg.STATIC_LEFT
+            self.image = pg.image.load(path.join(self.img_folder, PlayerImg.STATIC_LEFT.value))
+        elif self.image_type == PlayerImg.DOWN or self.image_type == PlayerImg.DOWN2:
+            self.image_type = PlayerImg.STATIC_DOWN
+            self.image = pg.image.load(path.join(self.img_folder, PlayerImg.STATIC_DOWN.value))
+        elif self.image_type == PlayerImg.UP or self.image_type == PlayerImg.UP2:
+            self.image_type = PlayerImg.STATIC_UP
+            self.image = pg.image.load(path.join(self.img_folder, PlayerImg.STATIC_UP.value))
+
     def change_player_img(self, image1, image2):
         if self.image_type == image1:
             self.image_type = image2

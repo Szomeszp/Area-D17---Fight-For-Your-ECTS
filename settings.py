@@ -31,10 +31,10 @@ class PlayerImg(Enum):
     RIGHT2 = "player_right2.png"
     UP2 = "player_up2.png"
     DOWN2 = "player_down2.png"
-    STATIC_LEFT = "player_left2.png"
-    STATIC_RIGHT = "player_right2.png"
-    STATIC_UP = "player_up2.png"
-    STATIC_DOWN = "player_down2.png"
+    STATIC_LEFT = "player_static_left.png"
+    STATIC_RIGHT = "player_static_right.png"
+    STATIC_UP = "player_static_up.png"
+    STATIC_DOWN = "player_static_down.png"
 
 
 PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)

@@ -40,6 +40,7 @@ class Game:
                 Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
         self.player = Player(self, 5, 5)
         self.camera = Camera(self.map.width, self.map.height)
+        self.staticFrames = 0
 
     def run(self):
         # game loop - set self.playing = False to end the game
@@ -75,10 +76,12 @@ class Game:
 
     def events(self):
         # catch all events here
+        moved = False
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit()
             if event.type == pg.KEYDOWN:
+                moved = True
                 if event.key == pg.K_ESCAPE:
                     self.quit()
                 if event.key == pg.K_LEFT:
@@ -89,6 +92,12 @@ class Game:
                     self.player.move(dy=-1)
                 if event.key == pg.K_DOWN:
                     self.player.move(dy=1)
+        if not moved:
+            self.staticFrames += 1
+        else:
+            self.staticFrames = 0
+        if self.staticFrames > 15:
+            self.player.stand()
 
     def show_start_screen(self):
         pass
