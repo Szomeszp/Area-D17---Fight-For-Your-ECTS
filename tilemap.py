@@ -1,7 +1,6 @@
 import pygame as pg
-import pytmx
 from settings import *
-
+import pytmx
 
 def collide_hit_rect(one, two):
     return one.hit_rect.colliderect(two.rect)
@@ -56,8 +55,9 @@ class Camera:
         return rect.move(self.camera.topleft)
 
     def update(self, target):
-        x = -target.rect.centerx + int(WIDTH / 2)
-        y = -target.rect.centery + int(HEIGHT / 2)
+        # players moves to the right sa offset moves to the left
+        x = -target.rect.x + int(WIDTH / 2)
+        y = -target.rect.y + int(HEIGHT / 2)
 
         # limit scrolling to map size
         x = min(0, x)  # left
@@ -65,3 +65,4 @@ class Camera:
         x = max(-(self.width - WIDTH), x)  # right
         y = max(-(self.height - HEIGHT), y)  # bottom
         self.camera = pg.Rect(x, y, self.width, self.height)
+
