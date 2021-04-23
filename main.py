@@ -18,7 +18,7 @@ class Game:
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, "img")
         map_folder = path.join(game_folder, "maps")
-        self.map = TiledMap(path.join(map_folder, 'map_alpha.tmx'))
+        self.map = TiledMap(path.join(map_folder, 'map_alpha2.tmx'))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.player_img = PlayerImg.DOWN
