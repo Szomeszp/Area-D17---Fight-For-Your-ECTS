@@ -20,7 +20,7 @@ class Player(pg.sprite.Sprite):
     def move(self, dx=0, dy=0):
         door = self.collide_with_door()
         if door:
-            self.game.change_map(door)
+            self.game.render_map(door)
         else:
             if not self.collide_with_walls(dx, dy):
                 self.x += dx

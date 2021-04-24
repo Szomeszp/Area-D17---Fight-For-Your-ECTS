@@ -5,6 +5,7 @@ from settings import *
 from sprites import *
 from tilemap import *
 
+
 class Game:
     def __init__(self):
         pg.init()
@@ -13,7 +14,7 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()
-        self.last_door = None
+        self.last_door = None  # ?
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -25,12 +26,14 @@ class Game:
         self.map_rect = self.map_img.get_rect()
         self.player_img = PlayerImg.DOWN
 
-    def change_map(self, door):
-        new_map = door.map
+    def render_map(self, door=None):
+        if door is not None:
+            new_map = door.map
+        else:
+            new_map = self.main_map
         self.map = TiledMap(path.join(self.map_folder, new_map))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
-        # warning it is code duplicate
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
@@ -56,29 +59,12 @@ class Game:
                 else:
                     # bo narazie mamy tylko jedne drzwi
                     Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, "map_d17.tmx")
-
         self.camera = Camera(self.map.width, self.map.height)
 
 
     def new(self):
         # initialize all variables and do all the setup for a new game
-        self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
-        self.doors = pg.sprite.Group()
-        # for row, tiles in enumerate(self.map.data):
-        #     for col, tile in enumerate(tiles):
-        #         if tile == '1':
-        #             Wall(self, col, row)
-        #         if tile == 'P':
-        #             self.player = Player(self, col, row)
-        for tile_object in self.map.tmxdata.objects:
-            if tile_object.name == "player":
-                self.player = Player(self, tile_object.x // TILESIZE, tile_object.y // TILESIZE)
-            if tile_object.name == "wall":
-                Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
-            if tile_object.name == "door":
-                Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, "map_d17.tmx")
-        self.camera = Camera(self.map.width, self.map.height)
+        self.render_map()
         self.staticFrames = 0
 
     def run(self):
@@ -143,6 +129,7 @@ class Game:
 
     def show_go_screen(self):
         pass
+
 
 # create the game object
 g = Game()
