@@ -13,20 +13,58 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()
+        self.last_door = None
 
     def load_data(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, "img")
-        map_folder = path.join(game_folder, "maps")
-        self.map = TiledMap(path.join(map_folder, 'map_alpha2.tmx'))
+        self.main_map = 'map_alpha2.tmx'
+        self.map_folder = path.join(game_folder, "maps")
+        self.map = TiledMap(path.join(self.map_folder, self.main_map))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.player_img = PlayerImg.DOWN
+
+    def change_map(self, door):
+        new_map = door.map
+        self.map = TiledMap(path.join(self.map_folder, new_map))
+        self.map_img = self.map.make_map()
+        self.map_rect = self.map_img.get_rect()
+        # warning it is code duplicate
+        self.all_sprites = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
+        self.doors = pg.sprite.Group()
+        for tile_object in self.map.tmxdata.objects:
+            if tile_object.name == "player":
+                # do przemyślenia moze obiekt do spawnu przed drzwiami
+                # albo z tym last_door ale tez zapisujemy ruchem w którą strone weszlismy w drzwi
+                if new_map != self.main_map:
+                    offset = -1
+                else:
+                    offset = 1
+                if self.last_door != None:
+                    self.player = Player(self, self.last_door.x // TILESIZE, (self.last_door.y // TILESIZE) + offset)
+                else:
+                    # moze nie zawsze działac zaleznie jak sa polozone drzwi
+                    self.player = Player(self, tile_object.x // TILESIZE, (tile_object.y // TILESIZE))
+                self.last_door = door
+            if tile_object.name == "wall":
+                Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+            if tile_object.name == "door":
+                if new_map != self.main_map:
+                    Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, self.main_map)
+                else:
+                    # bo narazie mamy tylko jedne drzwi
+                    Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, "map_d17.tmx")
+
+        self.camera = Camera(self.map.width, self.map.height)
+
 
     def new(self):
         # initialize all variables and do all the setup for a new game
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
+        self.doors = pg.sprite.Group()
         # for row, tiles in enumerate(self.map.data):
         #     for col, tile in enumerate(tiles):
         #         if tile == '1':
@@ -35,10 +73,11 @@ class Game:
         #             self.player = Player(self, col, row)
         for tile_object in self.map.tmxdata.objects:
             if tile_object.name == "player":
-                self.player = Player(self, tile_object.x, tile_object.y)
+                self.player = Player(self, tile_object.x // TILESIZE, tile_object.y // TILESIZE)
             if tile_object.name == "wall":
                 Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
-        self.player = Player(self, 5, 5)
+            if tile_object.name == "door":
+                Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, "map_d17.tmx")
         self.camera = Camera(self.map.width, self.map.height)
         self.staticFrames = 0
 

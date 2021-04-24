@@ -18,17 +18,21 @@ class Player(pg.sprite.Sprite):
         self.y = y
 
     def move(self, dx=0, dy=0):
-        if not self.collide_with_walls(dx, dy):
-            self.x += dx
-            self.y += dy
-        if dx == 1:
-            self.change_player_img(PlayerImg.RIGHT2, PlayerImg.RIGHT)
-        if dx == -1:
-            self.change_player_img(PlayerImg.LEFT2, PlayerImg.LEFT)
-        if dy == 1:
-            self.change_player_img(PlayerImg.DOWN2, PlayerImg.DOWN)
-        if dy == -1:
-            self.change_player_img(PlayerImg.UP2, PlayerImg.UP)
+        door = self.collide_with_door()
+        if door:
+            self.game.change_map(door)
+        else:
+            if not self.collide_with_walls(dx, dy):
+                self.x += dx
+                self.y += dy
+            if dx == 1:
+                self.change_player_img(PlayerImg.RIGHT2, PlayerImg.RIGHT)
+            if dx == -1:
+                self.change_player_img(PlayerImg.LEFT2, PlayerImg.LEFT)
+            if dy == 1:
+                self.change_player_img(PlayerImg.DOWN2, PlayerImg.DOWN)
+            if dy == -1:
+                self.change_player_img(PlayerImg.UP2, PlayerImg.UP)
 
     def stand(self):
         if self.image_type == PlayerImg.RIGHT or self.image_type == PlayerImg.RIGHT2:
@@ -62,6 +66,16 @@ class Player(pg.sprite.Sprite):
                 return True
         return False
 
+    def collide_with_door(self, dx=0, dy=0):
+        rect_copy = self.rect
+        rect_copy.x += dx * TILESIZE
+        rect_copy.y += dy * TILESIZE
+        # pygame.rect.collidelistall instead of for loop
+        for door in self.game.doors:
+            if rect_copy.colliderect(door.rect):
+                return door
+        return None
+
     def update(self):
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
@@ -79,3 +93,18 @@ class Wall(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x
         self.rect.y = y
+
+
+class Door(pg.sprite.Sprite):
+    def __init__(self, game, x, y, w, h, map):
+        self.groups = game.doors  # ?
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        # self.image = pg.Surface((w, h))
+        # self.image.fill(GREEN)
+        self.rect = pg.Rect(x, y, w, h)
+        self.x = x
+        self.y = y
+        self.rect.x = x
+        self.rect.y = y
+        self.map = map
