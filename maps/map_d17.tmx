@@ -150,7 +150,11 @@
   <object id="8" name="wall" x="3.19233" y="4.45565" width="1019.11" height="51.1723"/>
   <object id="9" name="wall" x="995.432" y="263.024" width="24.181" height="473.811"/>
   <object id="10" name="door_d17_in_spawn" type="door_spawn" x="482.117" y="706.131" width="58.321" height="27.2266"/>
-  <object id="12" name="door_d17_out" type="door" x="484.843" y="738.069" width="53.4061" height="27.4184"/>
+  <object id="12" name="door_d17_out" type="door" x="484.843" y="738.069" width="53.4061" height="27.4184">
+   <properties>
+    <property name="map" value="map_alpha2.tmx"/>
+   </properties>
+  </object>
   <object id="14" name="wall" x="996.909" y="60.0945" width="24.181" height="129.811"/>
   <object id="15" name="wall" x="935.909" y="67.0945" width="48.181" height="83.811"/>
   <object id="16" name="wall" x="936.909" y="294.094" width="48.181" height="83.811"/>

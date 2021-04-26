@@ -71,7 +71,11 @@
   <object id="75" name="wall" x="2309.5" y="963.333" width="50" height="25.3333"/>
   <object id="76" name="wall" x="2309.5" y="899.333" width="50" height="25.3333"/>
   <object id="77" name="wall" x="2309.5" y="738.833" width="50" height="25.3333"/>
-  <object id="79" name="door_d17_in" type="door" x="645.419" y="1569.13" width="53.329" height="25.6691"/>
+  <object id="79" name="door_d17_in" type="door" x="645.419" y="1569.13" width="53.329" height="25.6691">
+   <properties>
+    <property name="map" value="map_d17.tmx"/>
+   </properties>
+  </object>
   <object id="80" x="658.261" y="1762.44"/>
   <object id="81" x="598.54" y="1527.54"/>
   <object id="82" name="wall" x="364.262" y="1569.94" width="270.771" height="24.6957"/>
@@ -83,7 +87,11 @@
   <object id="88" name="player" x="770.7" y="1731.01" width="27.2814" height="27.2814"/>
   <object id="89" x="995.771" y="1935.62"/>
   <object id="91" name="wall" x="1987.33" y="1444" width="24" height="25.3333"/>
-  <object id="92" name="door_kapitol_in" type="door" x="2531.33" y="1474.67" width="24" height="24.6667"/>
+  <object id="92" name="door_kapitol_in" type="door" x="2531.33" y="1474.67" width="24" height="24.6667">
+   <properties>
+    <property name="map" value="map_kapitol.tmx"/>
+   </properties>
+  </object>
   <object id="93" name="door_kapitol_out_spawn" type="door_spawn" x="2531.67" y="1506" width="24" height="23.3333"/>
   <object id="94" name="door_d17_out_spawn" type="door_spawn" x="644" y="1603.33" width="55.3333" height="26"/>
  </objectgroup>
