@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="left-up" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="24" nextobjectid="98">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="left-up" width="100" height="100" tilewidth="32" tileheight="32" infinite="0" nextlayerid="24" nextobjectid="102">
  <tileset firstgid="1" source="tilemap_packed2.tsx"/>
  <objectgroup id="12" name="Warstwa Obiektu 1">
   <object id="1" name="wall" x="1.33333" y="33.0682" width="29" height="3164.83"/>
@@ -96,6 +96,8 @@
   <object id="94" name="door_d17_out_spawn" type="door_spawn" x="644" y="1603.33" width="55.3333" height="26"/>
   <object id="95" name="wall" x="2435" y="1474.33" width="90.6667" height="26.3333"/>
   <object id="97" name="wall" x="2562.33" y="1474.17" width="247" height="26.3333"/>
+  <object id="99" x="1391.33" y="1564.67"/>
+  <object id="101" name="random_door" x="716" y="1994" width="1128" height="302"/>
  </objectgroup>
  <layer id="1" name="Ground" width="100" height="100">
   <data encoding="csv">
