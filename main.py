@@ -61,10 +61,16 @@ class Game:
                     # bo narazie mamy tylko jedne drzwi
                     Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, "map_d17.tmx")
             if tile_object.name == "random_door":
-                for dx, dy in range(tile_object.width), range(tile_object.height):
-                    random_door_locations += [(tile_object.x // TILESIZE) + dx, (tile_object.y // TILESIZE) + dy]
+                for dx in range(int(tile_object.width // TILESIZE)):
+                    for dy in range(int(tile_object.height // TILESIZE)):
+                        random_door_locations.append([int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy)])
 
-        random_location = random_door_locations[randint(len(random_door_locations))]
+        print(len(random_door_locations))
+        if len(random_door_locations) > 0:
+
+            random_location = random_door_locations[randint(0, len(random_door_locations))]
+            print(random_location)
+            SecretDoor(self, random_location[0], random_location[1], TILESIZE, TILESIZE, "map_d17.tmx")
 
         self.camera = Camera(self.map.width, self.map.height)
 

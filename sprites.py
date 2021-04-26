@@ -115,4 +115,5 @@ class SecretDoor(Door):
         super().__init__(game, x, y, w, h, map)
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, "img")
-        self.image = pg.image.load(path.join(self.img_folder, game.player_img.value))
+        self.image = pg.image.load(path.join(self.img_folder, "stairs1.png"))
+        self.image.fill(GREEN)
