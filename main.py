@@ -15,6 +15,7 @@ class Game:
         pg.key.set_repeat(500, 100)
         self.load_data()
         self.last_door = None  # ?
+        self.secret_room_entered = False
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -30,6 +31,8 @@ class Game:
         if door is not None:
             new_map = door.map
             spawn = door.name + "_spawn"
+            if door.name == "secret_door_out":
+                self.secret_room_entered = True
         else:
             spawn = " "
             new_map = self.main_map
@@ -50,18 +53,21 @@ class Game:
             if tile_object.name == "wall":
                 Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "door":
-                    Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.map, tile_object.name)
-            if tile_object.name == "random_door":
-                for dx in range(int(tile_object.width // TILESIZE)):
-                    for dy in range(int(tile_object.height // TILESIZE)):
-                        random_door_locations.append([int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy)])
+                Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.map, tile_object.name)
+            if tile_object.name == "npc":
+                NPC(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+            if not self.secret_room_entered:
+                if tile_object.name == "random_door":
+                    for dx in range(int(tile_object.width // TILESIZE)):
+                        for dy in range(int(tile_object.height // TILESIZE)):
+                            random_door_locations.append([int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy)])
 
         # print(len(random_door_locations))
-        if len(random_door_locations) > 0:
-
-            random_location = random_door_locations[randint(0, len(random_door_locations))]
-            print(random_location)
-            SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE, "map_kapitol.tmx", "secret_door_out")
+        if not self.secret_room_entered:
+            if len(random_door_locations) > 0:
+                random_location = random_door_locations[randint(0, len(random_door_locations) - 1)]
+                print(random_location)
+                SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE, "map_kapitol.tmx", "secret_door_out")
 
         self.camera = Camera(self.map.width, self.map.height)
 
