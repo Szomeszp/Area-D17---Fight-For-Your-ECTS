@@ -136,6 +136,6 @@
    </properties>
   </object>
   <object id="18" name="door_kapitol_in_spawn" type="door_spawn" x="387" y="706" width="58" height="25"/>
-  <object id="20" name="secret_door__out_spawn" x="33.5" y="65" width="26.5" height="26.5"/>
+  <object id="20" name="secret_door_out_spawn" x="33.5" y="65" width="26.5" height="26.5"/>
  </objectgroup>
 </map>
