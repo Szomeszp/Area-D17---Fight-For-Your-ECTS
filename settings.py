@@ -1,7 +1,6 @@
 import pygame as pg
 from enum import Enum
 
-# define some colors (R, G, B)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 DARKGREY = (40, 40, 40)
@@ -10,11 +9,10 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 
-# game settings
 WIDTH = 1024   # 16 * 64 or 32 * 32 or 64 * 16
 HEIGHT = 768  # 16 * 48 or 32 * 24 or 64 * 12
 FPS = 60
-TITLE = "Tilemap Demo"
+TITLE = "Area-D17---Fight-For-Your-ECTS"
 BGCOLOR = DARKGREY
 
 TILESIZE = 32
