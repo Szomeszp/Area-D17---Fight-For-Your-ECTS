@@ -29,7 +29,9 @@ class Game:
     def render_map(self, door=None):
         if door is not None:
             new_map = door.map
+            spawn = door.name + "_spawn"
         else:
+            spawn = " "
             new_map = self.main_map
         self.map = TiledMap(path.join(self.map_folder, new_map))
         self.map_img = self.map.make_map()
@@ -38,39 +40,28 @@ class Game:
         self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         random_door_locations = []
+
         for tile_object in self.map.tmxdata.objects:
-            if tile_object.name == "player":
-                # do przemyślenia moze obiekt do spawnu przed drzwiami
-                # albo z tym last_door ale tez zapisujemy ruchem w którą strone weszlismy w drzwi
-                if new_map != self.main_map:
-                    offset = -1
-                else:
-                    offset = 1
-                if self.last_door != None:
-                    self.player = Player(self, self.last_door.x // TILESIZE, (self.last_door.y // TILESIZE) + offset)
-                else:
-                    # moze nie zawsze działac zaleznie jak sa polozone drzwi
+            if door is None:
+                if tile_object.name == "player":
                     self.player = Player(self, tile_object.x // TILESIZE, (tile_object.y // TILESIZE))
-                self.last_door = door
+            if tile_object.name == spawn:
+                self.player = Player(self, tile_object.x // TILESIZE, (tile_object.y // TILESIZE))
             if tile_object.name == "wall":
                 Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
-            if tile_object.name == "door":
-                if new_map != self.main_map:
-                    Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, self.main_map)
-                else:
-                    # bo narazie mamy tylko jedne drzwi
-                    Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, "map_d17.tmx")
+            if tile_object.type == "door":
+                    Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.map, tile_object.name)
             if tile_object.name == "random_door":
                 for dx in range(int(tile_object.width // TILESIZE)):
                     for dy in range(int(tile_object.height // TILESIZE)):
                         random_door_locations.append([int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy)])
 
-        print(len(random_door_locations))
+        # print(len(random_door_locations))
         if len(random_door_locations) > 0:
 
             random_location = random_door_locations[randint(0, len(random_door_locations))]
             print(random_location)
-            SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE, self.main_map)
+            SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE, "map_kapitol.tmx", "secret_door_out")
 
         self.camera = Camera(self.map.width, self.map.height)
 

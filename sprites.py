@@ -96,8 +96,8 @@ class Wall(pg.sprite.Sprite):
 
 
 class Door(pg.sprite.Sprite):
-    def __init__(self, game, x, y, w, h, map):
-        self.groups = game.doors  # ?
+    def __init__(self, game, x, y, w, h, map, name):
+        self.groups = game.doors
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = pg.Rect(x, y, w, h)
@@ -106,11 +106,12 @@ class Door(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.map = map
+        self.name = name
 
 
 class SecretDoor(Door):
-    def __init__(self, game, x, y, w, h, map):
-        super().__init__(game, x, y, w, h, map)
+    def __init__(self, game, x, y, w, h, map, name):
+        super().__init__(game, x, y, w, h, map, name)
         self.groups = game.doors, game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game_folder = path.dirname(__file__)
