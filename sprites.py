@@ -100,8 +100,6 @@ class Door(pg.sprite.Sprite):
         self.groups = game.doors  # ?
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        # self.image = pg.Surface((w, h))
-        # self.image.fill(GREEN)
         self.rect = pg.Rect(x, y, w, h)
         self.x = x
         self.y = y
@@ -113,7 +111,9 @@ class Door(pg.sprite.Sprite):
 class SecretDoor(Door):
     def __init__(self, game, x, y, w, h, map):
         super().__init__(game, x, y, w, h, map)
+        self.groups = game.doors, game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
         self.game_folder = path.dirname(__file__)
         self.img_folder = path.join(self.game_folder, "img")
         self.image = pg.image.load(path.join(self.img_folder, "stairs1.png"))
-        self.image.fill(GREEN)
+        # self.image.fill(GREEN)

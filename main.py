@@ -70,7 +70,7 @@ class Game:
 
             random_location = random_door_locations[randint(0, len(random_door_locations))]
             print(random_location)
-            SecretDoor(self, random_location[0], random_location[1], TILESIZE, TILESIZE, "map_d17.tmx")
+            SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE, self.main_map)
 
         self.camera = Camera(self.map.width, self.map.height)
 
