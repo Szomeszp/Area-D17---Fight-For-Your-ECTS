@@ -4,7 +4,7 @@ from os import path
 from settings import *
 from sprites import *
 from tilemap import *
-
+from random import randint
 
 class Game:
     def __init__(self):
@@ -37,6 +37,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
+        random_door_locations = []
         for tile_object in self.map.tmxdata.objects:
             if tile_object.name == "player":
                 # do przemyślenia moze obiekt do spawnu przed drzwiami
@@ -59,6 +60,12 @@ class Game:
                 else:
                     # bo narazie mamy tylko jedne drzwi
                     Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, "map_d17.tmx")
+            if tile_object.name == "random_door":
+                for dx, dy in range(tile_object.width), range(tile_object.height):
+                    random_door_locations += [(tile_object.x // TILESIZE) + dx, (tile_object.y // TILESIZE) + dy]
+
+        random_location = random_door_locations[randint(len(random_door_locations))]
+
         self.camera = Camera(self.map.width, self.map.height)
 
 

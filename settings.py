@@ -36,3 +36,5 @@ class PlayerImg(Enum):
 
 
 PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)
+
+SECRET_ROOM_PNG = ""
