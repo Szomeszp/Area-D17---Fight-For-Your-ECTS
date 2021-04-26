@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="30">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="right-down" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="7" nextobjectid="31">
  <tileset firstgid="1" source="tilemap_packed.tsx"/>
  <tileset firstgid="487" source="roguelikeSheet_transparent.tsx"/>
  <layer id="1" name="1" width="32" height="24">
@@ -149,8 +149,8 @@
   <object id="7" name="wall" x="-0.000246642" y="738.85" width="478.238" height="26.8673"/>
   <object id="8" name="wall" x="3.19233" y="4.45565" width="1019.11" height="51.1723"/>
   <object id="9" name="wall" x="995.432" y="263.024" width="24.181" height="473.811"/>
-  <object id="10" name="player" x="513.117" y="705.798" width="29.321" height="27.2266"/>
-  <object id="12" name="door" x="484.843" y="741.402" width="53.4061" height="24.0851"/>
+  <object id="10" name="door_d17_in_spawn" type="door_spawn" x="482.117" y="706.131" width="58.321" height="27.2266"/>
+  <object id="12" name="door_d17_out" type="door" x="484.843" y="738.069" width="53.4061" height="27.4184"/>
   <object id="14" name="wall" x="996.909" y="60.0945" width="24.181" height="129.811"/>
   <object id="15" name="wall" x="935.909" y="67.0945" width="48.181" height="83.811"/>
   <object id="16" name="wall" x="936.909" y="294.094" width="48.181" height="83.811"/>
@@ -162,6 +162,5 @@
   <object id="26" name="npc" x="69.5" y="646" width="21" height="22"/>
   <object id="27" name="npc" x="483.5" y="357" width="21" height="22"/>
   <object id="28" name="random_door" x="361" y="103" width="494" height="179"/>
-  <object id="29" x="568" y="315"/>
  </objectgroup>
 </map>
