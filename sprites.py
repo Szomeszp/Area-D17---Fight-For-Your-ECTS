@@ -85,7 +85,7 @@ class Player(pg.sprite.Sprite):
         for x in range(self.x - 1, self.x + 2):
             for y in range(self.y - 1, self.y + 2):
                 if not flag:
-                    if 0 <= x < WIDTH // TILESIZE and 0 <= y < HEIGHT // TILESIZE:
+                    if 0 <= x < self.game.map.width // TILESIZE and 0 <= y < self.game.map.height // TILESIZE:
                         rect = self.rect
                         rect.x = x * TILESIZE
                         rect.y = y * TILESIZE
