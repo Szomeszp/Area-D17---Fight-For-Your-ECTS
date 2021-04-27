@@ -16,6 +16,8 @@ class Game:
         self.load_data()
         self.last_door = None  # ?
         self.secret_room_entered = False
+        self.my_small_font = pg.font.SysFont('Comic Sans MS', 14)
+        self.my_big_font = pg.font.SysFont('Comic Sans MS', 30)
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -42,14 +44,15 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
+        self.npcs = pg.sprite.Group()
         random_door_locations = []
 
         for tile_object in self.map.tmxdata.objects:
             if door is None:
                 if tile_object.name == "player":
-                    self.player = Player(self, tile_object.x // TILESIZE, (tile_object.y // TILESIZE))
+                    self.player = Player(self, int(tile_object.x // TILESIZE), int(tile_object.y // TILESIZE))
             if tile_object.name == spawn:
-                self.player = Player(self, tile_object.x // TILESIZE, (tile_object.y // TILESIZE))
+                self.player = Player(self, int(tile_object.x // TILESIZE), int(tile_object.y // TILESIZE))
             if tile_object.name == "wall":
                 Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "door":
@@ -127,6 +130,8 @@ class Game:
                     self.player.move(dy=-1)
                 if event.key == pg.K_DOWN:
                     self.player.move(dy=1)
+                if event.key == pg.K_e:
+                    self.player.interact()
         if not moved:
             self.staticFrames += 1
         else:
@@ -139,6 +144,8 @@ class Game:
 
     def show_go_screen(self):
         pass
+
+
 
 
 # create the game object

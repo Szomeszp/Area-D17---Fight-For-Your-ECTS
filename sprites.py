@@ -80,6 +80,25 @@ class Player(pg.sprite.Sprite):
         self.rect.x = self.x * TILESIZE
         self.rect.y = self.y * TILESIZE
 
+    def interact(self):
+        flag = False
+        for x in range(self.x - 1, self.x + 2):
+            for y in range(self.y - 1, self.y + 2):
+                if not flag:
+                    if 0 <= x < WIDTH // TILESIZE and 0 <= y < HEIGHT // TILESIZE:
+                        rect = self.rect
+                        rect.x = x * TILESIZE
+                        rect.y = y * TILESIZE
+                        for npc in self.game.npcs:
+                            print(rect.x, rect.y)
+                            if rect.colliderect(npc.rect):
+                                npc.dialogue("Siema siema siema czesc")
+                                flag = True
+                                break
+
+
+
+
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
@@ -111,7 +130,7 @@ class Door(pg.sprite.Sprite):
 
 class NPC(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
-        self.groups = game.walls
+        self.groups = game.walls, game.npcs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = pg.Rect(x, y, w, h)
@@ -119,6 +138,30 @@ class NPC(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x
         self.rect.y = y
+
+    def dialogue(self, text):
+        print("Dialog")
+
+        if text:
+            blackBarRectPos = (0, self.game.screen.get_height() - 64)
+            blackBarRectSize = (self.game.screen.get_width(), 64)
+            pg.draw.rect(self.game.screen, (0, 0, 0), pg.Rect(blackBarRectPos, blackBarRectSize))
+
+            space_text = self.game.my_small_font.render("Click [space] to continue", 1, (255, 255, 255), (0, 0, 0))
+            space_text_size = self.game.my_small_font.size("Click [space] to continue")
+            self.game.screen.blit(space_text, (self.game.screen.get_width() - space_text_size[0] - 5, self.game.screen.get_height() - space_text_size[1] - 5))
+
+            textSurf = self.game.my_big_font.render(text, 1, (255, 255, 255), (0, 0, 0))
+            self.game.screen.blit(textSurf, (0, self.game.screen.get_height() - 64))
+            cnt = True
+            while cnt:
+                pg.event.pump()
+                if pg.key.get_pressed()[pg.K_SPACE]:
+                    cnt = False
+                pg.display.flip()
+                self.game.clock.tick(60)
+
+
 
 
 class SecretDoor(Door):
