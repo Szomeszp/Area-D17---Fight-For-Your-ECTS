@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="left-up" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="8">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="left-up" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="24">
  <tileset firstgid="1" source="roguelikeSheet_transparent.tsx"/>
  <layer id="3" name="Floor" width="32" height="24">
   <data encoding="csv">
@@ -116,10 +116,23 @@
  <objectgroup id="5" name="Objects">
   <object id="1" type="spawnMonster" x="358.401" y="357.331" width="308.118" height="115.544"/>
   <object id="2" type="spawnPlayer" x="360.541" y="548.835" width="305.978" height="116.614"/>
-  <object id="3" name="wall" x="3.20956" y="2.13971" width="1015.29" height="249.276"/>
-  <object id="4" name="wall" x="4.27942" y="259.975" width="22.4669" height="501.762"/>
-  <object id="5" name="wall" x="33.1655" y="738.2" width="955.38" height="24.6067"/>
-  <object id="6" name="wall" x="996.035" y="258.905" width="23.5368" height="503.902"/>
+  <object id="3" name="wall" x="3.20956" y="2.13971" width="1015.29" height="311.328"/>
+  <object id="4" name="wall" x="4.27942" y="328.445" width="307.048" height="433.291"/>
+  <object id="5" name="wall" x="328.445" y="711.453" width="368.03" height="51.353"/>
+  <object id="6" name="wall" x="709.314" y="327.376" width="310.258" height="435.431"/>
   <object id="7" type="arena" x="326.306" y="324.166" width="371.24" height="374.449"/>
+  <object id="8" name="monsterHealthBar" x="320" y="288" width="384" height="32"/>
+  <object id="9" name="battleInfo" x="448" y="160" width="128" height="32"/>
+  <object id="11" name="playerHealthBar" x="320" y="704" width="384" height="32"/>
+  <object id="12" name="button1" x="736" y="352" width="224" height="32"/>
+  <object id="13" name="button2" x="736" y="416" width="224" height="32"/>
+  <object id="14" name="button3" x="736" y="480" width="224" height="32"/>
+  <object id="15" name="button4" x="736" y="544" width="224" height="32"/>
+  <object id="17" name="button5" x="736" y="672" width="224" height="32"/>
+  <object id="19" name="centerButton" x="832" y="608" width="32" height="32"/>
+  <object id="20" name="leftButton" x="800" y="608" width="32" height="32"/>
+  <object id="21" name="rightButton" x="864" y="608" width="32" height="32"/>
+  <object id="22" name="backwardButton" x="832" y="640" width="32" height="32"/>
+  <object id="23" name="forwardButton" x="832" y="576" width="32" height="32"/>
  </objectgroup>
 </map>
