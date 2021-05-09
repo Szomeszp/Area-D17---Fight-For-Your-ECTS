@@ -37,6 +37,6 @@ class PlayerImg(Enum):
 
 PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)
 
-BATTLE_ARENA = "arena.tmx"
+BATTLE_ARENA = "arena2.tmx"
 
 SECRET_ROOM_PNG = ""
