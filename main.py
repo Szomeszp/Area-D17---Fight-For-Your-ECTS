@@ -4,6 +4,7 @@ from os import path
 from settings import *
 from sprites import *
 from tilemap import *
+from statistics import *
 from random import randint
 
 
@@ -46,6 +47,7 @@ class Game:
         self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
         self.npcs = pg.sprite.Group()
+        self.monsters = pg.sprite.Group()
         random_door_locations = []
 
         for tile_object in self.map.tmxdata.objects:
@@ -61,6 +63,9 @@ class Game:
                      tile_object.name)
             if tile_object.name == "npc":
                 NPC(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+            if tile_object.type == "monster":
+                stats = Statistics.generateMonsterStatistics(self, 1)
+                Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE, stats)
             if not self.secret_room_entered:
                 if tile_object.name == "random_door":
                     for dx in range(int(tile_object.width // TILESIZE)):
@@ -75,6 +80,36 @@ class Game:
                 print(random_location)
                 SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE,
                            "map_kapitol.tmx", "secret_door_out")
+
+        self.camera = Camera(self.map.width, self.map.height)
+
+    def enterBattleArena(self, monster, arena):
+        self.map = TiledMap(path.join(self.map_folder, arena))
+        self.map_img = self.map.make_map()
+        self.map_rect = self.map_img.get_rect()
+        self.all_sprites = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
+        self.doors = pg.sprite.Group()
+        self.npcs = pg.sprite.Group()
+        self.monsters = pg.sprite.Group()
+        random_door_locations = []
+
+        for tile_object in self.map.tmxdata.objects:
+            if tile_object.name == "wall":
+                Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+
+            if tile_object.type == "spawnPlayer":
+                dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
+                dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
+
+                self.player = Player(self, int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy))
+
+            if tile_object.type == "spawnMonster":
+                dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
+                dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
+
+                Monster(self, int((tile_object.x // TILESIZE) + dx) * TILESIZE, int((tile_object.y // TILESIZE) + dy) * TILESIZE, monster.statisctics)
+
 
         self.camera = Camera(self.map.width, self.map.height)
 
@@ -135,6 +170,8 @@ class Game:
                     self.player.move(dy=1)
                 if event.key == pg.K_e:
                     self.player.interact()
+                if event.key == pg.K_a:
+                    self.player.fight()
         if not moved:
             if self.staticFrames > 15:
                 self.player.stand()

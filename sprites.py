@@ -1,11 +1,14 @@
+import random
+
 import pygame as pg
+from statistics import *
 from settings import *
 vec = pg.math.Vector2
 from os import path
 
 
 class Player(pg.sprite.Sprite):
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, stats=None):
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -16,6 +19,8 @@ class Player(pg.sprite.Sprite):
         self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
         self.x = x
         self.y = y
+
+        self.statistics = Statistics(100, 20, 10, 10, 10, 1, 2, 20, 50)
 
     def move(self, dx=0, dy=0):
         door = self.collide_with_door()
@@ -96,6 +101,33 @@ class Player(pg.sprite.Sprite):
                                 flag = True
                                 break
 
+    def fight(self):
+        flag = False
+        for x in range(self.x - 1, self.x + 2):
+            for y in range(self.y - 1, self.y + 2):
+                if not flag:
+                    if 0 <= x < self.game.map.width // TILESIZE and 0 <= y < self.game.map.height // TILESIZE:
+                        rect = self.rect
+                        rect.x = x * TILESIZE
+                        rect.y = y * TILESIZE
+                        for monster in self.game.monsters:
+                            print(rect.x, rect.y)
+                            if rect.colliderect(monster.rect):
+                                self.game.enterBattleArena(monster, BATTLE_ARENA)
+                                break
+
+    def attack(self, monster):
+        rng = random.randint(0, 100)
+
+        if 0 <= rng <= self.statisctics.criticalDamageChance:
+            damage = self.statisctics.damage * (1 + self.statisctics.criticalDamageMultiplier / 100)
+        else:
+            damage = self.statisctics.damage
+
+        monster.hurt(damage)
+
+    def hurt(self, damage):
+        self.statisctics.health = self.statisctics.health - damage
 
 
 
@@ -173,3 +205,34 @@ class SecretDoor(Door):
         self.img_folder = path.join(self.game_folder, "img")
         self.image = pg.image.load(path.join(self.img_folder, "stairs1.png"))
         # self.image.fill(GREEN)
+
+
+class Monster(pg.sprite.Sprite):
+    def __init__(self, game, x, y, statistics):
+        self.groups = game.walls, game.monsters, game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
+        self.x = x
+        self.y = y
+        self.statisctics = statistics
+
+        self.image = self.getImage()
+
+    def getImage(self):
+        game_folder = path.dirname(__file__)
+        img_folder = path.join(game_folder, "img")
+        return pg.image.load(path.join(img_folder, "bullet.png"))
+
+    def attack(self, player):
+        rng = random.randint(0, 100)
+
+        if 0 <= rng <= self.statisctics.criticalDamageChance:
+            damage = self.statisctics.damage * (1 + self.statisctics.criticalDamageMultiplier / 100)
+        else:
+            damage = self.statisctics.damage
+
+        player.hurt(damage)
+
+    def hurt(self, damage):
+        self.statisctics.health = self.statisctics.health - damage
