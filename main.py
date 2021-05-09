@@ -6,6 +6,7 @@ from sprites import *
 from tilemap import *
 from random import randint
 
+
 class Game:
     def __init__(self):
         pg.init()
@@ -56,24 +57,26 @@ class Game:
             if tile_object.name == "wall":
                 Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "door":
-                Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.map, tile_object.name)
+                Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.map,
+                     tile_object.name)
             if tile_object.name == "npc":
                 NPC(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if not self.secret_room_entered:
                 if tile_object.name == "random_door":
                     for dx in range(int(tile_object.width // TILESIZE)):
                         for dy in range(int(tile_object.height // TILESIZE)):
-                            random_door_locations.append([int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy)])
+                            random_door_locations.append(
+                                [int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy)])
 
         # print(len(random_door_locations))
         if not self.secret_room_entered:
             if len(random_door_locations) > 0:
                 random_location = random_door_locations[randint(0, len(random_door_locations) - 1)]
                 print(random_location)
-                SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE, "map_kapitol.tmx", "secret_door_out")
+                SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE,
+                           "map_kapitol.tmx", "secret_door_out")
 
         self.camera = Camera(self.map.width, self.map.height)
-
 
     def new(self):
         # initialize all variables and do all the setup for a new game
@@ -133,19 +136,18 @@ class Game:
                 if event.key == pg.K_e:
                     self.player.interact()
         if not moved:
-            self.staticFrames += 1
+            if self.staticFrames > 15:
+                self.player.stand()
+            else:
+                self.staticFrames += 1
         else:
             self.staticFrames = 0
-        if self.staticFrames > 15:
-            self.player.stand()
 
     def show_start_screen(self):
         pass
 
     def show_go_screen(self):
         pass
-
-
 
 
 # create the game object

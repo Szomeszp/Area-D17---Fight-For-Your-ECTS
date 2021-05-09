@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="left-up" width="10" height="10" tilewidth="32" tileheight="32" infinite="0" nextlayerid="4" nextobjectid="4">
+ <tileset firstgid="1" source="roguelikeSheet_transparent.tsx"/>
+ <layer id="1" name="Warstwa Kafelków 1" width="10" height="10">
+  <data encoding="csv">
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487,
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487,
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487,
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487,
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487,
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487,
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487,
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487,
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487,
+1487,1487,1487,1487,1487,1487,1487,1487,1487,1487
+</data>
+ </layer>
+ <objectgroup id="3" name="Warstwa Obiektu 1">
+  <object id="1" type="spawnMonster" x="4" y="5.33333" width="310.667" height="119.333"/>
+  <object id="2" type="spawnPlayer" x="4" y="195.333" width="312" height="120"/>
+ </objectgroup>
+</map>
