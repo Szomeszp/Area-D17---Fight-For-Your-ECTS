@@ -8,18 +8,20 @@ from os import path
 
 
 class Arena:
-    def __init__(self, game, player, monster, player_health_bar, monster_health_bar, battle_info):
+    def __init__(self, game, player, monster, player_health_bar, monster_health_bar, battle_info, control_panel):
         self.player = player
         self.monster = monster
         self.game = game
         self.player_hp_bar = player_health_bar
         self.monster_hp_bar = monster_health_bar
         self.battle_info = battle_info
+        self.control_panel = control_panel
 
     def draw_arena(self):
         self.monster_hp_bar.draw_health()
         self.player_hp_bar.draw_health()
         self.battle_info.draw_info()
+        self.control_panel.draw_buttons()
 
 
 class HealthBar:
@@ -68,7 +70,36 @@ class BattleInfo:
 
 
 class ControlPanel:
-    def __init__(self, game, attack_btn):
+    def __init__(self, game):
         self.game = game
-        self.attack_btn = attack_btn
-        # To do
+        self.buttons = []
+
+    def add_button(self, button):
+        self.buttons.append(button)
+
+    def draw_buttons(self):
+        for btn in self.buttons:
+            btn.draw_button()
+
+
+class Button(pg.sprite.Sprite):
+    def __init__(self, game, x, y, w, h, text):
+        self.groups = game.buttons
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.rect = pg.Rect(x, y, w, h)
+        self.x = x
+        self.y = y
+        self.width = w
+        self.height = h
+        self.text = text
+
+    def draw_button(self):
+        # draw background
+        pos = (self.x, self.y)
+        size = (self.width, self.height)
+        pg.draw.rect(self.game.screen, BLACK, pg.Rect(pos, size))
+        # draw text
+        btn = self.game.my_small_font.render(self.text, 1, (255, 255, 255), (0, 0, 0))
+        btn_size = self.game.my_small_font.size(self.text)
+        self.game.screen.blit(btn, (self.x + self.width / 2 - btn_size[0] / 2, self.y + self.height / 2 - btn_size[1] / 2))

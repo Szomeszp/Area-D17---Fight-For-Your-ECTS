@@ -50,6 +50,7 @@ class Game:
         self.doors = pg.sprite.Group()
         self.npcs = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
+        self.buttons = pg.sprite.Group()
         random_door_locations = []
 
         for tile_object in self.map.tmxdata.objects:
@@ -97,7 +98,13 @@ class Game:
         self.monsters = pg.sprite.Group()
         random_door_locations = []
 
+        control_panel = ControlPanel(self)
+
         for tile_object in self.map.tmxdata.objects:
+            if str(tile_object.name)[:6] == "button":
+                btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.name)
+                control_panel.add_button(btn)
+
             if tile_object.name == "monsterHealthBar":
                 # print(tile_object.x, tile_object.y, tile_object.width, monster.statistics.health)
                 monster_health_bar = HealthBar(self, tile_object.x, tile_object.y, tile_object.width,
@@ -123,7 +130,7 @@ class Game:
                         int((tile_object.y // TILESIZE) + dy) * TILESIZE, monster.statistics)
 
         self.draw()
-        self.arena = Arena(self, self.player, monster, player_health_bar, monster_health_bar, battle_info)
+        self.arena = Arena(self, self.player, monster, player_health_bar, monster_health_bar, battle_info, control_panel)
 
         self.camera = Camera(self.map.width, self.map.height)
 
@@ -172,22 +179,30 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.quit()
-            if event.type == pg.KEYDOWN:
-                moved = True
-                if event.key == pg.K_ESCAPE:
-                    self.quit()
-                if event.key == pg.K_LEFT:
-                    self.player.move(dx=-1)
-                if event.key == pg.K_RIGHT:
-                    self.player.move(dx=1)
-                if event.key == pg.K_UP:
-                    self.player.move(dy=-1)
-                if event.key == pg.K_DOWN:
-                    self.player.move(dy=1)
-                if event.key == pg.K_e:
-                    self.player.interact()
-                if event.key == pg.K_a:
-                    self.player.fight()
+            if not self.arena:
+                if event.type == pg.KEYDOWN:
+                    moved = True
+                    if event.key == pg.K_ESCAPE:
+                        self.quit()
+                    if event.key == pg.K_LEFT:
+                        self.player.move(dx=-1)
+                    if event.key == pg.K_RIGHT:
+                        self.player.move(dx=1)
+                    if event.key == pg.K_UP:
+                        self.player.move(dy=-1)
+                    if event.key == pg.K_DOWN:
+                        self.player.move(dy=1)
+                    if event.key == pg.K_e:
+                        self.player.interact()
+                    if event.key == pg.K_a:
+                        self.player.fight()
+            else:
+                if event.type == pg.MOUSEBUTTONUP:
+                    pos = pg.mouse.get_pos()
+                    for btn in self.buttons:
+                        if btn.rect.collidepoint(pos):
+                            print(btn.text + " clicked!")
+
         if not moved:
             if self.staticFrames > 15:
                 self.player.stand()
