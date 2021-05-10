@@ -194,8 +194,6 @@ class NPC(pg.sprite.Sprite):
                 self.game.clock.tick(60)
 
 
-
-
 class SecretDoor(Door):
     def __init__(self, game, x, y, w, h, map, name):
         super().__init__(game, x, y, w, h, map, name)
@@ -215,7 +213,7 @@ class Monster(pg.sprite.Sprite):
         self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
         self.x = x
         self.y = y
-        self.statisctics = statistics
+        self.statistics = statistics
 
         self.image = self.getImage()
 

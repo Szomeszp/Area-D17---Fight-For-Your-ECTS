@@ -6,6 +6,7 @@ from sprites import *
 from tilemap import *
 from statistics import *
 from random import randint
+from arena import *
 
 
 class Game:
@@ -20,6 +21,7 @@ class Game:
         self.secret_room_entered = False
         self.my_small_font = pg.font.SysFont('Comic Sans MS', 14)
         self.my_big_font = pg.font.SysFont('Comic Sans MS', 30)
+        self.arena = None
 
     def load_data(self):
         game_folder = path.dirname(__file__)
@@ -65,7 +67,8 @@ class Game:
                 NPC(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "monster":
                 stats = Statistics.generateMonsterStatistics(self, 1)
-                Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE, stats)
+                Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE,
+                        stats)
             if not self.secret_room_entered:
                 if tile_object.name == "random_door":
                     for dx in range(int(tile_object.width // TILESIZE)):
@@ -95,8 +98,16 @@ class Game:
         random_door_locations = []
 
         for tile_object in self.map.tmxdata.objects:
-            if tile_object.name == "wall":
-                Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+            if tile_object.name == "monsterHealthBar":
+                # print(tile_object.x, tile_object.y, tile_object.width, monster.statistics.health)
+                monster_health_bar = HealthBar(self, tile_object.x, tile_object.y, tile_object.width,
+                                               tile_object.height, monster.statistics.health)
+            if tile_object.name == "playerHealthBar":
+                player_health_bar = HealthBar(self, tile_object.x, tile_object.y, tile_object.width,
+                                              tile_object.height, self.player.statistics.health)
+            if tile_object.name == "battleInfo":
+                battle_info = BattleInfo(self, tile_object.x, tile_object.y, tile_object.width,
+                           tile_object.height, "Monster Staś")
 
             if tile_object.type == "spawnPlayer":
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
@@ -108,8 +119,11 @@ class Game:
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
                 dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
 
-                Monster(self, int((tile_object.x // TILESIZE) + dx) * TILESIZE, int((tile_object.y // TILESIZE) + dy) * TILESIZE, monster.statisctics)
+                Monster(self, int((tile_object.x // TILESIZE) + dx) * TILESIZE,
+                        int((tile_object.y // TILESIZE) + dy) * TILESIZE, monster.statistics)
 
+        self.draw()
+        self.arena = Arena(self, self.player, monster, player_health_bar, monster_health_bar, battle_info)
 
         self.camera = Camera(self.map.width, self.map.height)
 
@@ -148,6 +162,8 @@ class Game:
         # self.draw_grid()
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
+        if self.arena:
+            self.arena.draw_arena()
         pg.display.flip()
 
     def events(self):
