@@ -77,7 +77,8 @@ class Game:
                 NPC(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "monster":
                 stats = Statistics.generateMonsterStatistics(self, 1)
-                Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE, "bullet",
+                Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE,
+                        "bullet",
                         stats)
             if not self.secret_room_entered:
                 if tile_object.name == "random_door":
@@ -141,12 +142,16 @@ class Game:
             if tile_object.name == "battleInfo":
                 battle_info = BattleInfo(self, tile_object.x, tile_object.y, tile_object.width,
                                          tile_object.height, "Monster Staś")
+            if tile_object.name == "battleLog":
+                battle_log = BattleLog(self, tile_object.x, tile_object.y, tile_object.width,
+                                       tile_object.height)
 
             if tile_object.type == "spawnPlayer":
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
                 dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
 
-                self.player = Player(self, int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy), self.player_img)
+                self.player = Player(self, int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy),
+                                     self.player_img)
 
             if tile_object.type == "spawnMonster":
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
@@ -156,8 +161,8 @@ class Game:
                         int((tile_object.y // TILESIZE) + dy) * TILESIZE, "bullet", monster.statistics)
 
         self.arena = Arena(self, self.player, monster, player_health_bar, monster_health_bar, battle_info,
-                           control_panel)
-
+                           control_panel, battle_log)
+        self.arena.battle_log.add_log("Walka się rospoczeła!")
         self.camera = Camera(self.map.width, self.map.height)
 
     def exit_arena(self):

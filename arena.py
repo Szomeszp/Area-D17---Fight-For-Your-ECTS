@@ -8,7 +8,7 @@ from os import path
 
 
 class Arena:
-    def __init__(self, game, player, monster, player_health_bar, monster_health_bar, battle_info, control_panel):
+    def __init__(self, game, player, monster, player_health_bar, monster_health_bar, battle_info, control_panel, battle_log):
         self.player = player
         self.monster = monster
         self.game = game
@@ -16,12 +16,14 @@ class Arena:
         self.monster_hp_bar = monster_health_bar
         self.battle_info = battle_info
         self.control_panel = control_panel
+        self.battle_log = battle_log
 
     def draw_arena(self):
         self.monster_hp_bar.draw_health()
         self.player_hp_bar.draw_health()
         self.battle_info.draw_info()
         self.control_panel.draw_buttons()
+        self.battle_log.draw_logs()
 
 
 class HealthBar:
@@ -64,9 +66,9 @@ class BattleLog:
         self.game = game
         self.x = x
         self.y = y
-        self.w = w
-        self.h = h
-        self.max_len = 6
+        self.width = w
+        self.height = h
+        self.max_len = 19
         self.line_height = 18
         self.logs = []
 
@@ -76,6 +78,9 @@ class BattleLog:
         self.logs.append(str)
 
     def draw_logs(self):
+        pos = (self.x, self.y)
+        size = (self.width, self.height)
+        pg.draw.rect(self.game.screen, BLACK, pg.Rect(pos, size))
         for idx, log in enumerate(self.logs):
             text = self.game.my_small_font.render(log, 1, (255, 255, 255), (0, 0, 0))
             self.game.screen.blit(text, (self.x, self.y + idx * self.line_height))

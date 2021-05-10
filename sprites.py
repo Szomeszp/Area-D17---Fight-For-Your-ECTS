@@ -20,10 +20,13 @@ class Character:
         rng = random.randint(0, 100)
 
         if 0 <= rng <= self.statistics.critical_damage_chance:
-            damage = self.statistics.damage * (1 + self.statistics.critical_damage_multiplier / 100)
+            damage = float(self.statistics.damage * (1 + self.statistics.critical_damage_multiplier / 100))
         else:
-            damage = self.statistics.damage
-
+            damage = float(self.statistics.damage)
+        if type(self.type) == str:  # do poprawy
+            self.game.arena.battle_log.add_log("Monster zadał " + str(damage) + " obrażeń")
+        else:
+            self.game.arena.battle_log.add_log("Player zadał " + str(damage) + " obrażeń")
         return player.hurt(damage)
 
     def hurt(self, damage):
@@ -37,7 +40,7 @@ class Character:
 
 class Player(pg.sprite.Sprite, Character):
     def __init__(self, game, x, y, type, stats=None):
-        Character.__init__(self, game, x, y, type, Statistics(100, 5, 10, 10, 10, 1, 2, 20, 50))
+        Character.__init__(self, game, x, y, type, Statistics(1000, 100, 10, 10, 10, 1, 2, 20, 50))
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = self.getImage()
