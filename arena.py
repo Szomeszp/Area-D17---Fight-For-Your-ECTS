@@ -66,6 +66,21 @@ class BattleLog:
         self.y = y
         self.w = w
         self.h = h
+        self.max_len = 6
+        self.line_height = 18
+        self.logs = []
+
+    def add_log(self, str):
+        if len(self.logs) + 1 > self.max_len:
+            self.logs.pop(0)
+        self.logs.append(str)
+
+    def draw_logs(self):
+        for idx, log in enumerate(self.logs):
+            text = self.game.my_small_font.render(log, 1, (255, 255, 255), (0, 0, 0))
+            self.game.screen.blit(text, (self.x, self.y + idx * self.line_height))
+
+
 
 class ControlPanel:
     def __init__(self, game):
