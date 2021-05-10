@@ -1,3 +1,5 @@
+from time import sleep
+
 import pygame as pg
 import sys
 from os import path
@@ -24,7 +26,7 @@ class Game:
         self.arena = None
 
     def load_data(self):
-        game_folder = path.dirname(__file__)
+        game_folder = path.dirname(__file__)  # do usuniecia
         img_folder = path.join(game_folder, "img")
         self.main_map = 'map_alpha2.tmx'
         self.map_folder = path.join(game_folder, "maps")
@@ -33,7 +35,7 @@ class Game:
         self.map_rect = self.map_img.get_rect()
         self.player_img = PlayerImg.DOWN
 
-    def render_map(self, door=None):
+    def get_through_door(self, door=None):
         if door is not None:
             new_map = door.map
             spawn = door.name + "_spawn"
@@ -42,7 +44,11 @@ class Game:
         else:
             spawn = " "
             new_map = self.main_map
-        self.map = TiledMap(path.join(self.map_folder, new_map))
+        map = TiledMap(path.join(self.map_folder, new_map))
+        self.render_map(self.player, map, spawn)
+
+    def render_map(self, player, new_map, spawn, arena_exited=0):
+        self.map = new_map
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.all_sprites = pg.sprite.Group()
@@ -51,14 +57,18 @@ class Game:
         self.npcs = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
         random_door_locations = []
+        self.all_sprites.add(player)
 
         for tile_object in self.map.tmxdata.objects:
-            if door is None:
-                if tile_object.name == "player":
-                    self.player = Player(self, int(tile_object.x // TILESIZE), int(tile_object.y // TILESIZE), self.player_img)
+            if tile_object.name == "player" and not arena_exited:
+                self.player.x = int(tile_object.x // TILESIZE)
+                self.player.y = int(tile_object.y // TILESIZE)
+
             if tile_object.name == spawn:
-                self.player = Player(self, int(tile_object.x // TILESIZE), int(tile_object.y // TILESIZE), self.player_img)
+                self.player.x = int(tile_object.x // TILESIZE)
+                self.player.y = int(tile_object.y // TILESIZE)
             if tile_object.name == "wall":
+                print("sciana")
                 Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "door":
                 Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.map,
@@ -75,7 +85,6 @@ class Game:
                         for dy in range(int(tile_object.height // TILESIZE)):
                             random_door_locations.append(
                                 [int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy)])
-
         # print(len(random_door_locations))
         if not self.secret_room_entered:
             if len(random_door_locations) > 0:
@@ -83,10 +92,10 @@ class Game:
                 print(random_location)
                 SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE,
                            "map_kapitol.tmx", "secret_door_out")
-
         self.camera = Camera(self.map.width, self.map.height)
 
     def enterBattleArena(self, monster, arena):
+        self.last_position = (self.player.x, self.player.y, self.map)
         self.map = TiledMap(path.join(self.map_folder, arena))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
@@ -151,9 +160,21 @@ class Game:
 
         self.camera = Camera(self.map.width, self.map.height)
 
+    def exit_arena(self):
+        self.player.x = self.last_position[0]
+        self.player.y = self.last_position[1]
+        self.render_map(self.player, self.last_position[2], "", 1)
+        self.arena = None
+
     def new(self):
         # initialize all variables and do all the setup for a new game
-        self.render_map()
+        self.all_sprites = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
+        self.doors = pg.sprite.Group()
+        self.npcs = pg.sprite.Group()
+        self.monsters = pg.sprite.Group()
+        self.player = Player(self, 5, 5, self.player_img)
+        self.render_map(self.player, self.map, "")
         self.staticFrames = 0
 
     def run(self):
@@ -220,7 +241,10 @@ class Game:
                         if btn.rect.collidepoint(pos):
                             print(btn.text + " clicked!")
                             if btn.text == "button1":
-                                self.arena.monster_hp_bar.take_damage(5)
+                                self.arena.player.attack(self.arena.monster)
+                                self.draw()
+                                sleep(1)
+                                self.arena.monster.attack(self.arena.player)
                             elif btn.type == "leftButton":
                                 self.player.move(dx=-1)
                             elif btn.type == "rightButton":
@@ -229,7 +253,10 @@ class Game:
                                 self.player.move(dy=-1)
                             elif btn.type == "backwardButton":
                                 self.player.move(dy=1)
+                            elif btn.type == "button5":
+                                self.exit_arena()
 
+        # print(self.player.x, self.player.y)
         if not moved:
             if self.staticFrames > 15:
                 self.player.stand()

@@ -16,10 +16,23 @@ class Character:
         self.y = y
         self.statistics = statistics
 
+    def attack(self, player):
+        rng = random.randint(0, 100)
+
+        if 0 <= rng <= self.statistics.critical_damage_chance:
+            damage = self.statistics.damage * (1 + self.statistics.critical_damage_multiplier / 100)
+        else:
+            damage = self.statistics.damage
+
+        player.hurt(damage)
+
+    def hurt(self, damage):
+        self.statistics.current_health = self.statistics.current_health - damage
+
 
 class Player(pg.sprite.Sprite, Character):
     def __init__(self, game, x, y, type, stats=None):
-        Character.__init__(self, game, x, y, type, Statistics(100, 20, 10, 10, 10, 1, 2, 20, 50))
+        Character.__init__(self, game, x, y, type, Statistics(100, 5, 10, 10, 10, 1, 2, 20, 50))
         self.groups = game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = self.getImage()
@@ -30,7 +43,7 @@ class Player(pg.sprite.Sprite, Character):
     def move(self, dx=0, dy=0):
         door = self.collide_with_door()
         if door:
-            self.game.render_map(door)
+            self.game.get_through_door(door)
         else:
             if not self.collide_with_walls(dx, dy):
                 self.x += dx
@@ -124,19 +137,6 @@ class Player(pg.sprite.Sprite, Character):
                                 self.game.enterBattleArena(monster, BATTLE_ARENA)
                                 break
 
-    def attack(self, monster):
-        rng = random.randint(0, 100)
-
-        if 0 <= rng <= self.statistics.critical_damage_chance:
-            damage = self.statistics.damage * (1 + self.statistics.critical_damage_multiplier / 100)
-        else:
-            damage = self.statistics.damage
-
-        monster.hurt(damage)
-
-    def hurt(self, damage):
-        self.statistics.health = self.statistics.health - damage
-
 
 class Wall(pg.sprite.Sprite):
     def __init__(self, game, x, y, w, h):
@@ -220,18 +220,5 @@ class Monster(pg.sprite.Sprite, Character):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, "img")
         return pg.image.load(path.join(img_folder, self.type + ".png"))
-
-    def attack(self, player):
-        rng = random.randint(0, 100)
-
-        if 0 <= rng <= self.statistics.criticalDamageChance:
-            damage = self.statistics.damage * (1 + self.statistics.criticalDamageMultiplier / 100)
-        else:
-            damage = self.statistics.damage
-
-        player.hurt(damage)
-
-    def hurt(self, damage):
-        self.statistics.health = self.statistics.health - damage
 
 
