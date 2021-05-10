@@ -50,7 +50,6 @@ class Game:
         self.doors = pg.sprite.Group()
         self.npcs = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
-        self.buttons = pg.sprite.Group()
         random_door_locations = []
 
         for tile_object in self.map.tmxdata.objects:
@@ -96,7 +95,7 @@ class Game:
         self.doors = pg.sprite.Group()
         self.npcs = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
-        random_door_locations = []
+        self.buttons = pg.sprite.Group()
 
         control_panel = ControlPanel(self)
 
@@ -129,7 +128,6 @@ class Game:
                 Monster(self, int((tile_object.x // TILESIZE) + dx) * TILESIZE,
                         int((tile_object.y // TILESIZE) + dy) * TILESIZE, monster.statistics)
 
-        self.draw()
         self.arena = Arena(self, self.player, monster, player_health_bar, monster_health_bar, battle_info, control_panel)
 
         self.camera = Camera(self.map.width, self.map.height)
@@ -202,6 +200,8 @@ class Game:
                     for btn in self.buttons:
                         if btn.rect.collidepoint(pos):
                             print(btn.text + " clicked!")
+                            if btn.text == "button1":
+                                self.arena.monster_hp_bar.take_damage(5)
 
         if not moved:
             if self.staticFrames > 15:

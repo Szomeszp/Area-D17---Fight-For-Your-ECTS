@@ -35,8 +35,8 @@ class HealthBar:
         self.curr_hp = max_hp
 
     def draw_health(self):
-        ratio = 0.5
-        # ratio = self.curr_hp / self.max_hp
+        # ratio = 0.5
+        ratio = self.curr_hp / self.max_hp
         pos = (self.x, self.y)
         redSize = (self.width, self.height)
         pg.draw.rect(self.game.screen, RED, pg.Rect(pos, redSize))
@@ -62,9 +62,7 @@ class BattleInfo:
         self.info = info
 
     def draw_info(self):
-        # można zrobic wyswietlani
         text = self.game.my_small_font.render(self.info, 1, (255, 255, 255), (0, 0, 0))
-        # potrzebne zeby wysrodkowac tekst
         text_size = self.game.my_small_font.size(self.info)
         self.game.screen.blit(text, (self.x + self.width / 2 - text_size[0]/2, self.y + self.height / 2 - text_size[1] / 2))
 
