@@ -241,10 +241,14 @@ class Game:
                         if btn.rect.collidepoint(pos):
                             print(btn.text + " clicked!")
                             if btn.text == "button1":
-                                self.arena.player.attack(self.arena.monster)
+                                if self.arena.player.attack(self.arena.monster):
+                                    self.exit_arena()
+                                    break
                                 self.draw()
                                 sleep(1)
-                                self.arena.monster.attack(self.arena.player)
+                                if self.arena.monster.attack(self.arena.player):
+                                    self.exit_arena()
+                                    break
                             elif btn.type == "leftButton":
                                 self.player.move(dx=-1)
                             elif btn.type == "rightButton":

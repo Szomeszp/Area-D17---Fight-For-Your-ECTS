@@ -59,6 +59,14 @@ class BattleInfo:
         self.game.screen.blit(text, (self.x + self.width / 2 - text_size[0]/2, self.y + self.height / 2 - text_size[1] / 2))
 
 
+class BattleLog:
+    def __init__(self, game, x, y, w, h):
+        self.game = game
+        self.x = x
+        self.y = y
+        self.w = w
+        self.h = h
+
 class ControlPanel:
     def __init__(self, game):
         self.game = game

@@ -24,10 +24,15 @@ class Character:
         else:
             damage = self.statistics.damage
 
-        player.hurt(damage)
+        return player.hurt(damage)
 
     def hurt(self, damage):
         self.statistics.current_health = self.statistics.current_health - damage
+        if self.statistics.current_health <= 0:
+            return 1
+        return 0
+
+
 
 
 class Player(pg.sprite.Sprite, Character):
