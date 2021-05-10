@@ -7,20 +7,25 @@ vec = pg.math.Vector2
 from os import path
 
 
-class Player(pg.sprite.Sprite):
-    def __init__(self, game, x, y, stats=None):
-        self.groups = game.all_sprites
-        pg.sprite.Sprite.__init__(self, self.groups)
+class Character:
+    def __init__(self, game, x, y, type, statistics):
         self.game = game
-        self.game_folder = path.dirname(__file__)
-        self.img_folder = path.join(self.game_folder, "img")
-        self.image_type = game.player_img
-        self.image = pg.image.load(path.join(self.img_folder, game.player_img.value))
+        self.type = type
         self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
         self.x = x
         self.y = y
+        self.statistics = statistics
 
-        self.statistics = Statistics(100, 20, 10, 10, 10, 1, 2, 20, 50)
+
+class Player(pg.sprite.Sprite, Character):
+    def __init__(self, game, x, y, type, stats=None):
+        Character.__init__(self, game, x, y, type, Statistics(100, 20, 10, 10, 10, 1, 2, 20, 50))
+        self.groups = game.all_sprites
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.image = self.getImage()
+
+    def getImage(self):
+        return pg.image.load(path.join(IMG_FOLDER, self.game.player_img.value))
 
     def move(self, dx=0, dy=0):
         door = self.collide_with_door()
@@ -40,26 +45,29 @@ class Player(pg.sprite.Sprite):
                 self.change_player_img(PlayerImg.UP2, PlayerImg.UP)
 
     def stand(self):
-        if self.image_type == PlayerImg.RIGHT or self.image_type == PlayerImg.RIGHT2:
-            self.image_type = PlayerImg.STATIC_RIGHT
-            self.image = pg.image.load(path.join(self.img_folder, PlayerImg.STATIC_RIGHT.value))
-        elif self.image_type == PlayerImg.LEFT or self.image_type == PlayerImg.LEFT2:
-            self.image_type = PlayerImg.STATIC_LEFT
-            self.image = pg.image.load(path.join(self.img_folder, PlayerImg.STATIC_LEFT.value))
-        elif self.image_type == PlayerImg.DOWN or self.image_type == PlayerImg.DOWN2:
-            self.image_type = PlayerImg.STATIC_DOWN
-            self.image = pg.image.load(path.join(self.img_folder, PlayerImg.STATIC_DOWN.value))
-        elif self.image_type == PlayerImg.UP or self.image_type == PlayerImg.UP2:
-            self.image_type = PlayerImg.STATIC_UP
-            self.image = pg.image.load(path.join(self.img_folder, PlayerImg.STATIC_UP.value))
+        if self.game.arena:
+            self.type = PlayerImg.STATIC_UP
+            self.image = pg.image.load(path.join(IMG_FOLDER, PlayerImg.STATIC_UP.value))
+        elif self.type == PlayerImg.RIGHT or self.type == PlayerImg.RIGHT2:
+            self.type = PlayerImg.STATIC_RIGHT
+            self.image = pg.image.load(path.join(IMG_FOLDER, PlayerImg.STATIC_RIGHT.value))
+        elif self.type == PlayerImg.LEFT or self.type == PlayerImg.LEFT2:
+            self.type = PlayerImg.STATIC_LEFT
+            self.image = pg.image.load(path.join(IMG_FOLDER, PlayerImg.STATIC_LEFT.value))
+        elif self.type == PlayerImg.DOWN or self.type == PlayerImg.DOWN2:
+            self.type = PlayerImg.STATIC_DOWN
+            self.image = pg.image.load(path.join(IMG_FOLDER, PlayerImg.STATIC_DOWN.value))
+        elif self.type == PlayerImg.UP or self.type == PlayerImg.UP2:
+            self.type = PlayerImg.STATIC_UP
+            self.image = pg.image.load(path.join(IMG_FOLDER, PlayerImg.STATIC_UP.value))
 
     def change_player_img(self, image1, image2):
-        if self.image_type == image1:
-            self.image_type = image2
-            self.image = pg.image.load(path.join(self.img_folder, image2.value))
+        if self.type == image1:
+            self.type = image2
+            self.image = pg.image.load(path.join(IMG_FOLDER, image2.value))
         else:
-            self.image_type = image1
-            self.image = pg.image.load(path.join(self.img_folder, image1.value))
+            self.type = image1
+            self.image = pg.image.load(path.join(IMG_FOLDER, image1.value))
 
     def collide_with_walls(self, dx=0, dy=0):
         rect_copy = self.rect
@@ -119,17 +127,15 @@ class Player(pg.sprite.Sprite):
     def attack(self, monster):
         rng = random.randint(0, 100)
 
-        if 0 <= rng <= self.statisctics.criticalDamageChance:
-            damage = self.statisctics.damage * (1 + self.statisctics.criticalDamageMultiplier / 100)
+        if 0 <= rng <= self.statistics.critical_damage_chance:
+            damage = self.statistics.damage * (1 + self.statistics.critical_damage_multiplier / 100)
         else:
-            damage = self.statisctics.damage
+            damage = self.statistics.damage
 
         monster.hurt(damage)
 
     def hurt(self, damage):
-        self.statisctics.health = self.statisctics.health - damage
-
-
+        self.statistics.health = self.statistics.health - damage
 
 
 class Wall(pg.sprite.Sprite):
@@ -199,38 +205,33 @@ class SecretDoor(Door):
         super().__init__(game, x, y, w, h, map, name)
         self.groups = game.doors, game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.game_folder = path.dirname(__file__)
-        self.img_folder = path.join(self.game_folder, "img")
-        self.image = pg.image.load(path.join(self.img_folder, "stairs1.png"))
+        self.image = pg.image.load(path.join(IMG_FOLDER, "stairs1.png"))
         # self.image.fill(GREEN)
 
 
-class Monster(pg.sprite.Sprite):
-    def __init__(self, game, x, y, statistics):
+class Monster(pg.sprite.Sprite, Character):
+    def __init__(self, game, x, y, type, statistics):
         self.groups = game.walls, game.monsters, game.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.game = game
-        self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
-        self.x = x
-        self.y = y
-        self.statistics = statistics
-
+        Character.__init__(self, game, x, y, type, statistics)
         self.image = self.getImage()
 
     def getImage(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, "img")
-        return pg.image.load(path.join(img_folder, "bullet.png"))
+        return pg.image.load(path.join(img_folder, self.type + ".png"))
 
     def attack(self, player):
         rng = random.randint(0, 100)
 
-        if 0 <= rng <= self.statisctics.criticalDamageChance:
-            damage = self.statisctics.damage * (1 + self.statisctics.criticalDamageMultiplier / 100)
+        if 0 <= rng <= self.statistics.criticalDamageChance:
+            damage = self.statistics.damage * (1 + self.statistics.criticalDamageMultiplier / 100)
         else:
-            damage = self.statisctics.damage
+            damage = self.statistics.damage
 
         player.hurt(damage)
 
     def hurt(self, damage):
-        self.statisctics.health = self.statisctics.health - damage
+        self.statistics.health = self.statistics.health - damage
+
+

@@ -1,5 +1,6 @@
 import pygame as pg
 from enum import Enum
+from os import path
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -34,6 +35,9 @@ class PlayerImg(Enum):
     STATIC_UP = "player_static_up.png"
     STATIC_DOWN = "player_static_down.png"
 
+
+GAME_FOLDER = path.dirname(__file__)
+IMG_FOLDER = path.join(GAME_FOLDER, "img")
 
 PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)
 

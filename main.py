@@ -19,8 +19,8 @@ class Game:
         self.load_data()
         self.last_door = None  # ?
         self.secret_room_entered = False
-        self.my_small_font = pg.font.SysFont('Comic Sans MS', 14)
-        self.my_big_font = pg.font.SysFont('Comic Sans MS', 30)
+        self.my_small_font = pg.font.SysFont('Arial Unicode MS', 14)
+        self.my_big_font = pg.font.SysFont('Arial Unicode MS', 30)
         self.arena = None
 
     def load_data(self):
@@ -55,9 +55,9 @@ class Game:
         for tile_object in self.map.tmxdata.objects:
             if door is None:
                 if tile_object.name == "player":
-                    self.player = Player(self, int(tile_object.x // TILESIZE), int(tile_object.y // TILESIZE))
+                    self.player = Player(self, int(tile_object.x // TILESIZE), int(tile_object.y // TILESIZE), self.player_img)
             if tile_object.name == spawn:
-                self.player = Player(self, int(tile_object.x // TILESIZE), int(tile_object.y // TILESIZE))
+                self.player = Player(self, int(tile_object.x // TILESIZE), int(tile_object.y // TILESIZE), self.player_img)
             if tile_object.name == "wall":
                 Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "door":
@@ -67,7 +67,7 @@ class Game:
                 NPC(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "monster":
                 stats = Statistics.generateMonsterStatistics(self, 1)
-                Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE,
+                Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE, "bullet",
                         stats)
             if not self.secret_room_entered:
                 if tile_object.name == "random_door":
@@ -101,34 +101,53 @@ class Game:
 
         for tile_object in self.map.tmxdata.objects:
             if str(tile_object.name)[:6] == "button":
-                btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.name)
+                btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
+                             tile_object.name, tile_object.name)
+                control_panel.add_button(btn)
+            if str(tile_object.name)[-6:] == "Button":
+                if str(tile_object.name)[:-6] == "left":
+                    btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
+                                 '\u2190', tile_object.name)
+                elif str(tile_object.name)[:-6] == "right":
+                    btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
+                                 '\u2192', tile_object.name)
+                elif str(tile_object.name)[:-6] == "forward":
+                    btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
+                                 '\u2191', tile_object.name)
+                elif str(tile_object.name)[:-6] == "backward":
+                    btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
+                                 '\u2193', tile_object.name)
+                elif str(tile_object.name)[:-6] == "center":
+                    btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
+                                 '\u2022', tile_object.name)
                 control_panel.add_button(btn)
 
             if tile_object.name == "monsterHealthBar":
                 # print(tile_object.x, tile_object.y, tile_object.width, monster.statistics.health)
                 monster_health_bar = HealthBar(self, tile_object.x, tile_object.y, tile_object.width,
-                                               tile_object.height, monster.statistics.health)
+                                               tile_object.height, monster)
             if tile_object.name == "playerHealthBar":
                 player_health_bar = HealthBar(self, tile_object.x, tile_object.y, tile_object.width,
-                                              tile_object.height, self.player.statistics.health)
+                                              tile_object.height, self.player)
             if tile_object.name == "battleInfo":
                 battle_info = BattleInfo(self, tile_object.x, tile_object.y, tile_object.width,
-                           tile_object.height, "Monster Staś")
+                                         tile_object.height, "Monster Staś")
 
             if tile_object.type == "spawnPlayer":
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
                 dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
 
-                self.player = Player(self, int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy))
+                self.player = Player(self, int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy), self.player_img)
 
             if tile_object.type == "spawnMonster":
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
                 dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
 
                 Monster(self, int((tile_object.x // TILESIZE) + dx) * TILESIZE,
-                        int((tile_object.y // TILESIZE) + dy) * TILESIZE, monster.statistics)
+                        int((tile_object.y // TILESIZE) + dy) * TILESIZE, "bullet", monster.statistics)
 
-        self.arena = Arena(self, self.player, monster, player_health_bar, monster_health_bar, battle_info, control_panel)
+        self.arena = Arena(self, self.player, monster, player_health_bar, monster_health_bar, battle_info,
+                           control_panel)
 
         self.camera = Camera(self.map.width, self.map.height)
 
@@ -202,6 +221,14 @@ class Game:
                             print(btn.text + " clicked!")
                             if btn.text == "button1":
                                 self.arena.monster_hp_bar.take_damage(5)
+                            elif btn.type == "leftButton":
+                                self.player.move(dx=-1)
+                            elif btn.type == "rightButton":
+                                self.player.move(dx=1)
+                            elif btn.type == "forwardButton":
+                                self.player.move(dy=-1)
+                            elif btn.type == "backwardButton":
+                                self.player.move(dy=1)
 
         if not moved:
             if self.staticFrames > 15:

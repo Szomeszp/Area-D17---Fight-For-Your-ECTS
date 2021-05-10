@@ -7,15 +7,16 @@ from os import path
 
 class Statistics:
     def __init__(self, hp, dmg, agility, intelligence, strength, moveRange, attackRange, critMultiplier, critChance):
-        self.health = hp
+        self.current_health = hp
+        self.max_health = hp
         self.damage = dmg
         self.agility = agility
         self.intelligence = intelligence
         self.strength = strength
-        self.moveRange = moveRange
-        self.attackRange = attackRange
-        self.criticalDamageMultiplier = critMultiplier
-        self.criticalDamageChance = critChance
+        self.move_range = moveRange
+        self.attack_range = attackRange
+        self.critical_damage_multiplier = critMultiplier
+        self.critical_damage_chance = critChance
 
     @staticmethod
     def generateMonsterStatistics(self, level):

@@ -25,31 +25,23 @@ class Arena:
 
 
 class HealthBar:
-    def __init__(self, game, x, y, w, h, max_hp):
+    def __init__(self, game, x, y, w, h, character):
         self.game = game
         self.x = x
         self.y = y
         self.width = w
         self.height = h
-        self.max_hp = max_hp  # testy bo byl blad type error tuple
-        self.curr_hp = max_hp
+        self.character = character
 
     def draw_health(self):
         # ratio = 0.5
-        ratio = self.curr_hp / self.max_hp
+        ratio = self.character.statistics.current_health / self.character.statistics.max_health
         pos = (self.x, self.y)
         redSize = (self.width, self.height)
         pg.draw.rect(self.game.screen, RED, pg.Rect(pos, redSize))
         greenSize = (self.width * ratio, self.height)
         pg.draw.rect(self.game.screen, GREEN, pg.Rect(pos, greenSize))
         # potrzbne do wyswietlania bo tak to znika od razu, ale tez jak to zmienisz to sie zacina
-
-    def take_damage(self, dmg):
-        if self.curr_hp - dmg >= 0:
-            self.curr_hp -= dmg
-        else:
-            self.curr_hp = 0
-        self.draw_health()  # moze niepotrzebne
 
 
 class BattleInfo:
@@ -81,7 +73,7 @@ class ControlPanel:
 
 
 class Button(pg.sprite.Sprite):
-    def __init__(self, game, x, y, w, h, text):
+    def __init__(self, game, x, y, w, h, text, type):
         self.groups = game.buttons
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -91,6 +83,7 @@ class Button(pg.sprite.Sprite):
         self.width = w
         self.height = h
         self.text = text
+        self.type = type
 
     def draw_button(self):
         # draw background
