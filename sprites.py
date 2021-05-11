@@ -36,8 +36,6 @@ class Character:
         return 0
 
 
-
-
 class Player(pg.sprite.Sprite, Character):
     def __init__(self, game, x, y, type, stats=None):
         Character.__init__(self, game, x, y, type, Statistics(1000, 100, 10, 10, 10, 1, 2, 20, 50))
@@ -142,6 +140,7 @@ class Player(pg.sprite.Sprite, Character):
                         for monster in self.game.monsters:
                             print(rect.x, rect.y)
                             if rect.colliderect(monster.rect):
+                                print(monster.groups)
                                 self.game.create_arena(monster, BATTLE_ARENA)
                                 self.game.arena.enter_battle_arena()
                                 break
@@ -224,10 +223,10 @@ class Monster(pg.sprite.Sprite, Character):
         pg.sprite.Sprite.__init__(self, self.groups)
         Character.__init__(self, game, x, y, type, statistics)
         self.image = self.getImage()
+        # print(self.image)
 
     def getImage(self):
-        game_folder = path.dirname(__file__)
-        img_folder = path.join(game_folder, "img")
-        return pg.image.load(path.join(img_folder, self.type + ".png"))
+        return pg.image.load(path.join(IMG_FOLDER, self.type + ".png"))
+
 
 

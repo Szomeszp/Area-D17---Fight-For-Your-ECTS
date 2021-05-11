@@ -30,7 +30,6 @@ class Arena:
         self.battle_log.draw_logs()
     
     def enter_battle_arena(self):
-        self.game.last_position = (self.player.x, self.player.y, self.game.map)
         self.control_panel = ControlPanel(self)
 
         for tile_object in self.game.map.tmxdata.objects:
@@ -81,15 +80,12 @@ class Arena:
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
                 dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
 
-                self.monster.x = int((tile_object.x // TILESIZE) + dx) * TILESIZE
-                self.monster.y = int((tile_object.y // TILESIZE) + dy) * TILESIZE
+                # Takie rozwiazanie, czy  dodac w klasie Monster funkcje update?
+                self.monster.rect.x = int((tile_object.x // TILESIZE) + dx) * TILESIZE
+                self.monster.rect.y = int((tile_object.y // TILESIZE) + dy) * TILESIZE
                 self.game.all_sprites.add(self.monster)
                 self.game.monsters.add(self.monster)
                 self.game.walls.add(self.monster)
-                # stats = Statistics.generateMonsterStatistics(self, 1)
-                # Monster(self.game, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE,
-                #         "bullet",
-                #         stats)
 
         self.game.arena.battle_log.add_log("Walka się rozpoczeła!")
         self.game.camera = Camera(self.game.map.width, self.game.map.height)

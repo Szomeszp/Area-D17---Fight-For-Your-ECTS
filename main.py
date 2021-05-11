@@ -58,13 +58,14 @@ class Game:
             spawn = " "
             new_map = self.main_map
         map = TiledMap(path.join(MAP_FOLDER, new_map))
+        self.clear_groups()
         self.render_map(self.player, map, spawn)
 
+    # funkcja powinna sie nazywac add_objects
     def render_map(self, player, new_map, spawn, arena_exited=0):
         self.map = new_map
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
-        self.clear_groups()
         random_door_locations = []
         self.all_sprites.add(player)
 
@@ -77,7 +78,7 @@ class Game:
                 self.player.x = int(tile_object.x // TILESIZE)
                 self.player.y = int(tile_object.y // TILESIZE)
             if tile_object.name == "wall":
-                print("sciana")
+                # print("sciana")
                 Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "door":
                 Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.map,
@@ -105,81 +106,13 @@ class Game:
         self.camera = Camera(self.map.width, self.map.height)
 
     def create_arena(self, monster, arena):
+        self.last_position = (self.player.x, self.player.y, self.map)
         self.arena = Arena(self, self.player, monster, arena)
-
-    # def enterBattleArena(self, monster, arena):
-    #     self.last_position = (self.player.x, self.player.y, self.map)
-    #     self.map = TiledMap(path.join(MAP_FOLDER, arena))
-    #     self.map_img = self.map.make_map()
-    #     self.map_rect = self.map_img.get_rect()
-    #     self.clear_groups()
-    # 
-    #     control_panel = ControlPanel(self)
-    # 
-    #     for tile_object in self.map.tmxdata.objects:
-    #         if str(tile_object.name)[:6] == "button":
-    #             btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-    #                          tile_object.name, tile_object.name)
-    #             control_panel.add_button(btn)
-    #         if str(tile_object.name)[-6:] == "Button":
-    #             if str(tile_object.name)[:-6] == "left":
-    #                 btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-    #                              '\u2190', tile_object.name)
-    #             elif str(tile_object.name)[:-6] == "right":
-    #                 btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-    #                              '\u2192', tile_object.name)
-    #             elif str(tile_object.name)[:-6] == "forward":
-    #                 btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-    #                              '\u2191', tile_object.name)
-    #             elif str(tile_object.name)[:-6] == "backward":
-    #                 btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-    #                              '\u2193', tile_object.name)
-    #             elif str(tile_object.name)[:-6] == "center":
-    #                 btn = Button(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-    #                              '\u2022', tile_object.name)
-    #             control_panel.add_button(btn)
-    # 
-    #         if tile_object.name == "monsterHealthBar":
-    #             # print(tile_object.x, tile_object.y, tile_object.width, monster.statistics.health)
-    #             monster_health_bar = HealthBar(self, tile_object.x, tile_object.y, tile_object.width,
-    #                                            tile_object.height, monster)
-    #         if tile_object.name == "playerHealthBar":
-    #             player_health_bar = HealthBar(self, tile_object.x, tile_object.y, tile_object.width,
-    #                                           tile_object.height, self.player)
-    #         if tile_object.name == "battleInfo":
-    #             battle_info = BattleInfo(self, tile_object.x, tile_object.y, tile_object.width,
-    #                                      tile_object.height, "Monster Staś")
-    #         if tile_object.name == "battleLog":
-    #             battle_log = BattleLog(self, tile_object.x, tile_object.y, tile_object.width,
-    #                                    tile_object.height)
-    # 
-    #         if tile_object.type == "spawnPlayer":
-    #             dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
-    #             dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
-    # 
-    #             self.player = Player(self, int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy),
-    #                                  self.player_img)
-    # 
-    #         if tile_object.type == "spawnMonster":
-    #             dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
-    #             dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
-    # 
-    #             Monster(self, int((tile_object.x // TILESIZE) + dx) * TILESIZE,
-    #                     int((tile_object.y // TILESIZE) + dy) * TILESIZE, "bullet", monster.statistics)
-    # 
-    #     self.arena = Arena(self, self.player, monster, player_health_bar, monster_health_bar, battle_info,
-    #                        control_panel, battle_log)
-    #     self.arena.battle_log.add_log("Walka się rozpoczeła!")
-    #     self.camera = Camera(self.map.width, self.map.height)
-
-    # def exit_arena(self):
-    #     self.player.x = self.last_position[0]
-    #     self.player.y = self.last_position[1]
-    #     self.render_map(self.player, self.last_position[2], "", 1)
-    #     self.arena = None
+        self.render_map(self.player, self.map, "", 1)
 
     def new(self):
         # initialize all variables and do all the setup for a new game
+        self.clear_groups()
         self.player = Player(self, 5, 5, self.player_img)
         self.render_map(self.player, self.map, "")
         self.staticFrames = 0
@@ -205,12 +138,6 @@ class Game:
         # update portion of the game loop
         self.all_sprites.update()
         self.camera.update(self.player)
-
-    # def draw_grid(self):
-    #     for x in range(0, WIDTH, TILESIZE):
-    #         pg.draw.line(self.screen, LIGHTGREY, (x, 0), (x, HEIGHT))
-    #     for y in range(0, HEIGHT, TILESIZE):
-    #         pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
@@ -243,33 +170,6 @@ class Game:
                         self.player.interact()
                     if event.key == pg.K_a:
                         self.player.fight()
-            # else:
-                # if event.type == pg.MOUSEBUTTONUP:
-                #     pos = pg.mouse.get_pos()
-                #     for btn in self.buttons:
-                #         if btn.rect.collidepoint(pos):
-                #             print(btn.text + " clicked!")
-                #             if btn.text == "button1":
-                #                 if self.arena.player.attack(self.arena.monster):
-                #                     self.exit_arena()
-                #                     break
-                #                 self.draw()
-                #                 sleep(1)
-                #                 if self.arena.monster.attack(self.arena.player):
-                #                     self.exit_arena()
-                #                     break
-                #             elif btn.type == "leftButton":
-                #                 self.player.move(dx=-1)
-                #             elif btn.type == "rightButton":
-                #                 self.player.move(dx=1)
-                #             elif btn.type == "forwardButton":
-                #                 self.player.move(dy=-1)
-                #             elif btn.type == "backwardButton":
-                #                 self.player.move(dy=1)
-                #             elif btn.type == "button5":
-                #                 self.exit_arena()
-
-        # print(self.player.x, self.player.y)
         if not moved:
             if self.staticFrames > 15:
                 self.player.stand()
