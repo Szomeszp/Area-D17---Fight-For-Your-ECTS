@@ -30,6 +30,7 @@ class Arena:
         self.battle_log.draw_logs()
     
     def enter_battle_arena(self):
+        self.player.stand()
         self.control_panel = ControlPanel(self)
 
         for tile_object in self.game.map.tmxdata.objects:
@@ -124,6 +125,7 @@ class Arena:
                             self.player.move(dy=1)
                         elif btn.type == "button5":
                             self.exit_arena()
+                        self.player.stand()  # zeby podczas całej areny był do nas plecami
 
 
 class HealthBar:
