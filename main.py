@@ -19,17 +19,31 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.load_data()
-        self.last_door = None  # ?
         self.secret_room_entered = False
         self.my_small_font = pg.font.SysFont('Arial Unicode MS', 14)
         self.my_big_font = pg.font.SysFont('Arial Unicode MS', 30)
         self.arena = None
+        self.init_groups()
+
+    def init_groups(self):
+        self.all_sprites = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
+        self.doors = pg.sprite.Group()
+        self.npcs = pg.sprite.Group()
+        self.monsters = pg.sprite.Group()
+        self.buttons = pg.sprite.Group()
+
+    def clear_groups(self):
+        self.all_sprites.empty()
+        self.walls.empty()
+        self.doors.empty()
+        self.npcs.empty()
+        self.monsters.empty()
+        self.buttons.empty()
 
     def load_data(self):
-        game_folder = path.dirname(__file__)  # do usuniecia
-        img_folder = path.join(game_folder, "img")
         self.main_map = 'map_alpha2.tmx'
-        self.map_folder = path.join(game_folder, "maps")
+        self.map_folder = path.join(GAME_FOLDER, "maps")
         self.map = TiledMap(path.join(self.map_folder, self.main_map))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
@@ -51,11 +65,7 @@ class Game:
         self.map = new_map
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
-        self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
-        self.doors = pg.sprite.Group()
-        self.npcs = pg.sprite.Group()
-        self.monsters = pg.sprite.Group()
+        self.clear_groups()
         random_door_locations = []
         self.all_sprites.add(player)
 
@@ -100,12 +110,7 @@ class Game:
         self.map = TiledMap(path.join(self.map_folder, arena))
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
-        self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
-        self.doors = pg.sprite.Group()
-        self.npcs = pg.sprite.Group()
-        self.monsters = pg.sprite.Group()
-        self.buttons = pg.sprite.Group()
+        self.clear_groups()
 
         control_panel = ControlPanel(self)
 
@@ -162,7 +167,7 @@ class Game:
 
         self.arena = Arena(self, self.player, monster, player_health_bar, monster_health_bar, battle_info,
                            control_panel, battle_log)
-        self.arena.battle_log.add_log("Walka się rospoczeła!")
+        self.arena.battle_log.add_log("Walka się rozpoczeła!")
         self.camera = Camera(self.map.width, self.map.height)
 
     def exit_arena(self):
@@ -173,11 +178,6 @@ class Game:
 
     def new(self):
         # initialize all variables and do all the setup for a new game
-        self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
-        self.doors = pg.sprite.Group()
-        self.npcs = pg.sprite.Group()
-        self.monsters = pg.sprite.Group()
         self.player = Player(self, 5, 5, self.player_img)
         self.render_map(self.player, self.map, "")
         self.staticFrames = 0
@@ -207,9 +207,7 @@ class Game:
             pg.draw.line(self.screen, LIGHTGREY, (0, y), (WIDTH, y))
 
     def draw(self):
-        # self.screen.fill(BGCOLOR)
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
-        # self.draw_grid()
         for sprite in self.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         if self.arena:
