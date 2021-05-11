@@ -38,6 +38,7 @@ class PlayerImg(Enum):
 
 GAME_FOLDER = path.dirname(__file__)
 IMG_FOLDER = path.join(GAME_FOLDER, "img")
+MAP_FOLDER = path.join(GAME_FOLDER, "maps")
 
 PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)
 

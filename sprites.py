@@ -142,7 +142,8 @@ class Player(pg.sprite.Sprite, Character):
                         for monster in self.game.monsters:
                             print(rect.x, rect.y)
                             if rect.colliderect(monster.rect):
-                                self.game.enterBattleArena(monster, BATTLE_ARENA)
+                                self.game.create_arena(monster, BATTLE_ARENA)
+                                self.game.arena.enter_battle_arena()
                                 break
 
 
