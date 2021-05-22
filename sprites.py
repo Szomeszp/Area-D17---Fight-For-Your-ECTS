@@ -40,7 +40,7 @@ class Character:
             for j in range(-attack_range, attack_range + 1):
                 if abs(i) + abs(j) <= attack_range:
                     rect = pg.Rect((self.x + i) * TILESIZE, (self.y + j) * TILESIZE, TILESIZE, TILESIZE)
-                    for monster in self.game.monsters:
+                    for monster in self.game.map.monsters:
                         if rect.colliderect(monster.rect):
                             return True
                             print("Opponent in range!")
@@ -48,8 +48,8 @@ class Character:
 
 
 class Wall(pg.sprite.Sprite):
-    def __init__(self, game, x, y, w, h):
-        self.groups = game.walls
+    def __init__(self, game, map, x, y, w, h):
+        self.groups = map.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         # self.image = pg.Surface((w, h))
@@ -63,8 +63,9 @@ class Wall(pg.sprite.Sprite):
 
 
 class Door(pg.sprite.Sprite):
-    def __init__(self, game, x, y, w, h, map, name):
-        self.groups = game.doors
+    def __init__(self, game, map_name, map, x, y, w, h, name):
+        print(map_name)
+        self.groups = map.doors
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = pg.Rect(x, y, w, h)
@@ -72,13 +73,13 @@ class Door(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x
         self.rect.y = y
-        self.map = map
+        self.map_name = map_name
         self.name = name
 
 
 class NPC(pg.sprite.Sprite):
-    def __init__(self, game, x, y, w, h):
-        self.groups = game.walls, game.npcs
+    def __init__(self, game, map, x, y, w, h):
+        self.groups = map.walls, map.npcs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = pg.Rect(x, y, w, h)
@@ -111,17 +112,17 @@ class NPC(pg.sprite.Sprite):
 
 
 class SecretDoor(Door):
-    def __init__(self, game, x, y, w, h, map, name):
-        super().__init__(game, x, y, w, h, map, name)
-        self.groups = game.doors, game.all_sprites
+    def __init__(self, game, map_name, map, x, y, w, h, name):
+        super().__init__(game, map_name, map, x, y, w, h, name)
+        self.groups = map.doors, map.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.image.load(path.join(IMG_FOLDER, "stairs1.png"))
         # self.image.fill(GREEN)
 
 
 class Monster(pg.sprite.Sprite, Character):
-    def __init__(self, game, x, y, type, statistics):
-        self.groups = game.walls, game.monsters, game.all_sprites
+    def __init__(self, game, map, x, y, type, statistics):
+        self.groups = map.walls, map.monsters, map.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         Character.__init__(self, game, x, y, type, statistics)
         self.image = self.getImage()

@@ -17,12 +17,13 @@ class Arena:
     def __init__(self, game, player, monster, arena):
         self.player = player
         self.monster = monster
+        self.map = map
         self.turn = 0
         self.game = game
         self.game.map = TiledMap(path.join(MAP_FOLDER, arena))
         self.game.map_img = self.game.map.make_map()
         self.game.map_rect = self.game.map_img.get_rect()
-        self.game.clear_groups()
+        # self.game.clear_groups()
         self.show_move_range = False
 
     def draw_arena(self):
@@ -85,7 +86,7 @@ class Arena:
 
                 self.player.x = int((tile_object.x // TILESIZE) + dx)
                 self.player.y = int((tile_object.y // TILESIZE) + dy)
-                self.game.all_sprites.add(self.player)
+                self.game.map.all_sprites.add(self.player)
             if tile_object.type == "spawnMonster":
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
                 dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
@@ -95,9 +96,9 @@ class Arena:
                 self.monster.y = int((tile_object.y // TILESIZE) + dy) * TILESIZE
                 self.monster.rect.x = int((tile_object.x // TILESIZE) + dx) * TILESIZE
                 self.monster.rect.y = int((tile_object.y // TILESIZE) + dy) * TILESIZE
-                self.game.all_sprites.add(self.monster)
-                self.game.monsters.add(self.monster)
-                self.game.walls.add(self.monster)
+                self.game.map.all_sprites.add(self.monster)
+                self.game.map.monsters.add(self.monster)
+                self.game.map.walls.add(self.monster)
 
         self.game.arena.battle_log.add_log("Walka się rozpoczeła!")
         self.game.camera = Camera(self.game.map.width, self.game.map.height)
@@ -105,7 +106,8 @@ class Arena:
     def exit_arena(self):
         self.player.x = self.game.last_position[0]
         self.player.y = self.game.last_position[1]
-        self.game.render_map(self.player, self.game.last_position[2], "", 1)
+        self.game.load_map(self.game.last_position[2].map_name)
+        self.game.render_map(self.player, "", 1)
         self.game.arena = None
 
     def arena_events(self):
@@ -115,7 +117,7 @@ class Arena:
             if self.turn % 2 == 0:
                 if event.type == pg.MOUSEBUTTONUP:
                     pos = pg.mouse.get_pos()
-                    for btn in self.game.buttons:
+                    for btn in self.control_panel.buttons:
                         if btn.rect.collidepoint(pos):
                             print(btn.text + " clicked!")
                             if btn.text == "button1":
@@ -180,9 +182,6 @@ class Arena:
             print(x, y)
             pg.draw.circle(self.game.screen, RED, (x + TILESIZE/2, y + TILESIZE/2), 16)
             print("Circle drawn!")
-
-
-
 
 
 class HealthBar:
@@ -259,10 +258,8 @@ class ControlPanel:
             btn.draw_button()
 
 
-class Button(pg.sprite.Sprite):
+class Button:
     def __init__(self, game, x, y, w, h, text, type):
-        self.groups = game.buttons
-        pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = pg.Rect(x, y, w, h)
         self.x = x

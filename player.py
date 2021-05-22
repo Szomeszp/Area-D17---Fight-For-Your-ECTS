@@ -8,9 +8,10 @@ vec = pg.math.Vector2
 from os import path
 
 class Player(pg.sprite.Sprite, Character):
-    def __init__(self, game, x, y, type, stats=None):
+    def __init__(self, game, map, x, y, type, stats=None):
         Character.__init__(self, game, x, y, type, Statistics(1000, 100, 10, 10, 10, 1, 2, 20, 50))
-        self.groups = game.all_sprites
+        self.groups = map.all_sprites
+        self.map = map
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = self.getImage()
 
@@ -64,7 +65,7 @@ class Player(pg.sprite.Sprite, Character):
         rect_copy.x += dx * TILESIZE
         rect_copy.y += dy * TILESIZE
         # pygame.rect.collidelistall instead of for loop
-        for wall in self.game.walls:
+        for wall in self.map.walls:
             if rect_copy.colliderect(wall.rect):
                 return True
         return False
@@ -74,7 +75,7 @@ class Player(pg.sprite.Sprite, Character):
         rect_copy.x += dx * TILESIZE
         rect_copy.y += dy * TILESIZE
         # pygame.rect.collidelistall instead of for loop
-        for door in self.game.doors:
+        for door in self.map.doors:
             if rect_copy.colliderect(door.rect):
                 return door
         return None
@@ -92,7 +93,7 @@ class Player(pg.sprite.Sprite, Character):
                         rect = self.rect
                         rect.x = x * TILESIZE
                         rect.y = y * TILESIZE
-                        for npc in self.game.npcs:
+                        for npc in self.map.npcs:
                             print(rect.x, rect.y)
                             if rect.colliderect(npc.rect):
                                 npc.dialogue("Siema siema siema czesc")
@@ -108,7 +109,7 @@ class Player(pg.sprite.Sprite, Character):
                         rect = self.rect
                         rect.x = x * TILESIZE
                         rect.y = y * TILESIZE
-                        for monster in self.game.monsters:
+                        for monster in self.map.monsters:
                             print(rect.x, rect.y)
                             if rect.colliderect(monster.rect):
                                 self.game.create_arena(monster, BATTLE_ARENA)

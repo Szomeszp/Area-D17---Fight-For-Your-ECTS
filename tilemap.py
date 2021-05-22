@@ -6,9 +6,15 @@ import pytmx
 class TiledMap:
     def __init__(self, filename):
         tm = pytmx.load_pygame(filename, pixelalpha=True)
+        self.map_name = filename
         self.width = tm.width * tm.tilewidth
         self.height = tm.height * tm.tileheight
         self.tmxdata = tm
+        self.all_sprites = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
+        self.doors = pg.sprite.Group()
+        self.npcs = pg.sprite.Group()
+        self.monsters = pg.sprite.Group()
 
     def render(self, surface):
         ti = self.tmxdata.get_tile_image_by_gid

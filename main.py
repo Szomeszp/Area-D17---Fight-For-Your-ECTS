@@ -19,56 +19,72 @@ class Game:
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
-        self.load_data()
+        self.main_map = "map_alpha2.tmx"
+        self.maps = {}
         self.secret_room_entered = False
         self.my_small_font = pg.font.SysFont('Arial Unicode MS', 14)
         self.my_big_font = pg.font.SysFont('Arial Unicode MS', 30)
         self.arena = None
-        self.init_groups()
+        self.load_map(self.main_map)
+        self.load_data()
+        # self.init_groups()
 
-    def init_groups(self):
-        self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
-        self.doors = pg.sprite.Group()
-        self.npcs = pg.sprite.Group()
-        self.monsters = pg.sprite.Group()
-        self.buttons = pg.sprite.Group()
+    # def init_groups(self):
+    #     self.all_sprites = pg.sprite.Group()
+    #     self.walls = pg.sprite.Group()
+    #     self.doors = pg.sprite.Group()
+    #     self.npcs = pg.sprite.Group()
+    #     self.monsters = pg.sprite.Group()
+    #     self.buttons = pg.sprite.Group()
 
-    def clear_groups(self):
-        self.all_sprites.empty()
-        self.walls.empty()
-        self.doors.empty()
-        self.npcs.empty()
-        self.monsters.empty()
-        self.buttons.empty()
+    # def clear_groups(self):
+    #     self.all_sprites.empty()
+    #     self.walls.empty()
+    #     self.doors.empty()
+    #     self.npcs.empty()
+    #     self.monsters.empty()
+    #     self.buttons.empty()
 
     def load_data(self):
-        self.main_map = 'map_alpha2.tmx'
-        self.map = TiledMap(path.join(MAP_FOLDER, self.main_map))
+        self.load_map(self.main_map)
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         self.player_img = PlayerImg.DOWN
 
+    def load_map(self, map_name):
+        print(map_name)
+        if map_name not in self.maps:
+            self.init_map(map_name)
+        self.map = self.maps.get(map_name)
+
+    def init_map(self, map_name):
+        print(map_name)
+        map = TiledMap(path.join(MAP_FOLDER, map_name))
+        self.maps[map_name] = map
+        return map
+
     def get_through_door(self, door=None):
         if door is not None:
-            new_map = door.map
+            new_map = door.map_name
             spawn = door.name + "_spawn"
             if door.name == "secret_door_out":
                 self.secret_room_entered = True
         else:
             spawn = " "
             new_map = self.main_map
-        map = TiledMap(path.join(MAP_FOLDER, new_map))
-        self.clear_groups()
-        self.render_map(self.player, map, spawn)
+        print(new_map)
+        self.load_map(new_map)
+        # self.clear_groups()
+        self.render_map(self.player, spawn)
 
     # funkcja powinna sie nazywac add_objects
-    def render_map(self, player, new_map, spawn, arena_exited=0):
-        self.map = new_map
+    def render_map(self, player, spawn, arena_exited=0):
+        # self.map = new_map
         self.map_img = self.map.make_map()
         self.map_rect = self.map_img.get_rect()
         random_door_locations = []
-        self.all_sprites.add(player)
+        self.map.all_sprites.add(player)
+        self.player.map = self.map
 
         for tile_object in self.map.tmxdata.objects:
             if tile_object.name == "player" and not arena_exited:
@@ -79,17 +95,18 @@ class Game:
                 self.player.x = int(tile_object.x // TILESIZE)
                 self.player.y = int(tile_object.y // TILESIZE)
             if tile_object.name == "wall":
-                # print("sciana")
-                Wall(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+                print("sciana")
+                Wall(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "door":
-                Door(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.map,
+                print(tile_object.map)
+                Door(self, tile_object.map, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
                      tile_object.name)
             if tile_object.name == "npc":
-                NPC(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+                NPC(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "monster":
 
                 stats = Statistics.generateMonsterStatistics(self, 1)
-                m = Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE,
+                Monster(self, self.map, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE,
                         "bullet", stats)
             if not self.secret_room_entered:
                 if tile_object.name == "random_door":
@@ -102,20 +119,21 @@ class Game:
             if len(random_door_locations) > 0:
                 random_location = random_door_locations[randint(0, len(random_door_locations) - 1)]
                 print(random_location)
-                SecretDoor(self, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE,
-                           "map_kapitol.tmx", "secret_door_out")
+                map_name = "map_kapitol.tmx"
+                SecretDoor(self, map_name, self.map, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE,
+                           "secret_door_out")
         self.camera = Camera(self.map.width, self.map.height)
 
     def create_arena(self, monster, arena):
         self.last_position = (self.player.x, self.player.y, self.map)
         self.arena = Arena(self, self.player, monster, arena)
-        self.render_map(self.player, self.map, "", 1)
+        self.render_map(self.player, "", 1)
 
     def new(self):
         # initialize all variables and do all the setup for a new game
-        self.clear_groups()
-        self.player = Player(self, 5, 5, self.player_img)
-        self.render_map(self.player, self.map, "")
+        # self.clear_groups()
+        self.player = Player(self, self.map, 5, 5, self.player_img)
+        self.render_map(self.player, self.main_map, "")
         self.staticFrames = 0
 
     def run(self):
@@ -137,14 +155,14 @@ class Game:
 
     def update(self):
         # update portion of the game loop
-        self.all_sprites.update()
+        self.map.all_sprites.update()
         self.camera.update(self.player)
 
     def draw(self):
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
         if self.arena:
             self.arena.draw_arena()
-        for sprite in self.all_sprites:
+        for sprite in self.map.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
         pg.display.flip()
 
