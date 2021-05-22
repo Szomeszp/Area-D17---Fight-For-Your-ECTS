@@ -120,7 +120,7 @@
   <object id="4" name="wall" x="4.27942" y="328.445" width="307.048" height="433.291"/>
   <object id="5" name="wall" x="328.445" y="711.453" width="368.03" height="51.353"/>
   <object id="6" name="wall" x="709.314" y="327.376" width="310.258" height="435.431"/>
-  <object id="7" type="arena" x="326.306" y="324.166" width="371.24" height="374.449"/>
+  <object id="7" type="arena" x="320" y="320" width="384" height="384"/>
   <object id="8" name="monsterHealthBar" x="320" y="288" width="384" height="32"/>
   <object id="9" name="battleInfo" x="448" y="160" width="128" height="32"/>
   <object id="11" name="playerHealthBar" x="320" y="704" width="384" height="32"/>
