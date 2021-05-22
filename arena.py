@@ -16,11 +16,13 @@ class Arena:
     def __init__(self, game, player, monster, arena):
         self.player = player
         self.monster = monster
+        self.turn = 0
         self.game = game
         self.game.map = TiledMap(path.join(MAP_FOLDER, arena))
         self.game.map_img = self.game.map.make_map()
         self.game.map_rect = self.game.map_img.get_rect()
         self.game.clear_groups()
+        self.show_attack_range = False
 
     def draw_arena(self):
         self.monster_hp_bar.draw_health()
@@ -28,6 +30,8 @@ class Arena:
         self.battle_info.draw_info()
         self.control_panel.draw_buttons()
         self.battle_log.draw_logs()
+        if self.show_attack_range:
+            self.draw_attack_range()
     
     def enter_battle_arena(self):
         self.player.stand()
@@ -101,31 +105,65 @@ class Arena:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.game.quit()
-            if event.type == pg.MOUSEBUTTONUP:
-                pos = pg.mouse.get_pos()
-                for btn in self.game.buttons:
-                    if btn.rect.collidepoint(pos):
-                        print(btn.text + " clicked!")
-                        if btn.text == "button1":
-                            if self.game.arena.player.attack(self.game.arena.monster):
+            if self.turn % 2 == 0:
+                if event.type == pg.MOUSEBUTTONUP:
+                    pos = pg.mouse.get_pos()
+                    for btn in self.game.buttons:
+                        if btn.rect.collidepoint(pos):
+                            print(btn.text + " clicked!")
+                            if btn.text == "button1":
+                                # quit when hp == 0
+                                if self.game.arena.player.attack(self.game.arena.monster):
+                                    self.exit_arena()
+                                    break
+                                self.game.draw()
+                                self.turn += 1
+                            elif btn.type == "leftButton":
+                                self.player.move(dx=-1)
+                            elif btn.type == "rightButton":
+                                self.player.move(dx=1)
+                            elif btn.type == "forwardButton":
+                                self.player.move(dy=-1)
+                            elif btn.type == "backwardButton":
+                                self.player.move(dy=1)
+                            elif btn.type == "centerButton":
+                                print("Center Clicked!")
+                                self.player.check_opponent_in_range()
+                            elif btn.type == "button5":
                                 self.exit_arena()
-                                break
-                            self.game.draw()
-                            sleep(1)
-                            if self.game.arena.monster.attack(self.game.arena.player):
-                                self.exit_arena()
-                                break
-                        elif btn.type == "leftButton":
-                            self.player.move(dx=-1)
-                        elif btn.type == "rightButton":
-                            self.player.move(dx=1)
-                        elif btn.type == "forwardButton":
-                            self.player.move(dy=-1)
-                        elif btn.type == "backwardButton":
-                            self.player.move(dy=1)
-                        elif btn.type == "button5":
-                            self.exit_arena()
-                        self.player.stand()  # zeby podczas całej areny był do nas plecami
+                            self.player.stand()  # zeby podczas całej areny był do nas plecami
+                    if self.player.rect.collidepoint(pos):
+                        print("Player clicked!")
+                        if self.show_attack_range:
+                            self.show_attack_range = False
+                        else:
+                            self.show_attack_range = True
+            else:
+                sleep(1)
+                if self.game.arena.monster.attack(self.game.arena.player):
+                    self.exit_arena()
+                    break
+                self.turn += 1
+
+    def draw_attack_range(self):
+        attack_range = self.player.statistics.attack_range
+        for i in range(-attack_range, attack_range + 1):
+            for j in range(-attack_range, attack_range + 1):
+                if abs(i) + abs(j) <= attack_range:
+                    if i == 0 and j == 0:
+                        continue
+                    self.create_rect((self.player.x + i) * TILESIZE, (self.player.y + j) * TILESIZE)
+
+    def create_rect(self, x, y):
+        color = (65, 105, 225)
+        border = 2
+        border_color = BLACK
+        # draw border
+        pg.draw.rect(self.game.screen, border_color, pg.Rect((x, y), (TILESIZE, TILESIZE)))
+        # draw rect
+        pg.draw.rect(self.game.screen, color, pg.Rect((x + border, y + border), (TILESIZE - 2*border, TILESIZE - 2*border)))
+
+
 
 
 class HealthBar:

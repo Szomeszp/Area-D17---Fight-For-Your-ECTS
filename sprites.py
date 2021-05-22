@@ -35,6 +35,18 @@ class Character:
             return 1
         return 0
 
+    def check_opponent_in_range(self):
+        attack_range = self.statistics.attack_range
+        for i in range(-attack_range, attack_range + 1):
+            for j in range(-attack_range, attack_range + 1):
+                if abs(i) + abs(j) <= attack_range:
+                    rect = self.rect
+                    rect.x = (self.x + i) * TILESIZE
+                    rect.y = (self.y + j) * TILESIZE
+                    for monster in self.game.monsters:
+                        if rect.colliderect(monster.rect):
+                            print("Opponent in range!")
+
 
 class Player(pg.sprite.Sprite, Character):
     def __init__(self, game, x, y, type, stats=None):
