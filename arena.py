@@ -22,7 +22,7 @@ class Arena:
         self.game.map_img = self.game.map.make_map()
         self.game.map_rect = self.game.map_img.get_rect()
         self.game.clear_groups()
-        self.show_attack_range = False
+        self.show_move_range = False
 
     def draw_arena(self):
         self.monster_hp_bar.draw_health()
@@ -30,8 +30,9 @@ class Arena:
         self.battle_info.draw_info()
         self.control_panel.draw_buttons()
         self.battle_log.draw_logs()
-        if self.show_attack_range:
-            self.draw_attack_range()
+        self.draw_target_in_range()
+        if self.show_move_range:
+            self.draw_move_range()
     
     def enter_battle_arena(self):
         self.player.stand()
@@ -74,6 +75,9 @@ class Arena:
                 self.battle_log = BattleLog(self.game, tile_object.x, tile_object.y, tile_object.width,
                                        tile_object.height)
 
+            if tile_object.type == "arena":
+                self.ring = pg.Rect(tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+
             if tile_object.type == "spawnPlayer":
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
                 dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
@@ -86,6 +90,8 @@ class Arena:
                 dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
 
                 # Takie rozwiazanie, czy  dodac w klasie Monster funkcje update?
+                self.monster.x = int((tile_object.x // TILESIZE) + dx) * TILESIZE
+                self.monster.y = int((tile_object.y // TILESIZE) + dy) * TILESIZE
                 self.monster.rect.x = int((tile_object.x // TILESIZE) + dx) * TILESIZE
                 self.monster.rect.y = int((tile_object.y // TILESIZE) + dy) * TILESIZE
                 self.game.all_sprites.add(self.monster)
@@ -134,10 +140,10 @@ class Arena:
                             self.player.stand()  # zeby podczas całej areny był do nas plecami
                     if self.player.rect.collidepoint(pos):
                         print("Player clicked!")
-                        if self.show_attack_range:
-                            self.show_attack_range = False
+                        if self.show_move_range:
+                            self.show_move_range = False
                         else:
-                            self.show_attack_range = True
+                            self.show_move_range = True
             else:
                 sleep(1)
                 if self.game.arena.monster.attack(self.game.arena.player):
@@ -145,14 +151,16 @@ class Arena:
                     break
                 self.turn += 1
 
-    def draw_attack_range(self):
-        attack_range = self.player.statistics.attack_range
-        for i in range(-attack_range, attack_range + 1):
-            for j in range(-attack_range, attack_range + 1):
-                if abs(i) + abs(j) <= attack_range:
+    def draw_move_range(self):
+        move_range = self.player.statistics.move_range
+        for i in range(-move_range, move_range + 1):
+            for j in range(-move_range, move_range + 1):
+                if abs(i) + abs(j) <= move_range:
                     if i == 0 and j == 0:
                         continue
-                    self.create_rect((self.player.x + i) * TILESIZE, (self.player.y + j) * TILESIZE)
+                    rect = pg.Rect((self.player.x + i) * TILESIZE, (self.player.y + j) * TILESIZE, TILESIZE, TILESIZE)
+                    if rect.colliderect(self.ring):
+                        self.create_rect((self.player.x + i) * TILESIZE, (self.player.y + j) * TILESIZE)
 
     def create_rect(self, x, y):
         color = (65, 105, 225)
@@ -163,6 +171,15 @@ class Arena:
         pg.draw.rect(self.game.screen, border_color, pg.Rect((x + gap, y + gap), (TILESIZE - 2*gap, TILESIZE - 2*gap)))
         # draw rect
         pg.draw.rect(self.game.screen, color, pg.Rect((x + border + gap, y + border + gap), (TILESIZE - 2*(border + gap), TILESIZE - 2*(border + gap))))
+
+    def draw_target_in_range(self):
+        if self.player.check_opponent_in_range():
+            x = self.monster.rect.x
+            y = self.monster.rect.y
+            print(x, y)
+            pg.draw.circle(self.game.screen, RED, (x + TILESIZE/2, y + TILESIZE/2), 16)
+            print("Circle drawn!")
+
 
 
 

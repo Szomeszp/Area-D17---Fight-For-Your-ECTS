@@ -40,12 +40,12 @@ class Character:
         for i in range(-attack_range, attack_range + 1):
             for j in range(-attack_range, attack_range + 1):
                 if abs(i) + abs(j) <= attack_range:
-                    rect = self.rect
-                    rect.x = (self.x + i) * TILESIZE
-                    rect.y = (self.y + j) * TILESIZE
+                    rect = pg.Rect((self.x + i) * TILESIZE, (self.y + j) * TILESIZE, TILESIZE, TILESIZE)
                     for monster in self.game.monsters:
                         if rect.colliderect(monster.rect):
+                            return True
                             print("Opponent in range!")
+        return False
 
 
 class Player(pg.sprite.Sprite, Character):
@@ -152,7 +152,6 @@ class Player(pg.sprite.Sprite, Character):
                         for monster in self.game.monsters:
                             print(rect.x, rect.y)
                             if rect.colliderect(monster.rect):
-                                print(monster.groups)
                                 self.game.create_arena(monster, BATTLE_ARENA)
                                 self.game.arena.enter_battle_arena()
                                 break
@@ -170,6 +169,7 @@ class Wall(pg.sprite.Sprite):
         self.y = y
         self.rect.x = x
         self.rect.y = y
+
 
 
 class Door(pg.sprite.Sprite):
@@ -235,6 +235,7 @@ class Monster(pg.sprite.Sprite, Character):
         pg.sprite.Sprite.__init__(self, self.groups)
         Character.__init__(self, game, x, y, type, statistics)
         self.image = self.getImage()
+
         # print(self.image)
 
     def getImage(self):

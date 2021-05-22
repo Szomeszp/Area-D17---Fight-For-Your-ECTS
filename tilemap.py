@@ -33,7 +33,7 @@ class TiledMap:
                 for x, y, gid, in layer:
                     tile = ti(gid)
                     if tile:
-                            surface.blit(tile, (x * self.tmxdata.tilewidth,
+                        surface.blit(tile, (x * self.tmxdata.tilewidth,
                                                 y * self.tmxdata.tileheight))
 
     def make_map(self):

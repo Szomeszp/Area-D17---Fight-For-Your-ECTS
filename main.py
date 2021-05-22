@@ -86,10 +86,10 @@ class Game:
             if tile_object.name == "npc":
                 NPC(self, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
             if tile_object.type == "monster":
+
                 stats = Statistics.generateMonsterStatistics(self, 1)
-                Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE,
-                        "bullet",
-                        stats)
+                m = Monster(self, int(tile_object.x // TILESIZE) * TILESIZE, int(tile_object.y // TILESIZE) * TILESIZE,
+                        "bullet", stats)
             if not self.secret_room_entered:
                 if tile_object.name == "random_door":
                     for dx in range(int(tile_object.width // TILESIZE)):
@@ -141,10 +141,10 @@ class Game:
 
     def draw(self):
         self.screen.blit(self.map_img, self.camera.apply_rect(self.map_rect))
-        for sprite in self.all_sprites:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
         if self.arena:
             self.arena.draw_arena()
+        for sprite in self.all_sprites:
+            self.screen.blit(sprite.image, self.camera.apply(sprite))
         pg.display.flip()
 
     def game_events(self):
