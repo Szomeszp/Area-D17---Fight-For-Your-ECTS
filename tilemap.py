@@ -1,12 +1,17 @@
+import random
+
 import pygame as pg
 from settings import *
 import pytmx
+
+from sprites import Monster
+from statistics import Statistics
 
 
 class TiledMap:
     def __init__(self, filename):
         tm = pytmx.load_pygame(filename, pixelalpha=True)
-        self.map_name = filename
+        self.map_name = filename.split("/")[-1]
         self.width = tm.width * tm.tilewidth
         self.height = tm.height * tm.tileheight
         self.tmxdata = tm
@@ -15,6 +20,8 @@ class TiledMap:
         self.doors = pg.sprite.Group()
         self.npcs = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
+        self.monsters_spawns = []
+        self.secretdoors_spawns = []
 
     def render(self, surface):
         ti = self.tmxdata.get_tile_image_by_gid
@@ -30,6 +37,27 @@ class TiledMap:
         temp_surface = pg.Surface((self.width, self.height))
         self.render(temp_surface)
         return temp_surface
+
+
+class Spawn:
+    def __init__(self, game, map, x, y, w, h):
+        self.game = game
+        self.map = map
+        self.x = x
+        self.y = y
+        self.width = w
+        self.height = h
+        self.last_seen = -1
+
+    # Obj nie zadziała trzeba if, elify sprawdzajace albo dziedziczenie po sprite
+    def spawn_n_objects(self, Obj, n):
+        for i in range(n):
+            dx = random.randint(0, int(self.width // TILESIZE) - 1)
+            dy = random.randint(0, int(self.height // TILESIZE) - 1)
+            stats = Statistics.generateMonsterStatistics(self, 1)
+            Monster(self.game, self.map, self.x, self.y, "bullet", stats)
+
+
 
 
 class Camera:

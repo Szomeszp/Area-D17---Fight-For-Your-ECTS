@@ -45,6 +45,7 @@ class Arena:
                 btn = Button(self.game, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
                              tile_object.name, tile_object.name)
                 self.control_panel.add_button(btn)
+            # Olek zrobił spoko wykorzystanie mapy
             if str(tile_object.name)[-6:] == "Button":
                 if str(tile_object.name)[:-6] == "left":
                     btn = Button(self.game, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
@@ -123,6 +124,12 @@ class Arena:
                             if btn.text == "button1":
                                 # quit when hp == 0
                                 if self.game.arena.player.attack(self.game.arena.monster):
+                                    print(self.game.last_position[2].map_name)
+                                    print(self.game.maps)
+                                    print(self.game.maps.get(self.game.last_position[2].map_name))
+                                    self.game.maps.get(self.game.last_position[2].map_name).monsters.remove(self.monster)
+                                    self.game.maps.get(self.game.last_position[2].map_name).all_sprites.remove(self.monster)
+                                    self.monster.kill()
                                     self.exit_arena()
                                     break
                                 self.game.draw()
@@ -150,6 +157,7 @@ class Arena:
             else:
                 sleep(1)
                 if self.game.arena.monster.attack(self.game.arena.player):
+                    # co jak my zginiemy
                     self.exit_arena()
                     break
                 self.turn += 1
@@ -242,7 +250,6 @@ class BattleLog:
         for idx, log in enumerate(self.logs):
             text = self.game.my_small_font.render(log, 1, (255, 255, 255), (0, 0, 0))
             self.game.screen.blit(text, (self.x, self.y + idx * self.line_height))
-
 
 
 class ControlPanel:
