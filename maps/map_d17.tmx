@@ -165,6 +165,6 @@
   <object id="24" name="npc" x="37" y="389" width="21" height="22"/>
   <object id="26" name="npc" x="69.5" y="646" width="21" height="22"/>
   <object id="27" name="npc" x="483.5" y="357" width="21" height="22"/>
-  <object id="28" name="random_door" x="361" y="103" width="494" height="179"/>
+  <object id="28" name="random_door" type="secret_door_spawn" x="361" y="103" width="494" height="179"/>
  </objectgroup>
 </map>

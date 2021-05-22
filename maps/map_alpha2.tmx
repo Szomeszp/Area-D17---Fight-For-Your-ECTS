@@ -97,8 +97,8 @@
   <object id="94" name="door_d17_out_spawn" type="door_spawn" x="644" y="1603.33" width="55.3333" height="26"/>
   <object id="95" name="wall" x="2435" y="1474.33" width="90.6667" height="26.3333"/>
   <object id="97" name="wall" x="2562.33" y="1474.17" width="247" height="26.3333"/>
-  <object id="99" x="1391.33" y="1564.67"/>
-  <object id="101" name="random_door" x="716" y="1994" width="1128" height="302"/>
+  <object id="99" type="monster_spawn" x="1350.99" y="1397.48" width="494.325" height="480.758"/>
+  <object id="101" name="random_door" type="secret_door_spawn" x="716" y="1994" width="1128" height="302"/>
   <object id="102" name="Sphere" type="monster" x="482.333" y="1698.33" width="27.3333" height="27.6667"/>
  </objectgroup>
  <layer id="1" name="Ground" width="100" height="100">
