@@ -113,7 +113,7 @@ class Game:
                             int(tile_object.y // TILESIZE) * TILESIZE,
                             "bullet", stats)
                 if tile_object.type == "monster_spawn":
-                    self.map.monsters_spawns.append(Spawn(tile_object.x, tile_object.y, tile_object.width, tile_object.height))
+                    self.map.monsters_spawns.append(Spawn(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height))
                 if not self.secret_room_entered:
                     if tile_object.type == "secret_door_spawn":
                         self.map.monsters_spawns.append(
