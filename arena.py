@@ -157,11 +157,12 @@ class Arena:
     def create_rect(self, x, y):
         color = (65, 105, 225)
         border = 2
+        gap = 3
         border_color = BLACK
         # draw border
-        pg.draw.rect(self.game.screen, border_color, pg.Rect((x, y), (TILESIZE, TILESIZE)))
+        pg.draw.rect(self.game.screen, border_color, pg.Rect((x + gap, y + gap), (TILESIZE - 2*gap, TILESIZE - 2*gap)))
         # draw rect
-        pg.draw.rect(self.game.screen, color, pg.Rect((x + border, y + border), (TILESIZE - 2*border, TILESIZE - 2*border)))
+        pg.draw.rect(self.game.screen, color, pg.Rect((x + border + gap, y + border + gap), (TILESIZE - 2*(border + gap), TILESIZE - 2*(border + gap))))
 
 
 
