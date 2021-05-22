@@ -3,7 +3,8 @@ from time import sleep
 
 import pygame as pg
 
-from sprites import Player, Monster
+from sprites import Monster
+from player import Player
 from statistics import *
 from settings import *
 from tilemap import TiledMap, Camera

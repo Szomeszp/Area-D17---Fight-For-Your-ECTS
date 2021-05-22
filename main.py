@@ -3,6 +3,7 @@ from time import sleep
 import pygame as pg
 import sys
 from os import path
+from player import *
 from settings import *
 from sprites import *
 from tilemap import *
