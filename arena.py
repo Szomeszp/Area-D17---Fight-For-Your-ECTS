@@ -9,6 +9,7 @@ from statistics import *
 from settings import *
 from tilemap import TiledMap, Camera
 from os import path
+import copy
 
 
 class Arena:
@@ -90,9 +91,6 @@ class Arena:
                 dx = random.randint(0, int(tile_object.width // TILESIZE) - 1)
                 dy = random.randint(0, int(tile_object.height // TILESIZE) - 1)
 
-                # Takie rozwiazanie, czy  dodac w klasie Monster funkcje update?
-                self.monster.x = int((tile_object.x // TILESIZE) + dx) * TILESIZE
-                self.monster.y = int((tile_object.y // TILESIZE) + dy) * TILESIZE
                 self.monster.rect.x = int((tile_object.x // TILESIZE) + dx) * TILESIZE
                 self.monster.rect.y = int((tile_object.y // TILESIZE) + dy) * TILESIZE
                 self.game.map.all_sprites.add(self.monster)
@@ -103,8 +101,10 @@ class Arena:
         self.game.camera = Camera(self.game.map.width, self.game.map.height)
 
     def exit_arena(self):
-        self.player.x = self.game.last_position[0]
-        self.player.y = self.game.last_position[1]
+        self.player.x = self.game.last_position[0][0]
+        self.player.y = self.game.last_position[0][1]
+        self.monster.rect.x = self.game.last_position[1][0]
+        self.monster.rect.y = self.game.last_position[1][1]
         self.game.load_map(self.game.last_position[2].map_name)
         self.game.render_map(self.player, "", 1)
         self.game.arena = None

@@ -87,9 +87,9 @@ class Game:
         self.map.all_sprites.add(player)
         self.player.map = self.map
 
-        create_objs = True
+        objs_created = False
         if len(self.map.walls.sprites()) > 0:
-            create_objs = False
+            objs_created = True
 
         for tile_object in self.map.tmxdata.objects:
             if tile_object.name == "player" and not arena_exited:
@@ -98,7 +98,7 @@ class Game:
             if tile_object.name == spawn:
                 self.player.x = int(tile_object.x // TILESIZE)
                 self.player.y = int(tile_object.y // TILESIZE)
-            if create_objs:
+            if not objs_created:
                 if tile_object.name == "wall":
                     # print("sciana")
                     Wall(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
@@ -112,19 +112,19 @@ class Game:
                     stats = Statistics.generateMonsterStatistics(self, 1)
                     Monster(self, self.map, int(tile_object.x // TILESIZE) * TILESIZE,
                             int(tile_object.y // TILESIZE) * TILESIZE,
-                            "bullet", stats)
+                            "monster", stats)
                 if tile_object.type == "monster_spawn":
                     self.map.monsters_spawns.append(Spawn(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height))
                 if not self.secret_room_entered:
                     if tile_object.type == "secret_door_spawn":
-                        self.map.monsters_spawns.append(
-                            Spawn(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height))
+                        # self.map.monsters_spawns.append(
+                        #     Spawn(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height))
                         for dx in range(int(tile_object.width // TILESIZE)):
                             for dy in range(int(tile_object.height // TILESIZE)):
                                 random_door_locations.append(
                                     [int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy)])
         # print(len(random_door_locations))
-        if create_objs:
+        if not objs_created:
             if not self.secret_room_entered:
                 if len(random_door_locations) > 0:
                     random_location = random_door_locations[randint(0, len(random_door_locations) - 1)]
@@ -132,12 +132,14 @@ class Game:
                     map_name = "map_kapitol.tmx"
                     SecretDoor(self, map_name, self.map, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE,
                                "secret_door_out")
+            for spawn in self.map.monsters_spawns:
+                spawn.spawn_n_objects(3)
         self.camera = Camera(self.map.width, self.map.height)
 
 
 
     def create_arena(self, monster, arena):
-        self.last_position = (self.player.x, self.player.y, self.map)
+        self.last_position = ((self.player.x, self.player.y), (monster.rect.x, monster.rect.y), self.map)
         self.arena = Arena(self, self.player, monster, arena)
         self.render_map(self.player, "", 1)
 

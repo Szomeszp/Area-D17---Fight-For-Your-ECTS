@@ -9,7 +9,7 @@ from os import path
 
 class Player(pg.sprite.Sprite, Character):
     def __init__(self, game, map, x, y, type, stats=None):
-        Character.__init__(self, game, x, y, type, Statistics(1000, 40, 10, 10, 10, 1, 2, 20, 50))
+        Character.__init__(self, game, x, y, type, Statistics(1000, 400, 10, 10, 10, 1, 2, 20, 50))
         self.groups = map.all_sprites
         self.map = map
         pg.sprite.Sprite.__init__(self, self.groups)

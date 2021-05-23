@@ -49,13 +49,21 @@ class Spawn:
         self.height = h
         self.last_seen = -1
 
-    # Obj nie zadziała trzeba if, elify sprawdzajace albo dziedziczenie po sprite
-    def spawn_n_objects(self, Obj, n):
+    # Wersja Demo Tylko Dla Spawna Monstera
+    def spawn_n_objects(self, n):
         for i in range(n):
-            dx = random.randint(0, int(self.width // TILESIZE) - 1)
-            dy = random.randint(0, int(self.height // TILESIZE) - 1)
+            while True:
+                dx = random.randint(0, int(self.width // TILESIZE) - 1)
+                dy = random.randint(0, int(self.height // TILESIZE) - 1)
+                x = int((self.x // TILESIZE) + dx) * TILESIZE
+                y = int((self.y // TILESIZE) + dy) * TILESIZE
+                rect = pg.Rect(x, y, TILESIZE, TILESIZE)
+                for monster in self.map.monsters:
+                    if rect.colliderect(monster):
+                        continue
+                break
             stats = Statistics.generateMonsterStatistics(self, 1)
-            Monster(self.game, self.map, self.x, self.y, "bullet", stats)
+            Monster(self.game, self.map, x, y, "monster", stats)
 
 
 
