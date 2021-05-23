@@ -22,8 +22,9 @@ class Game:
         self.main_map = "map_alpha2.tmx"
         self.maps = {}
         self.secret_room_entered = False
-        self.my_small_font = pg.font.SysFont('Arial Unicode MS', 14)
-        self.my_big_font = pg.font.SysFont('Arial Unicode MS', 30)
+        self.my_small_font = pg.font.SysFont('Arial Unicode MS', 16)
+        self.my_medium_font = pg.font.SysFont('Arial Unicode MS', 24)
+        self.my_big_font = pg.font.SysFont('Arial Unicode MS', 32)
         self.arena = None
         self.load_map(self.main_map)
         self.load_data()
@@ -105,8 +106,8 @@ class Game:
                     print(tile_object.map)
                     Door(self, tile_object.map, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
                          tile_object.name)
-                if tile_object.name == "npc":
-                    NPC(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
+                if tile_object.type == "npc":
+                    NPC(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.name)
                 if tile_object.type == "monster":
                     stats = Statistics.generateMonsterStatistics(self, 1)
                     Monster(self, self.map, int(tile_object.x // TILESIZE) * TILESIZE,
@@ -188,17 +189,17 @@ class Game:
                     moved = True
                     if event.key == pg.K_ESCAPE:
                         self.quit()
-                    if event.key == pg.K_LEFT:
+                    if event.key == pg.K_LEFT or event.key == pg.K_a:
                         self.player.move(dx=-1)
-                    if event.key == pg.K_RIGHT:
+                    if event.key == pg.K_RIGHT or event.key == pg.K_d:
                         self.player.move(dx=1)
-                    if event.key == pg.K_UP:
+                    if event.key == pg.K_UP or event.key == pg.K_w:
                         self.player.move(dy=-1)
-                    if event.key == pg.K_DOWN:
+                    if event.key == pg.K_DOWN or event.key == pg.K_s:
                         self.player.move(dy=1)
                     if event.key == pg.K_e:
                         self.player.interact()
-                    if event.key == pg.K_a:
+                    if event.key == pg.K_q:
                         self.player.fight()
         if not moved:
             if self.staticFrames > 15:

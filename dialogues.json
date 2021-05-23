@@ -1,0 +1,28 @@
+{
+  "npc_main":
+  {
+    "main_text": "SIEMA, SIEMA, SIEMANKO",
+    "number_of_paths" : 2,
+    "paths":
+    [
+      {
+        "text": "No siema, siema... Co tam?"
+      },
+      {
+        "text": "Siema... wiesz moze ktoredy na ceramike?"
+      }
+    ]
+
+  },
+  "npc_one":
+  {
+    "main_text": "Baba, bleble, xuxu!",
+    "number_of_paths": 1,
+        "paths":
+    [
+      {
+        "text": "Aha? Ok?"
+      }
+    ]
+  }
+}

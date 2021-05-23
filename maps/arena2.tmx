@@ -124,16 +124,16 @@
   <object id="8" name="monsterHealthBar" x="320" y="288" width="384" height="32"/>
   <object id="9" name="battleInfo" x="448" y="160" width="128" height="32"/>
   <object id="11" name="playerHealthBar" x="320" y="704" width="384" height="32"/>
-  <object id="12" name="button1" x="736" y="352" width="224" height="32"/>
-  <object id="13" name="button2" x="736" y="416" width="224" height="32"/>
-  <object id="14" name="button3" x="736" y="480" width="224" height="32"/>
-  <object id="15" name="button4" x="736" y="544" width="224" height="32"/>
+  <object id="12" name="button1" x="736" y="320" width="224" height="32"/>
+  <object id="13" name="button2" x="736" y="384" width="224" height="32"/>
+  <object id="14" name="button3" x="736" y="448" width="224" height="32"/>
+  <object id="15" name="button4" x="736" y="512" width="224" height="32"/>
   <object id="17" name="button5" x="736" y="672" width="224" height="32"/>
-  <object id="19" name="centerButton" x="832" y="608" width="32" height="32"/>
-  <object id="20" name="leftButton" x="800" y="608" width="32" height="32"/>
-  <object id="21" name="rightButton" x="864" y="608" width="32" height="32"/>
-  <object id="22" name="backwardButton" x="832" y="640" width="32" height="32"/>
-  <object id="23" name="forwardButton" x="832" y="576" width="32" height="32"/>
-  <object id="24" name="battleLog" x="64" y="352" width="224" height="352"/>
+  <object id="19" name="centerButton" x="832" y="592" width="32" height="32"/>
+  <object id="20" name="leftButton" x="792" y="592" width="32" height="32"/>
+  <object id="21" name="rightButton" x="872" y="592" width="32" height="32"/>
+  <object id="22" name="backwardButton" x="832" y="632" width="32" height="32"/>
+  <object id="23" name="forwardButton" x="832" y="552" width="32" height="32"/>
+  <object id="24" name="battleLog" x="64" y="320" width="224" height="384"/>
  </objectgroup>
 </map>

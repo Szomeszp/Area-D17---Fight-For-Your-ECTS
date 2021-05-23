@@ -8,8 +8,6 @@ from player import Player
 from statistics import *
 from settings import *
 from tilemap import TiledMap, Camera
-
-vec = pg.math.Vector2
 from os import path
 
 
@@ -202,14 +200,16 @@ class HealthBar:
         self.character = character
 
     def draw_health(self):
-        # ratio = 0.5
         ratio = self.character.statistics.current_health / self.character.statistics.max_health
-        pos = (self.x, self.y)
-        redSize = (self.width, self.height)
-        pg.draw.rect(self.game.screen, RED, pg.Rect(pos, redSize))
-        greenSize = (self.width * ratio, self.height)
-        pg.draw.rect(self.game.screen, GREEN, pg.Rect(pos, greenSize))
-        # potrzbne do wyswietlania bo tak to znika od razu, ale tez jak to zmienisz to sie zacina
+
+
+        if ratio == 1:
+            pg.draw.rect(self.game.screen, GREEN, pg.Rect((self.x, self.y), (self.width, self.height)), border_radius=4)
+        elif ratio == 0:
+            pg.draw.rect(self.game.screen, RED, pg.Rect((self.x, self.y), (self.width, self.height)), border_radius=4)
+        else:
+            pg.draw.rect(self.game.screen, GREEN, pg.Rect((self.x, self.y), (self.width * ratio, self.height)), border_bottom_left_radius=4, border_top_left_radius=4)
+            pg.draw.rect(self.game.screen, RED, pg.Rect((self.x + self.width * ratio, self.y), (self.width * (1 - ratio), self.height)), border_bottom_right_radius=4, border_top_right_radius=4)
 
 
 class BattleInfo:
@@ -222,8 +222,8 @@ class BattleInfo:
         self.info = info
 
     def draw_info(self):
-        text = self.game.my_small_font.render(self.info, 1, (255, 255, 255), (0, 0, 0))
-        text_size = self.game.my_small_font.size(self.info)
+        text = self.game.my_big_font.render(self.info, 1, (255, 255, 255))
+        text_size = self.game.my_big_font.size(self.info)
         self.game.screen.blit(text, (self.x + self.width / 2 - text_size[0]/2, self.y + self.height / 2 - text_size[1] / 2))
 
 
@@ -246,10 +246,10 @@ class BattleLog:
     def draw_logs(self):
         pos = (self.x, self.y)
         size = (self.width, self.height)
-        pg.draw.rect(self.game.screen, BLACK, pg.Rect(pos, size))
+        pg.draw.rect(self.game.screen, BLACK, pg.Rect(pos, size), border_radius=4)
         for idx, log in enumerate(self.logs):
-            text = self.game.my_small_font.render(log, 1, (255, 255, 255), (0, 0, 0))
-            self.game.screen.blit(text, (self.x, self.y + idx * self.line_height))
+            text = self.game.my_small_font.render(log, 1, (255, 255, 255))
+            self.game.screen.blit(text, (self.x + 4, self.y + idx * self.line_height + 4))
 
 
 class ControlPanel:
@@ -280,8 +280,8 @@ class Button:
         # draw background
         pos = (self.x, self.y)
         size = (self.width, self.height)
-        pg.draw.rect(self.game.screen, BLACK, pg.Rect(pos, size))
+        pg.draw.rect(self.game.screen, BLACK, pg.Rect(pos, size), border_radius=4)
         # draw text
-        btn = self.game.my_small_font.render(self.text, 1, (255, 255, 255), (0, 0, 0))
-        btn_size = self.game.my_small_font.size(self.text)
+        btn = self.game.my_medium_font.render(self.text, 1, (255, 255, 255))
+        btn_size = self.game.my_medium_font.size(self.text)
         self.game.screen.blit(btn, (self.x + self.width / 2 - btn_size[0] / 2, self.y + self.height / 2 - btn_size[1] / 2))

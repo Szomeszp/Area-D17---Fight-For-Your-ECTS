@@ -1,4 +1,5 @@
 import random
+import json
 
 import pygame as pg
 from statistics import *
@@ -78,7 +79,7 @@ class Door(pg.sprite.Sprite):
 
 
 class NPC(pg.sprite.Sprite):
-    def __init__(self, game, map, x, y, w, h):
+    def __init__(self, game, map, x, y, w, h, name):
         self.groups = map.walls, map.npcs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
@@ -88,27 +89,72 @@ class NPC(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
 
-    def dialogue(self, text):
+        self.name = name
+
+        self.current_path = 0
+        self.sth = 0
+
+    def dialogue(self):
         print("Dialog")
 
-        if text:
-            blackBarRectPos = (0, self.game.screen.get_height() - 64)
-            blackBarRectSize = (self.game.screen.get_width(), 64)
-            pg.draw.rect(self.game.screen, (0, 0, 0), pg.Rect(blackBarRectPos, blackBarRectSize))
+        with open('dialogues.json') as file:
+            dialogues_file = json.load(file)
 
-            space_text = self.game.my_small_font.render("Click [space] to continue", 1, (255, 255, 255), (0, 0, 0))
+        def print_dialogue():
+            blackBarRectPos = (32, self.game.screen.get_height() - 160)
+            blackBarRectSize = (self.game.screen.get_width() - 64, 128)
+            pg.draw.rect(self.game.screen, (128, 64, 32), pg.Rect(blackBarRectPos, blackBarRectSize),
+                         border_radius=4)
+
+            space_text = self.game.my_small_font.render("Click [space] to continue", 1, (255, 255, 255))
             space_text_size = self.game.my_small_font.size("Click [space] to continue")
-            self.game.screen.blit(space_text, (self.game.screen.get_width() - space_text_size[0] - 5, self.game.screen.get_height() - space_text_size[1] - 5))
+            self.game.screen.blit(space_text, (self.game.screen.get_width() - space_text_size[0] - 40,
+                                               self.game.screen.get_height() - space_text_size[1] - 40))
 
-            textSurf = self.game.my_big_font.render(text, 1, (255, 255, 255), (0, 0, 0))
-            self.game.screen.blit(textSurf, (0, self.game.screen.get_height() - 64))
-            cnt = True
-            while cnt:
-                pg.event.pump()
-                if pg.key.get_pressed()[pg.K_SPACE]:
-                    cnt = False
+            position = 152
+            text = dialogues_file[self.name]["main_text"]
+            rendered_text = self.game.my_big_font.render(text, 1, (255, 255, 255))
+            self.game.screen.blit(rendered_text, (40, self.game.screen.get_height() - position))
+
+            position = position - self.game.my_small_font.size(text)[1] - 16
+
+            for i in range(dialogues_file[self.name]["number_of_paths"]):
+                text = dialogues_file[self.name]["paths"][i]["text"]
+
+                if i == self.current_path:
+                    text = ">>>" + text
+
+                rendered_text = self.game.my_big_font.render(text, 1, (255, 255, 255))
+                self.game.screen.blit(rendered_text, (40, self.game.screen.get_height() - position))
+                position = position - self.game.my_small_font.size(text)[1] - 8
+
+
+        print(dialogues_file[self.name])
+
+        cnt = True
+        reload = True
+        while cnt:
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    self.game.quit()
+
+                if reload:
+                    print_dialogue()
+                reload = False
+
+                if event.type == pg.KEYDOWN:
+                    # pg.event.pump()
+                    if event.key == pg.K_SPACE:
+                        cnt = False
+                    if event.key == pg.K_w:
+                        self.current_path = (self.current_path + 1) % dialogues_file[self.name]["number_of_paths"]
+                        reload = True
+                    if event.key == pg.K_s:
+                        self.current_path = (self.current_path - 1) % dialogues_file[self.name]["number_of_paths"]
+                        reload = True
+
                 pg.display.flip()
-                self.game.clock.tick(60)
+                self.game.clock.tick(FPS) / 1000
 
 
 class SecretDoor(Door):
