@@ -28,6 +28,7 @@ class Game:
         self.arena = None
         self.load_map(self.main_map)
         self.load_data()
+        self.current_time = 0
         # self.init_groups()
 
     # def init_groups(self):
@@ -108,13 +109,13 @@ class Game:
                          tile_object.name)
                 if tile_object.type == "npc":
                     NPC(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.name)
-                if tile_object.type == "monster":
-                    stats = Statistics.generateMonsterStatistics(self, 1)
-                    Monster(self, self.map, int(tile_object.x // TILESIZE) * TILESIZE,
-                            int(tile_object.y // TILESIZE) * TILESIZE,
-                            "monster", stats)
+                # if tile_object.type == "monster":
+                #     stats = Statistics.generateMonsterStatistics(self, 1)
+                #     Monster(self, self.map, int(tile_object.x // TILESIZE) * TILESIZE,
+                #             int(tile_object.y // TILESIZE) * TILESIZE,
+                #             "monster", stats)
                 if tile_object.type == "monster_spawn":
-                    self.map.monsters_spawns.append(Spawn(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height))
+                    self.map.monsters_spawns.append(Spawn(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height, 2))
                 if not self.secret_room_entered:
                     if tile_object.type == "secret_door_spawn":
                         # self.map.monsters_spawns.append(
@@ -132,8 +133,6 @@ class Game:
                     map_name = "map_kapitol.tmx"
                     SecretDoor(self, map_name, self.map, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE,
                                "secret_door_out")
-            for spawn in self.map.monsters_spawns:
-                spawn.spawn_n_objects(3)
         self.camera = Camera(self.map.width, self.map.height)
 
 
@@ -154,6 +153,7 @@ class Game:
         # game loop - set self.playing = False to end the game
         self.playing = True
         while self.playing:
+            self.current_time = pg.time.get_ticks()
             self.dt = self.clock.tick(FPS) / 1000
             # self.events()
             if not self.arena:
@@ -169,6 +169,9 @@ class Game:
 
     def update(self):
         # update portion of the game loop
+        for spawn in self.map.monsters_spawns:
+            if self.current_time - spawn.last_spawn > 10000:
+                spawn.spawn_n_objects(1)
         self.map.all_sprites.update()
         self.camera.update(self.player)
 

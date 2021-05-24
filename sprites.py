@@ -35,16 +35,19 @@ class Character:
             return 1
         return 0
 
-    def check_opponent_in_range(self):
+    def check_opponent_in_range(self, opponent):
         attack_range = self.statistics.attack_range
+        # print("Rect")
+        # print(self.rect)
+        # print(opponent.rect)
         for i in range(-attack_range, attack_range + 1):
             for j in range(-attack_range, attack_range + 1):
                 if abs(i) + abs(j) <= attack_range:
-                    rect = pg.Rect((self.x + i) * TILESIZE, (self.y + j) * TILESIZE, TILESIZE, TILESIZE)
-                    for monster in self.game.map.monsters:
-                        if rect.colliderect(monster.rect):
-                            return True
-                            print("Opponent in range!")
+                    # musialem zmienic na recty zeby dzialalo tez dla monstera
+                    rect = pg.Rect(self.rect.x + i * TILESIZE, self.rect.y + j * TILESIZE, TILESIZE, TILESIZE)
+                    if rect.colliderect(opponent):
+                        # print("Opponent in range!")
+                        return True
         return False
 
 
@@ -167,16 +170,46 @@ class SecretDoor(Door):
 
 
 class Monster(pg.sprite.Sprite, Character):
-    def __init__(self, game, map, x, y, type, statistics):
+    def __init__(self, game, map, spawn, x, y, type, statistics):
         self.groups = map.walls, map.monsters, map.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         Character.__init__(self, game, x, y, type, statistics)
         self.image = self.getImage()
+        self.spawn = spawn
 
         # print(self.image)
 
     def getImage(self):
         return pg.image.load(path.join(IMG_FOLDER, self.type + ".png"))
+
+    def move_to_opponent(self, opponent):
+        # zmieniam tylko recty bo w arenie operuje na rectach
+        # to dzialanie na rectach, jest mega nie intuicyjne
+        def x_move(dx):
+            if dx > 0:
+                self.rect.x += TILESIZE
+            else:
+                self.rect.x -= TILESIZE
+
+        def y_move(dy):
+            if dy > 0:
+                self.rect.y += TILESIZE
+            else:
+                self.rect.y -= TILESIZE
+        moves = self.statistics.move_range
+        for i in range(moves):
+            dy = opponent.y - self.rect.y // TILESIZE
+            dx = opponent.x - self.rect.x // TILESIZE
+            print(dx, dy)
+            if abs(dx) > abs(dy):
+                x_move(dx)
+            elif abs(dx) < abs(dy):
+                y_move(dy)
+            else:
+                if bool(random.randint(0, 1)):
+                    x_move(dx)
+                else:
+                    y_move(dy)
 
 
 

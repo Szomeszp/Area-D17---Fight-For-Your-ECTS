@@ -24,6 +24,7 @@ class Arena:
         self.game.map_rect = self.game.map_img.get_rect()
         # self.game.clear_groups()
         self.show_move_range = False
+        self.move_rects = []
 
     def draw_arena(self):
         self.monster_hp_bar.draw_health()
@@ -122,15 +123,16 @@ class Arena:
                             if btn.text == "button1":
                                 # quit when hp == 0
                                 if self.game.arena.player.attack(self.game.arena.monster):
-                                    print(self.game.last_position[2].map_name)
-                                    print(self.game.maps)
-                                    print(self.game.maps.get(self.game.last_position[2].map_name))
+                                    # print(self.game.last_position[2].map_name)
+                                    # print(self.game.maps)
+                                    # print(self.game.maps.get(self.game.last_position[2].map_name))
                                     self.game.maps.get(self.game.last_position[2].map_name).monsters.remove(self.monster)
                                     self.game.maps.get(self.game.last_position[2].map_name).all_sprites.remove(self.monster)
+                                    self.monster.spawn.last_spawn = pg.time.get_ticks()
+                                    self.monster.spawn.current_monsters -= 1
                                     self.monster.kill()
                                     self.exit_arena()
                                     break
-                                self.game.draw()
                                 self.turn += 1
                             elif btn.type == "leftButton":
                                 self.player.move(dx=-1)
@@ -142,7 +144,7 @@ class Arena:
                                 self.player.move(dy=1)
                             elif btn.type == "centerButton":
                                 print("Center Clicked!")
-                                self.player.check_opponent_in_range()
+                                self.player.check_opponent_in_range(self.monster)
                             elif btn.type == "button5":
                                 self.exit_arena()
                             self.player.stand()  # zeby podczas całej areny był do nas plecami
@@ -152,15 +154,54 @@ class Arena:
                             self.show_move_range = False
                         else:
                             self.show_move_range = True
+                    if self.show_move_range:
+                        for move_rect in self.move_rects:
+                            if move_rect.rect.collidepoint(pos):
+                                print("przed")
+                                print(self.player.x, self.player.y)
+                                self.player.x = move_rect.x // TILESIZE
+                                self.player.y = move_rect.y // TILESIZE
+                                print("po")
+                                print(self.player.x, self.player.y)
+                                self.turn += 1
+                    if self.player.check_opponent_in_range(self.monster):
+                        if self.monster.rect.collidepoint(pos):
+                            if self.game.arena.player.attack(self.game.arena.monster):
+                                # print(self.game.last_position[2].map_name)
+                                # print(self.game.maps)
+                                # print(self.game.maps.get(self.game.last_position[2].map_name))
+                                self.game.maps.get(self.game.last_position[2].map_name).monsters.remove(self.monster)
+                                self.game.maps.get(self.game.last_position[2].map_name).all_sprites.remove(self.monster)
+                                self.monster.spawn.last_spawn = pg.time.get_ticks()
+                                self.monster.spawn.current_monsters -= 1
+                                self.monster.kill()
+                                self.exit_arena()
+                                break
+                            self.turn += 1
+                            print("Monster zaatakowany")
+
+                    # do przmyslenia gdzie to dac
+                    self.create_move_rects()
             else:
                 sleep(1)
-                if self.game.arena.monster.attack(self.game.arena.player):
-                    # co jak my zginiemy
-                    self.exit_arena()
-                    break
+                # if in range -> attack
+                # else -> move
+                if self.monster.check_opponent_in_range(self.player):
+                    if self.game.arena.monster.attack(self.game.arena.player):
+                        # co jak my zginiemy
+                        self.exit_arena()
+                        break
+                else:
+                    self.monster.move_to_opponent(self.player)
                 self.turn += 1
+                pg.event.clear()
 
     def draw_move_range(self):
+        for rect in self.move_rects:
+            rect.draw_rect()
+
+    def create_move_rects(self):
+        self.move_rects = []
         move_range = self.player.statistics.move_range
         for i in range(-move_range, move_range + 1):
             for j in range(-move_range, move_range + 1):
@@ -168,26 +209,44 @@ class Arena:
                     if i == 0 and j == 0:
                         continue
                     rect = pg.Rect((self.player.x + i) * TILESIZE, (self.player.y + j) * TILESIZE, TILESIZE, TILESIZE)
-                    if rect.colliderect(self.ring):
-                        self.create_rect((self.player.x + i) * TILESIZE, (self.player.y + j) * TILESIZE)
+                    if rect.colliderect(self.ring) and not rect.colliderect(self.monster):
+                        self.move_rects.append(MoveRect(self.game, (self.player.x + i) * TILESIZE, (self.player.y + j) * TILESIZE))
 
-    def create_rect(self, x, y):
-        color = (65, 105, 225)
-        border = 2
-        gap = 3
-        border_color = BLACK
-        # draw border
-        pg.draw.rect(self.game.screen, border_color, pg.Rect((x + gap, y + gap), (TILESIZE - 2*gap, TILESIZE - 2*gap)))
-        # draw rect
-        pg.draw.rect(self.game.screen, color, pg.Rect((x + border + gap, y + border + gap), (TILESIZE - 2*(border + gap), TILESIZE - 2*(border + gap))))
+    # def create_rect(self, x, y):
+    #     color = (65, 105, 225)
+    #     border = 2
+    #     gap = 3
+    #     border_color = BLACK
+    #     # draw border
+    #     pg.draw.rect(self.game.screen, border_color, pg.Rect((x + gap, y + gap), (TILESIZE - 2*gap, TILESIZE - 2*gap)))
+    #     # draw rect
+    #     pg.draw.rect(self.game.screen, color, pg.Rect((x + border + gap, y + border + gap), (TILESIZE - 2*(border + gap), TILESIZE - 2*(border + gap))))
 
     def draw_target_in_range(self):
-        if self.player.check_opponent_in_range():
+        if self.player.check_opponent_in_range(self.monster):
             x = self.monster.rect.x
             y = self.monster.rect.y
             print(x, y)
             pg.draw.circle(self.game.screen, RED, (x + TILESIZE/2, y + TILESIZE/2), 16)
             print("Circle drawn!")
+
+
+class MoveRect:
+    def __init__(self, game, x, y):
+        self.game = game
+        self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
+        self.x = x
+        self.y = y
+
+    def draw_rect(self):
+        color = (65, 105, 225)
+        border = 2
+        gap = 3
+        border_color = BLACK
+        # draw border
+        pg.draw.rect(self.game.screen, border_color, pg.Rect((self.x + gap, self.y + gap), (TILESIZE - 2*gap, TILESIZE - 2*gap)))
+        # draw rect
+        pg.draw.rect(self.game.screen, color, pg.Rect((self.x + border + gap, self.y + border + gap), (TILESIZE - 2*(border + gap), TILESIZE - 2*(border + gap))))
 
 
 class HealthBar:

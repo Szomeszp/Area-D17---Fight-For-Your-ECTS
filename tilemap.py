@@ -40,18 +40,22 @@ class TiledMap:
 
 
 class Spawn:
-    def __init__(self, game, map, x, y, w, h):
+    def __init__(self, game, map, x, y, w, h, max):
         self.game = game
         self.map = map
         self.x = x
         self.y = y
         self.width = w
         self.height = h
-        self.last_seen = -1
+        self.max_monsters = max
+        self.current_monsters = 0
+        self.last_spawn = -30001
 
     # Wersja Demo Tylko Dla Spawna Monstera
     def spawn_n_objects(self, n):
-        for i in range(n):
+        self.last_spawn = self.game.current_time
+        i = 0
+        while i < n and self.current_monsters < self.max_monsters:
             while True:
                 dx = random.randint(0, int(self.width // TILESIZE) - 1)
                 dy = random.randint(0, int(self.height // TILESIZE) - 1)
@@ -63,7 +67,9 @@ class Spawn:
                         continue
                 break
             stats = Statistics.generateMonsterStatistics(self, 1)
-            Monster(self.game, self.map, x, y, "monster", stats)
+            Monster(self.game, self.map, self, x, y, "monster", stats)
+            self.current_monsters += 1
+            i += 1
 
 
 

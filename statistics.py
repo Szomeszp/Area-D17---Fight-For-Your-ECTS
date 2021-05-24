@@ -18,4 +18,4 @@ class Statistics:
 
     @staticmethod
     def generateMonsterStatistics(self, level):
-        return Statistics(2000 + 10 * level, 10 * level, 0, 0, 0, 1, 1, 20, 40)
+        return Statistics(2000 + 10 * level, 10 * level, 0, 0, 0, 1, 2, 20, 40)
