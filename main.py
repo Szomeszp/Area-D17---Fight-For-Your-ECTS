@@ -109,6 +109,7 @@ class Game:
                     Door(self, tile_object.map, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
                          tile_object.name)
                 if tile_object.type == "npc":
+                    print("Npc")
                     NPC(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.name)
                 # if tile_object.type == "monster":
                 #     stats = Statistics.generateMonsterStatistics(self, 1)
