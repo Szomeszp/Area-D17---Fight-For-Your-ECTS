@@ -2,8 +2,8 @@
   "npc_main":
   {
     "main_text": "SIEMA, SIEMA, SIEMANKO",
-    "number_of_paths" : 2,
-    "paths":
+    "number_of_sub_paths" : 2,
+    "sub_paths":
     [
       {
         "text": "No siema, siema... Co tam?"
@@ -17,8 +17,8 @@
   "npc_one":
   {
     "main_text": "Baba, bleble, xuxu!",
-    "number_of_paths": 1,
-        "paths":
+    "number_of_sub_paths": 1,
+        "sub_paths":
     [
       {
         "text": "Aha? Ok?"

@@ -158,8 +158,6 @@ class Game:
             # self.events()
             if not self.arena:
                 self.game_events()
-                # Usunięte z końca while żeby nie rysować dwa razy
-                # w arena events trzeba rysować przed wyjściem z areny aby można było poprawnie wyświetlić wynik
                 self.update()
                 self.draw()
             else:
@@ -183,6 +181,9 @@ class Game:
             self.arena.draw_arena()
         for sprite in self.map.all_sprites:
             self.screen.blit(sprite.image, self.camera.apply(sprite))
+        # TODO
+        if not self.arena:
+            self.player.draw_gui()
         pg.display.flip()
 
     def game_events(self):

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="left-up" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="25">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="left-up" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="6" nextobjectid="33">
  <tileset firstgid="1" source="roguelikeSheet_transparent.tsx"/>
  <layer id="3" name="Floor" width="32" height="24">
   <data encoding="csv">
@@ -125,15 +125,15 @@
   <object id="9" name="battleInfo" x="448" y="160" width="128" height="32"/>
   <object id="11" name="playerHealthBar" x="320" y="704" width="384" height="32"/>
   <object id="12" name="button1" x="736" y="320" width="224" height="32"/>
-  <object id="13" name="button2" x="736" y="384" width="224" height="32"/>
-  <object id="14" name="button3" x="736" y="448" width="224" height="32"/>
-  <object id="15" name="button4" x="736" y="512" width="224" height="32"/>
+  <object id="13" name="button2" x="736" y="368" width="224" height="32"/>
+  <object id="14" name="button3" x="736" y="416" width="224" height="32"/>
+  <object id="15" name="button4" x="736" y="624" width="224" height="32"/>
   <object id="17" name="button5" x="736" y="672" width="224" height="32"/>
-  <object id="19" name="centerButton" x="832" y="592" width="32" height="32"/>
-  <object id="20" name="leftButton" x="792" y="592" width="32" height="32"/>
-  <object id="21" name="rightButton" x="872" y="592" width="32" height="32"/>
-  <object id="22" name="backwardButton" x="832" y="632" width="32" height="32"/>
-  <object id="23" name="forwardButton" x="832" y="552" width="32" height="32"/>
   <object id="24" name="battleLog" x="64" y="320" width="224" height="384"/>
+  <object id="25" name="statistics" x="736" y="512" width="224" height="96"/>
+  <object id="29" name="item1" x="736" y="464" width="32" height="32"/>
+  <object id="30" name="item2" x="800" y="464" width="32" height="32"/>
+  <object id="31" name="item3" x="864" y="464" width="32" height="32"/>
+  <object id="32" name="item4" x="928" y="464" width="32" height="32"/>
  </objectgroup>
 </map>

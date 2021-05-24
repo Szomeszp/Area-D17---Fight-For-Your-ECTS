@@ -26,6 +26,9 @@ class Arena:
         self.show_move_range = False
         self.move_rects = []
 
+        self.random_token = random.randint(0, 1)
+        self.result = 0
+
     def draw_arena(self):
         self.monster_hp_bar.draw_health()
         self.player_hp_bar.draw_health()
@@ -42,27 +45,49 @@ class Arena:
 
         for tile_object in self.game.map.tmxdata.objects:
             if str(tile_object.name)[:6] == "button":
-                btn = Button(self.game, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-                             tile_object.name, tile_object.name)
-                self.control_panel.add_button(btn)
+                get_name = {
+                    "1": BUTTON_ONE,
+                    "2": BUTTON_TWO,
+                    "3": BUTTON_THREE,
+                    "4": BUTTON_FOUR,
+                    "5": BUTTON_FIVE
+                }
+
+                self.control_panel.add_button(
+                    Button(
+                        self.game,
+                        tile_object.x,
+                        tile_object.y,
+                        tile_object.width,
+                        tile_object.height,
+                        get_name[str(tile_object.name)[-1:]],
+                        tile_object.name
+                    )
+                )
+                # btn = Button(self.game, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
+                #              BUTTON_ONE, tile_object.name)
+                # self.control_panel.add_button(btn)
             # Olek zrobił spoko wykorzystanie mapy
             if str(tile_object.name)[-6:] == "Button":
-                if str(tile_object.name)[:-6] == "left":
-                    btn = Button(self.game, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-                                 '\u2190', tile_object.name)
-                elif str(tile_object.name)[:-6] == "right":
-                    btn = Button(self.game, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-                                 '\u2192', tile_object.name)
-                elif str(tile_object.name)[:-6] == "forward":
-                    btn = Button(self.game, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-                                 '\u2191', tile_object.name)
-                elif str(tile_object.name)[:-6] == "backward":
-                    btn = Button(self.game, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-                                 '\u2193', tile_object.name)
-                elif str(tile_object.name)[:-6] == "center":
-                    btn = Button(self.game, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
-                                 '\u2022', tile_object.name)
-                self.control_panel.add_button(btn)
+                name_to_arrow = {
+                    "left": "\u2190",
+                    "right": "\u2192",
+                    "forward": "\u2191",
+                    "backward": "\u2193",
+                    "center": "\u2022"
+                }
+
+                self.control_panel.add_button(
+                    Button(
+                        self.game,
+                        tile_object.x,
+                        tile_object.y,
+                        tile_object.width,
+                        tile_object.height,
+                        name_to_arrow[str(tile_object.name)[:-6]],
+                        tile_object.name
+                    )
+                )
 
             if tile_object.name == "monsterHealthBar":
                 # print(tile_object.x, tile_object.y, tile_object.width, monster.statistics.health)
@@ -110,61 +135,57 @@ class Arena:
         self.game.render_map(self.player, "", 1)
         self.game.arena = None
 
+    def button_handler(self, pos):
+        for btn in self.control_panel.buttons:
+            if btn.rect.collidepoint(pos):
+                print(btn.text + " clicked!")
+                if btn.type == "button1":
+                    if self.player.check_opponent_in_range(self.monster):
+                        if self.player.attack(self.monster):
+                            self.result = 1
+                    else:
+                        self.battle_log.add_log("MONSTER OUT OF RANGE!", RED)
+                elif btn.type == "button2":
+                    self.turn += 1
+                elif btn.type == "button3":
+                    self.exit_arena()
+                elif btn.type == "button4":
+                    self.turn += 1
+                elif btn.type == "button5":
+                    self.exit_arena()
+
+                elif btn.type == "leftButton":
+                    self.player.move(dx=-1)
+                elif btn.type == "rightButton":
+                    self.player.move(dx=1)
+                elif btn.type == "forwardButton":
+                    self.player.move(dy=-1)
+                elif btn.type == "backwardButton":
+                    self.player.move(dy=1)
+                elif btn.type == "centerButton":
+                    print("Center Clicked!")
+                    self.player.check_opponent_in_range(self.monster)
+                self.player.stand()  # zeby podczas całej areny był do nas plecami
+
     def arena_events(self):
-        # TODO
-        # trzeba usunąc ify z infem o końcu gry i przenieść to na koniec żeby nie dublować i ułatwić rysowanie
         for event in pg.event.get():
+            self.result = 0
+
             if event.type == pg.QUIT:
                 self.game.quit()
-            if self.turn % 2 == 0:
-                if event.type == pg.MOUSEBUTTONUP:
+
+            if self.turn % 2 == self.random_token:
+                if event.type == pg.MOUSEBUTTONDOWN:
                     pos = pg.mouse.get_pos()
-                    for btn in self.control_panel.buttons:
-                        if btn.rect.collidepoint(pos):
-                            print(btn.text + " clicked!")
-                            if btn.text == "button1":
-                                # quit when hp == 0
-                                if self.game.arena.player.attack(self.game.arena.monster):
-                                    # print(self.game.last_position[2].map_name)
-                                    # print(self.game.maps)
-                                    # print(self.game.maps.get(self.game.last_position[2].map_name))
-                                    # POPRAWIONE ####################
-                                    self.game.last_position[2].monsters.remove(self.monster)
-                                    self.game.last_position[2].all_sprites.remove(self.monster)
-                                    ##########################
-                                    self.monster.spawn.last_spawn = pg.time.get_ticks()
-                                    self.monster.spawn.current_monsters -= 1
-                                    self.monster.kill()
-                                    # TODO
-                                    # To będzie do poprawki
-                                    #rysowanie wyniku końcowego
-                                    self.game.update()
-                                    self.game.draw()
-                                    # krótki sleep
-                                    sleep(1)
-                                    self.exit_arena()
-                                    break
-                                self.turn += 1
-                            elif btn.type == "leftButton":
-                                self.player.move(dx=-1)
-                            elif btn.type == "rightButton":
-                                self.player.move(dx=1)
-                            elif btn.type == "forwardButton":
-                                self.player.move(dy=-1)
-                            elif btn.type == "backwardButton":
-                                self.player.move(dy=1)
-                            elif btn.type == "centerButton":
-                                print("Center Clicked!")
-                                self.player.check_opponent_in_range(self.monster)
-                            elif btn.type == "button5":
-                                self.exit_arena()
-                            self.player.stand()  # zeby podczas całej areny był do nas plecami
+                    self.button_handler(pos)
+
                     if self.player.rect.collidepoint(pos):
                         print("Player clicked!")
                         if self.show_move_range:
                             self.show_move_range = False
                         else:
                             self.show_move_range = True
+
                     if self.show_move_range:
                         for move_rect in self.move_rects:
                             if move_rect.rect.collidepoint(pos):
@@ -174,46 +195,54 @@ class Arena:
                                 self.player.y = move_rect.y // TILESIZE
                                 print("po")
                                 print(self.player.x, self.player.y)
-                                self.turn += 1
                     if self.player.check_opponent_in_range(self.monster):
                         if self.monster.rect.collidepoint(pos):
                             if self.game.arena.player.attack(self.game.arena.monster):
-                                # print(self.game.last_position[2].map_name)
-                                # print(self.game.maps)
-                                # print(self.game.maps.get(self.game.last_position[2].map_name))
-                                # POPRAWIONE ####################
-                                self.game.last_position[2].monsters.remove(self.monster)
-                                self.game.last_position[2].all_sprites.remove(self.monster)
-                                ##########################
-                                self.monster.spawn.last_spawn = pg.time.get_ticks()
-                                self.monster.spawn.current_monsters -= 1
-                                self.monster.kill()
-                                self.exit_arena()
-                                break
-                            self.turn += 1
+                                self.result = 1
                             print("Monster zaatakowany")
 
                     # do przmyslenia gdzie to dac
                     self.create_move_rects()
-                    #TODO
-                    self.game.update()
-                    self.game.draw()
+
             else:
-                sleep(1)
-                # if in range -> attack
-                # else -> move
                 if self.monster.check_opponent_in_range(self.player):
                     if self.game.arena.monster.attack(self.game.arena.player):
-                        # co jak my zginiemy
-                        #TODO
-                        self.game.update()
-                        self.game.draw()
-                        self.exit_arena()
-                        break
+                        self.result = -1
                 else:
                     self.monster.move_to_opponent(self.player)
+
                 self.turn += 1
+
+            # PLAYER WON
+            if self.result == 1:
+                self.game.last_position[2].monsters.remove(self.monster)
+                self.game.last_position[2].all_sprites.remove(self.monster)
+                self.monster.spawn.last_spawn = pg.time.get_ticks()
+                self.monster.spawn.current_monsters -= 1
+                self.monster.kill()
+                self.game.arena.player.level_up(2000)
+
+            elif self.result == -1:
+                # co jak my zginiemy
+                # TODO
+                pass
+
+            self.game.update()
+            self.game.draw()
+
+            if self.result != 0:
+                # TODO
+                # To będzie do poprawki
+                # rysowanie wyniku końcowego
+                # krótki sleep
+                sleep(1)
+                self.exit_arena()
+                break
+            else:
+                # self.turn += 1
                 pg.event.clear()
+
+
 
     def draw_move_range(self):
         for rect in self.move_rects:
@@ -316,17 +345,17 @@ class BattleLog:
         self.line_height = 18
         self.logs = []
 
-    def add_log(self, str):
+    def add_log(self, str, color=WHITE):
         if len(self.logs) + 1 > self.max_len:
             self.logs.pop(0)
-        self.logs.append(str)
+        self.logs.append([str, color])
 
     def draw_logs(self):
         pos = (self.x, self.y)
         size = (self.width, self.height)
         pg.draw.rect(self.game.screen, BLACK, pg.Rect(pos, size), border_radius=4)
         for idx, log in enumerate(self.logs):
-            text = self.game.my_small_font.render(log, 1, (255, 255, 255))
+            text = self.game.my_small_font.render(log[0], 1, log[1])
             self.game.screen.blit(text, (self.x + 4, self.y + idx * self.line_height + 4))
 
 

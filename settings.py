@@ -47,3 +47,9 @@ BATTLE_ARENA = "arena2.tmx"
 SECRET_ROOM_PNG = ""
 
 MONSTER_PNG = "monster.png"
+
+BUTTON_ONE = "Attack"
+BUTTON_TWO = "Attack but more"
+BUTTON_THREE = "Heal"
+BUTTON_FOUR = "NEXT TURN"
+BUTTON_FIVE = "EXIT"

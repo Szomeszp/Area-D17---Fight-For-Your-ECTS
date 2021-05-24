@@ -3,6 +3,8 @@
     {
       "skills": [
         {
+          "name": "attack_but_more",
+          "description": "TODO",
           "requirements": "TODO",
           "buffs": "TODO",
           "debuffs": "TODO"
@@ -10,12 +12,16 @@
         },
 
         {
+         "name": "TODO",
+          "description": "TODO",
           "requirements": "TODO",
           "buffs": "TODO",
           "debuffs": "TODO"
         },
 
         {
+         "name": "TODO",
+          "description": "TODO",
           "requirements": "TODO",
           "buffs": "TODO",
           "debuffs": "TODO"

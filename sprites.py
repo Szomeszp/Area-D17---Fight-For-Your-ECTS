@@ -96,7 +96,7 @@ class NPC(pg.sprite.Sprite):
         self.name = name
 
         self.current_path = 0
-        self.sth = 0
+        self.current_sub_path = 0
 
     def dialogue(self):
         print("Dialog")
@@ -120,15 +120,15 @@ class NPC(pg.sprite.Sprite):
             rendered_text = self.game.my_big_font.render(text, 1, (255, 255, 255))
             self.game.screen.blit(rendered_text, (40, self.game.screen.get_height() - position))
 
-            position = position - self.game.my_small_font.size(text)[1] - 16
+            position = position - self.game.my_big_font.size(text)[1] - 8
 
-            for i in range(dialogues_file[self.name]["number_of_paths"]):
-                text = dialogues_file[self.name]["paths"][i]["text"]
+            for i in range(dialogues_file[self.name]["number_of_sub_paths"]):
+                text = dialogues_file[self.name]["sub_paths"][i]["text"]
 
-                if i == self.current_path:
-                    text = ">>>" + text
+                if i == self.current_sub_path:
+                    text = ">>>  " + text
 
-                rendered_text = self.game.my_big_font.render(text, 1, (255, 255, 255))
+                rendered_text = self.game.my_medium_font.render(text, 1, (255, 255, 255))
                 self.game.screen.blit(rendered_text, (40, self.game.screen.get_height() - position))
                 position = position - self.game.my_small_font.size(text)[1] - 8
 
@@ -149,12 +149,14 @@ class NPC(pg.sprite.Sprite):
                 if event.type == pg.KEYDOWN:
                     # pg.event.pump()
                     if event.key == pg.K_SPACE:
+                        self.current_path = 0
+                        self.current_sub_path = 0
                         cnt = False
                     if event.key == pg.K_w:
-                        self.current_path = (self.current_path + 1) % dialogues_file[self.name]["number_of_paths"]
+                        self.current_sub_path = (self.current_sub_path + 1) % dialogues_file[self.name]["number_of_sub_paths"]
                         reload = True
                     if event.key == pg.K_s:
-                        self.current_path = (self.current_path - 1) % dialogues_file[self.name]["number_of_paths"]
+                        self.current_sub_path = (self.current_sub_path - 1) % dialogues_file[self.name]["number_of_sub_paths"]
                         reload = True
 
                 pg.display.flip()
