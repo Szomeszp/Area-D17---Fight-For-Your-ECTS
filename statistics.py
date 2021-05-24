@@ -18,5 +18,9 @@ class Statistics:
         self.critical_damage_chance = critChance
 
     @staticmethod
-    def generateMonsterStatistics(self, level):
+    def generatePlayerStatistics(level):
+        return Statistics(29 + 11 * level, 23 + 7*level, 0, 0, 0, 1, 1, (2 - 2 * (e ** (level / 13)) * 100),  (5 - 5 * (e ** (level / 19)) * 20))
+
+    @staticmethod
+    def generateMonsterStatistics(level):
         return Statistics(29 + 11 * level, 23 + 7*level, 0, 0, 0, 1, 1, (2 - 2 * (e ** (level / 13)) * 100),  (5 - 5 * (e ** (level / 19)) * 20))

@@ -83,7 +83,7 @@ class MonsterSpawn(Spawn):
                     if rect.colliderect(monster):
                         continue
                 break
-            stats = Statistics.generateMonsterStatistics(self, 1)
+            stats = Statistics.generateMonsterStatistics(1)
             Monster(self.game, self.map, self, x, y, "monster", stats)
             self.current_monsters += 1
             i += 1

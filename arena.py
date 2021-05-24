@@ -38,6 +38,7 @@ class Arena:
         self.control_panel.draw_buttons()
         self.battle_log.draw_logs()
         self.draw_target_in_range()
+        self.statistics_panel.draw_stats()
         if self.show_move_range:
             self.draw_move_range()
     
@@ -104,7 +105,9 @@ class Arena:
             if tile_object.name == "battleLog":
                 self.battle_log = BattleLog(self.game, tile_object.x, tile_object.y, tile_object.width,
                                        tile_object.height)
-
+            if tile_object.name == "statistics":
+                self.statistics_panel = StatisticsPanel(self, tile_object.x, tile_object.y, tile_object.width,
+                                       tile_object.height)
             if tile_object.type == "arena":
                 self.ring = pg.Rect(tile_object.x, tile_object.y, tile_object.width, tile_object.height)
 
@@ -329,6 +332,43 @@ class HealthBar:
         else:
             pg.draw.rect(self.game.screen, GREEN, pg.Rect((self.x, self.y), (self.width * ratio, self.height)), border_bottom_left_radius=4, border_top_left_radius=4)
             pg.draw.rect(self.game.screen, RED, pg.Rect((self.x + self.width * ratio, self.y), (self.width * (1 - ratio), self.height)), border_bottom_right_radius=4, border_top_right_radius=4)
+
+
+class StatisticsPanel:
+    def __init__(self, arena, x, y, w, h):
+        self.arena = arena
+        self.x = x
+        self.y = y
+        self.width = w
+        self.height = h
+
+    def draw_stats(self):
+        pg.draw.rect(self.arena.game.screen, BLACK, pg.Rect((self.x, self.y), (self.width, self.height)), border_radius=4)
+
+        i = 0
+
+        text = self.arena.game.my_small_font.render(f"DMG: {self.arena.player.statistics.damage}", 1, WHITE)
+        text_size = self.arena.game.my_small_font.size(f"DMG: {self.arena.player.statistics.damage}")
+        self.arena.game.screen.blit(text,
+                              (self.x + 4, self.y + 4 + i * text_size[1]))
+        i = i + 1
+
+        if self.arena.possible_moves == 0:
+            color = RED
+        else:
+            color = WHITE
+        text = self.arena.game.my_small_font.render(f"MOVE RANGE: {self.arena.possible_moves} / {self.arena.player.statistics.move_range}", 1, color)
+        text_size = self.arena.game.my_small_font.size(f"MOVE RANGE: {self.arena.possible_moves} / {self.arena.player.statistics.move_range}")
+        self.arena.game.screen.blit(text,
+                              (self.x + 4, self.y + 4 + i * text_size[1]))
+        i = i + 1
+
+        text = self.arena.game.my_small_font.render(f"ATTACK RANGE: {self.arena.player.statistics.attack_range}", 1, WHITE)
+        text_size = self.arena.game.my_small_font.size(f"ATTACK RANGE: {self.arena.player.statistics.attack_range}")
+        self.arena.game.screen.blit(text,
+                              (self.x + 4, self.y + 4 + i * text_size[1]))
+        i = i + 1
+
 
 
 class BattleInfo:

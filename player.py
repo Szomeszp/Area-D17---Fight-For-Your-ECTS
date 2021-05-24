@@ -7,22 +7,23 @@ from settings import *
 from numpy import e
 from os import path
 import math
+from statistics import Statistics
 
 
 class Player(pg.sprite.Sprite, Character):
-    def __init__(self, game, map, x, y, type, stats=None):
-        Character.__init__(self, game, x, y, type, Statistics(1000, 400, 10, 10, 10, 2, 2, 20, 50))
+    def __init__(self, game, map, x, y, type):
+        self.level = 1
+        self.experience = 0
+        Character.__init__(self, game, x, y, type, Statistics.generatePlayerStatistics(self.level))
         self.groups = map.all_sprites
         self.map = map
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = self.getImage()
 
-        self.level = 1
-        self.experience = 0
-
     def level_up(self, experience):
         self.experience = min(self.experience + experience, -5000 * math.log(- 7 / 8 + 1))
         self.level = min(math.ceil(8 - 8 * (e ** (-self.experience * 0.0002))), 7)
+        self.statistics = Statistics.generatePlayerStatistics(self.level)
 
     def getImage(self):
         return pg.image.load(path.join(IMG_FOLDER, self.game.player_img.value))
