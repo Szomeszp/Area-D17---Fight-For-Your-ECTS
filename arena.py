@@ -15,6 +15,7 @@ import copy
 class Arena:
     def __init__(self, game, player, monster, arena):
         self.player = player
+        self.possible_moves = player.statistics.move_range
         self.monster = monster
         self.map = map
         self.turn = 0
@@ -191,8 +192,13 @@ class Arena:
                             if move_rect.rect.collidepoint(pos):
                                 print("przed")
                                 print(self.player.x, self.player.y)
+                                prev_x = self.player.x
+                                prev_y = self.player.y
                                 self.player.x = move_rect.x // TILESIZE
                                 self.player.y = move_rect.y // TILESIZE
+                                dx = self.player.x - prev_x
+                                dy = self.player.y - prev_y
+                                self.possible_moves -= abs(dx) + abs(dy)
                                 print("po")
                                 print(self.player.x, self.player.y)
                                 self.battle_log.add_log("Player moved")
@@ -212,7 +218,7 @@ class Arena:
                 else:
                     self.monster.move_to_opponent(self.player)
                     self.battle_log.add_log("Monster moved")
-
+                self.possible_moves = self.player.statistics.move_range
                 self.turn += 1
 
             # PLAYER WON
@@ -252,7 +258,7 @@ class Arena:
 
     def create_move_rects(self):
         self.move_rects = []
-        move_range = self.player.statistics.move_range
+        move_range = self.possible_moves
         for i in range(-move_range, move_range + 1):
             for j in range(-move_range, move_range + 1):
                 if abs(i) + abs(j) <= move_range:
