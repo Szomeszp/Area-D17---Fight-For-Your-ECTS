@@ -158,10 +158,12 @@ class Game:
             # self.events()
             if not self.arena:
                 self.game_events()
+                # Usunięte z końca while żeby nie rysować dwa razy
+                # w arena events trzeba rysować przed wyjściem z areny aby można było poprawnie wyświetlić wynik
+                self.update()
+                self.draw()
             else:
                 self.arena.arena_events()
-            self.update()
-            self.draw()
 
     def quit(self):
         pg.quit()

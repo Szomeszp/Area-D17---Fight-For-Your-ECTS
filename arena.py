@@ -111,6 +111,8 @@ class Arena:
         self.game.arena = None
 
     def arena_events(self):
+        # TODO
+        # trzeba usunąc ify z infem o końcu gry i przenieść to na koniec żeby nie dublować i ułatwić rysowanie
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 self.game.quit()
@@ -126,11 +128,20 @@ class Arena:
                                     # print(self.game.last_position[2].map_name)
                                     # print(self.game.maps)
                                     # print(self.game.maps.get(self.game.last_position[2].map_name))
-                                    self.game.maps.get(self.game.last_position[2].map_name).monsters.remove(self.monster)
-                                    self.game.maps.get(self.game.last_position[2].map_name).all_sprites.remove(self.monster)
+                                    # POPRAWIONE ####################
+                                    self.game.last_position[2].monsters.remove(self.monster)
+                                    self.game.last_position[2].all_sprites.remove(self.monster)
+                                    ##########################
                                     self.monster.spawn.last_spawn = pg.time.get_ticks()
                                     self.monster.spawn.current_monsters -= 1
                                     self.monster.kill()
+                                    # TODO
+                                    # To będzie do poprawki
+                                    #rysowanie wyniku końcowego
+                                    self.game.update()
+                                    self.game.draw()
+                                    # krótki sleep
+                                    sleep(1)
                                     self.exit_arena()
                                     break
                                 self.turn += 1
@@ -170,8 +181,10 @@ class Arena:
                                 # print(self.game.last_position[2].map_name)
                                 # print(self.game.maps)
                                 # print(self.game.maps.get(self.game.last_position[2].map_name))
-                                self.game.maps.get(self.game.last_position[2].map_name).monsters.remove(self.monster)
-                                self.game.maps.get(self.game.last_position[2].map_name).all_sprites.remove(self.monster)
+                                # POPRAWIONE ####################
+                                self.game.last_position[2].monsters.remove(self.monster)
+                                self.game.last_position[2].all_sprites.remove(self.monster)
+                                ##########################
                                 self.monster.spawn.last_spawn = pg.time.get_ticks()
                                 self.monster.spawn.current_monsters -= 1
                                 self.monster.kill()
@@ -182,6 +195,9 @@ class Arena:
 
                     # do przmyslenia gdzie to dac
                     self.create_move_rects()
+                    #TODO
+                    self.game.update()
+                    self.game.draw()
             else:
                 sleep(1)
                 # if in range -> attack
@@ -189,6 +205,9 @@ class Arena:
                 if self.monster.check_opponent_in_range(self.player):
                     if self.game.arena.monster.attack(self.game.arena.player):
                         # co jak my zginiemy
+                        #TODO
+                        self.game.update()
+                        self.game.draw()
                         self.exit_arena()
                         break
                 else:

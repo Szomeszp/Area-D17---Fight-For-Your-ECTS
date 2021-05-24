@@ -30,7 +30,8 @@ class Character:
         return player.hurt(damage)
 
     def hurt(self, damage):
-        self.statistics.current_health = self.statistics.current_health - damage
+        # usunięcie ujemnego hp
+        self.statistics.current_health = max(self.statistics.current_health - damage, 0)
         if self.statistics.current_health <= 0:
             return 1
         return 0

@@ -1,6 +1,7 @@
 import pygame as pg
 from settings import *
 from os import path
+from numpy import e
 
 
 class Statistics:
@@ -18,4 +19,4 @@ class Statistics:
 
     @staticmethod
     def generateMonsterStatistics(self, level):
-        return Statistics(2000 + 10 * level, 10 * level, 0, 0, 0, 1, 2, 20, 40)
+        return Statistics(29 + 11 * level, 23 + 7*level, 0, 0, 0, 1, 1, (2 - 2 * (e ** (level / 13)) * 100),  (5 - 5 * (e ** (level / 19)) * 20))

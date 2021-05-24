@@ -1,0 +1,35 @@
+{
+  "trait_one":
+    {
+      "skills": [
+        {
+          "requirements": "TODO",
+          "buffs": "TODO",
+          "debuffs": "TODO"
+
+        },
+
+        {
+          "requirements": "TODO",
+          "buffs": "TODO",
+          "debuffs": "TODO"
+        },
+
+        {
+          "requirements": "TODO",
+          "buffs": "TODO",
+          "debuffs": "TODO"
+        }
+      ]
+    },
+
+  "trait_two":
+    {
+      "TODO": "TODO"
+    },
+
+  "trait_three":
+    {
+      "TODO": "TODO"
+    }
+}
