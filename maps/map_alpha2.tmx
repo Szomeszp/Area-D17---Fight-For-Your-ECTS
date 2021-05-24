@@ -44,8 +44,8 @@
   <object id="44" name="wall" x="2499.5" y="1698.75" width="25" height="25.8333"/>
   <object id="45" name="wall" x="2436" y="1699.25" width="25" height="25.8333"/>
   <object id="46" name="wall" x="2437.16" y="294.583" width="368.334" height="1175.17"/>
-  <object id="47" name="npc" x="2018" y="1474.67" width="26.6667" height="28.6667"/>
-  <object id="48" name="npc" x="2692" y="1570.67" width="23.3333" height="24"/>
+  <object id="47" name="npc_four" type="npc" x="2018" y="1474.67" width="26.6667" height="28.6667"/>
+  <object id="48" name="npc_five" type="npc" x="2692" y="1570.67" width="23.3333" height="24"/>
   <object id="49" name="wall" x="2627.33" y="1540.67" width="150" height="25.3333"/>
   <object id="50" name="wall" x="996" y="1636.67" width="24" height="25.3333"/>
   <object id="51" name="wall" x="1284.67" y="1379.33" width="24" height="25.3333"/>
