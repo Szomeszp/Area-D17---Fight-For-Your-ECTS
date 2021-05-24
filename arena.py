@@ -195,6 +195,7 @@ class Arena:
                                 self.player.y = move_rect.y // TILESIZE
                                 print("po")
                                 print(self.player.x, self.player.y)
+                                self.battle_log.add_log("Player moved")
                     if self.player.check_opponent_in_range(self.monster):
                         if self.monster.rect.collidepoint(pos):
                             if self.game.arena.player.attack(self.game.arena.monster):
@@ -210,6 +211,7 @@ class Arena:
                         self.result = -1
                 else:
                     self.monster.move_to_opponent(self.player)
+                    self.battle_log.add_log("Monster moved")
 
                 self.turn += 1
 
