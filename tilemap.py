@@ -4,7 +4,7 @@ import pygame as pg
 from settings import *
 import pytmx
 
-from sprites import Monster
+from sprites import Monster, SecretDoor
 from statistics import Statistics
 
 
@@ -21,7 +21,7 @@ class TiledMap:
         self.npcs = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
         self.monsters_spawns = []
-        self.secretdoors_spawns = []
+        self.secret_doors_spawns = []
 
     def render(self, surface):
         ti = self.tmxdata.get_tile_image_by_gid
@@ -40,19 +40,36 @@ class TiledMap:
 
 
 class Spawn:
-    def __init__(self, game, map, x, y, w, h, max):
+    def __init__(self, game, map, x, y, w, h):
         self.game = game
         self.map = map
         self.x = x
         self.y = y
         self.width = w
         self.height = h
+
+
+class SecretDoorSpawn(Spawn):
+    def __init__(self, game, map, x, y, w, h):
+        super().__init__(game, map, x, y, w, h)
+
+    def spawn_secret_door(self):
+        dx = random.randint(0, int(self.width // TILESIZE) - 1)
+        dy = random.randint(0, int(self.height // TILESIZE) - 1)
+        x = int((self.x // TILESIZE) + dx) * TILESIZE
+        y = int((self.y // TILESIZE) + dy) * TILESIZE
+        out_map_name = "map_kapitol.tmx"
+        SecretDoor(self, out_map_name, self.map, x, y, TILESIZE, TILESIZE, "secret_door_out")
+
+
+class MonsterSpawn(Spawn):
+    def __init__(self, game, map, x, y, w, h, max):
+        super().__init__(game, map, x, y, w, h)
         self.max_monsters = max
         self.current_monsters = 0
         self.last_spawn = -30001
 
-    # Wersja Demo Tylko Dla Spawna Monstera
-    def spawn_n_objects(self, n):
+    def spawn_n_monsters(self, n):
         self.last_spawn = self.game.current_time
         i = 0
         while i < n and self.current_monsters < self.max_monsters:

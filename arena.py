@@ -29,6 +29,7 @@ class Arena:
 
         self.random_token = random.randint(0, 1)
         self.result = 0
+        self.cant_move_logged = False
 
     def draw_arena(self):
         self.monster_hp_bar.draw_health()
@@ -176,6 +177,8 @@ class Arena:
                 self.game.quit()
 
             if self.turn % 2 == self.random_token:
+                # do przmyslenia gdzie to dac
+                self.create_move_rects()
                 if event.type == pg.MOUSEBUTTONDOWN:
                     pos = pg.mouse.get_pos()
                     self.button_handler(pos)
@@ -186,12 +189,15 @@ class Arena:
                             self.show_move_range = False
                         else:
                             self.show_move_range = True
+                        if len(self.move_rects) == 0 and not self.cant_move_logged:
+                            self.cant_move_logged = True
+                            self.battle_log.add_log("YOU CAN'T MOVE ANYMORE!", RED)
 
                     if self.show_move_range:
                         for move_rect in self.move_rects:
                             if move_rect.rect.collidepoint(pos):
-                                print("przed")
-                                print(self.player.x, self.player.y)
+                                # print("przed")
+                                # print(self.player.x, self.player.y)
                                 prev_x = self.player.x
                                 prev_y = self.player.y
                                 self.player.x = move_rect.x // TILESIZE
@@ -199,17 +205,14 @@ class Arena:
                                 dx = self.player.x - prev_x
                                 dy = self.player.y - prev_y
                                 self.possible_moves -= abs(dx) + abs(dy)
-                                print("po")
-                                print(self.player.x, self.player.y)
+                                # print("po")
+                                # print(self.player.x, self.player.y)
                                 self.battle_log.add_log("Player moved")
                     if self.player.check_opponent_in_range(self.monster):
                         if self.monster.rect.collidepoint(pos):
                             if self.game.arena.player.attack(self.game.arena.monster):
                                 self.result = 1
                             print("Monster zaatakowany")
-
-                    # do przmyslenia gdzie to dac
-                    self.create_move_rects()
 
             else:
                 if self.monster.check_opponent_in_range(self.player):
@@ -219,6 +222,7 @@ class Arena:
                     self.monster.move_to_opponent(self.player)
                     self.battle_log.add_log("Monster moved")
                 self.possible_moves = self.player.statistics.move_range
+                self.cant_move_logged = False
                 self.turn += 1
 
             # PLAYER WON

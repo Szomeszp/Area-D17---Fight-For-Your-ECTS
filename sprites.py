@@ -68,7 +68,7 @@ class Wall(pg.sprite.Sprite):
 
 
 class Door(pg.sprite.Sprite):
-    def __init__(self, game, map_name, map, x, y, w, h, name):
+    def __init__(self, game, map_name, map, x, y, w, h, out_name):
         print(map_name)
         self.groups = map.doors
         pg.sprite.Sprite.__init__(self, self.groups)
@@ -79,7 +79,7 @@ class Door(pg.sprite.Sprite):
         self.rect.x = x
         self.rect.y = y
         self.map_name = map_name
-        self.name = name
+        self.out_name = out_name
 
 
 class NPC(pg.sprite.Sprite):
@@ -164,8 +164,8 @@ class NPC(pg.sprite.Sprite):
 
 
 class SecretDoor(Door):
-    def __init__(self, game, map_name, map, x, y, w, h, name):
-        super().__init__(game, map_name, map, x, y, w, h, name)
+    def __init__(self, game, map_name, map, x, y, w, h, out_name):
+        super().__init__(game, map_name, map, x, y, w, h, out_name)
         self.groups = map.doors, map.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.image.load(path.join(IMG_FOLDER, "stairs1.png"))

@@ -68,9 +68,10 @@ class Game:
     def get_through_door(self, door=None):
         if door is not None:
             new_map = door.map_name
-            spawn = door.name + "_spawn"
-            if door.name == "secret_door_out":
-                self.secret_room_entered = True
+            spawn = door.out_name + "_spawn"
+            if door.out_name == "secret_door_out":
+                # jak wejdziesz juz w secret door to je usun
+                door.kill()
         else:
             spawn = " "
             new_map = self.main_map
@@ -115,27 +116,15 @@ class Game:
                 #             int(tile_object.y // TILESIZE) * TILESIZE,
                 #             "monster", stats)
                 if tile_object.type == "monster_spawn":
-                    self.map.monsters_spawns.append(Spawn(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height, 2))
-                if not self.secret_room_entered:
-                    if tile_object.type == "secret_door_spawn":
-                        # self.map.monsters_spawns.append(
-                        #     Spawn(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height))
-                        for dx in range(int(tile_object.width // TILESIZE)):
-                            for dy in range(int(tile_object.height // TILESIZE)):
-                                random_door_locations.append(
-                                    [int((tile_object.x // TILESIZE) + dx), int((tile_object.y // TILESIZE) + dy)])
-        # print(len(random_door_locations))
+                    self.map.monsters_spawns.append(MonsterSpawn(self, self.map, tile_object.x, tile_object.y,
+                                                                 tile_object.width, tile_object.height, 2))
+                if tile_object.type == "secret_door_spawn":
+                    self.map.secret_doors_spawns.append(SecretDoorSpawn(self, self.map, tile_object.x,tile_object.y,
+                                                                        tile_object.width, tile_object.height))
         if not objs_created:
-            if not self.secret_room_entered:
-                if len(random_door_locations) > 0:
-                    random_location = random_door_locations[randint(0, len(random_door_locations) - 1)]
-                    print(random_location)
-                    map_name = "map_kapitol.tmx"
-                    SecretDoor(self, map_name, self.map, random_location[0] * TILESIZE, random_location[1] * TILESIZE, TILESIZE, TILESIZE,
-                               "secret_door_out")
+            for secret_door in self.map.secret_doors_spawns:
+                secret_door.spawn_secret_door()
         self.camera = Camera(self.map.width, self.map.height)
-
-
 
     def create_arena(self, monster, arena):
         self.last_position = ((self.player.x, self.player.y), (monster.rect.x, monster.rect.y), self.map)
@@ -171,7 +160,7 @@ class Game:
         # update portion of the game loop
         for spawn in self.map.monsters_spawns:
             if self.current_time - spawn.last_spawn > 10000:
-                spawn.spawn_n_objects(1)
+                spawn.spawn_n_monsters(1)
         self.map.all_sprites.update()
         self.camera.update(self.player)
 
