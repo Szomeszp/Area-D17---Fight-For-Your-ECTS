@@ -66,7 +66,6 @@ class Wall(pg.sprite.Sprite):
         self.rect.y = y
 
 
-
 class Door(pg.sprite.Sprite):
     def __init__(self, game, map_name, map, x, y, w, h, out_name):
         print(map_name)
@@ -96,7 +95,7 @@ class NPC(pg.sprite.Sprite):
         self.name = name
 
         self.current_path = 0
-        self.current_sub_path = 0
+        self.current_sub_path = -1
 
     def dialogue(self):
         print("Dialog")
@@ -116,24 +115,24 @@ class NPC(pg.sprite.Sprite):
                                                self.game.screen.get_height() - space_text_size[1] - 40))
 
             position = 152
-            text = dialogues_file[self.name]["paths"][self.current_path]["main_text"]
+            if self.current_path == -1 or self.name not in dialogues_file:
+                text = "..."
+            else:
+                text = dialogues_file[self.name]["paths"][self.current_path]["main_text"]
             rendered_text = self.game.my_big_font.render(text, 1, (255, 255, 255))
             self.game.screen.blit(rendered_text, (40, self.game.screen.get_height() - position))
 
             position = position - self.game.my_big_font.size(text)[1] - 8
+            if self.current_path != -1 and self.name in dialogues_file:
+                for i in range(dialogues_file[self.name]["paths"][self.current_path]["number_of_sub_paths"]):
+                    text = dialogues_file[self.name]["paths"][self.current_path]["sub_paths"][i]["text"]
 
-            for i in range(dialogues_file[self.name]["paths"][self.current_path]["number_of_sub_paths"]):
-                text = dialogues_file[self.name]["paths"][self.current_path]["sub_paths"][i]["text"]
+                    if i == self.current_sub_path:
+                        text = ">>>  " + text
 
-                if i == self.current_sub_path:
-                    text = ">>>  " + text
-
-                rendered_text = self.game.my_medium_font.render(text, 1, (255, 255, 255))
-                self.game.screen.blit(rendered_text, (40, self.game.screen.get_height() - position))
-                position = position - self.game.my_small_font.size(text)[1] - 8
-
-
-        print(dialogues_file[self.name])
+                    rendered_text = self.game.my_medium_font.render(text, 1, (255, 255, 255))
+                    self.game.screen.blit(rendered_text, (40, self.game.screen.get_height() - position))
+                    position = position - self.game.my_small_font.size(text)[1] - 8
 
         cnt = True
         reload = True
@@ -149,19 +148,28 @@ class NPC(pg.sprite.Sprite):
                 if event.type == pg.KEYDOWN:
                     # pg.event.pump()
                     if event.key == pg.K_RETURN:
-                        self.current_path = dialogues_file[self.name]["paths"][self.current_path]["sub_paths"][self.current_sub_path]["go_to"]
-                        self.current_sub_path = -1
-                        reload = True
+                        if self.name in dialogues_file:
+                            self.current_path = \
+                            dialogues_file[self.name]["paths"][self.current_path]["sub_paths"][self.current_sub_path][
+                                "go_to"]
+                            self.current_sub_path = -1
+                            reload = True
                     elif event.key == pg.K_SPACE:
                         self.current_path = 0
-                        self.current_sub_path = 0
+                        self.current_sub_path = -1
                         cnt = False
                     elif event.key == pg.K_w:
-                        self.current_sub_path = (self.current_sub_path + 1) % dialogues_file[self.name]["paths"][self.current_path]["number_of_sub_paths"]
-                        reload = True
+                        if self.name in dialogues_file:
+                            self.current_sub_path = (self.current_sub_path + 1) % \
+                                                    dialogues_file[self.name]["paths"][self.current_path][
+                                                        "number_of_sub_paths"]
+                            reload = True
                     elif event.key == pg.K_s:
-                        self.current_sub_path = (self.current_sub_path - 1) % dialogues_file[self.name]["paths"][self.current_path]["number_of_sub_paths"]
-                        reload = True
+                        if self.name in dialogues_file:
+                            self.current_sub_path = (self.current_sub_path - 1) % \
+                                                    dialogues_file[self.name]["paths"][self.current_path][
+                                                        "number_of_sub_paths"]
+                            reload = True
 
                 pg.display.flip()
                 self.game.clock.tick(FPS) / 1000
@@ -203,6 +211,7 @@ class Monster(pg.sprite.Sprite, Character):
                 self.rect.y += TILESIZE
             else:
                 self.rect.y -= TILESIZE
+
         moves = self.statistics.move_range
         for i in range(moves):
             dy = opponent.y - self.rect.y // TILESIZE
@@ -217,6 +226,3 @@ class Monster(pg.sprite.Sprite, Character):
                     x_move(dx)
                 else:
                     y_move(dy)
-
-
-
