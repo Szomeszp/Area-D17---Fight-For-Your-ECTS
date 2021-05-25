@@ -20,6 +20,7 @@ class Player(pg.sprite.Sprite, Character):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = self.getImage()
         self.items = []
+
     def level_up(self, experience):
         tmp_level = self.level
         self.experience = min(self.experience + experience, -5000 * math.log(- 7 / 8 + 1))
