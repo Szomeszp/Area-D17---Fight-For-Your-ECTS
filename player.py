@@ -21,9 +21,11 @@ class Player(pg.sprite.Sprite, Character):
         self.image = self.getImage()
         self.items = []
     def level_up(self, experience):
+        tmp_level = self.level
         self.experience = min(self.experience + experience, -5000 * math.log(- 7 / 8 + 1))
         self.level = min(math.ceil(8 - 8 * (e ** (-self.experience * 0.0002))), 7)
-        self.statistics = Statistics.generatePlayerStatistics(self.level)
+        if tmp_level - self.level != 0:
+            self.statistics = Statistics.generatePlayerStatistics(self.level)
 
     def getImage(self):
         return pg.image.load(path.join(IMG_FOLDER, self.game.player_img.value))

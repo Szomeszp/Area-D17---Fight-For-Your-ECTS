@@ -19,8 +19,8 @@ class Statistics:
 
     @staticmethod
     def generatePlayerStatistics(level):
-        return Statistics(29 + 11 * level, 23 + 7*level, 0, 0, 0, 1, 1, (2 - 2 * (e ** (level / 13)) * 100),  (5 - 5 * (e ** (level / 19)) * 20))
+        return Statistics(50 + 11 * level, 23 + 7*level, 0, 0, 0, 3, 1, (2 - 2 * (e ** (level / 13)) * 100),  (5 - 5 * (e ** (level / 19)) * 20))
 
     @staticmethod
     def generateMonsterStatistics(level):
-        return Statistics(29 + 11 * level, 23 + 7*level, 0, 0, 0, 1, 1, (2 - 2 * (e ** (level / 13)) * 100),  (5 - 5 * (e ** (level / 19)) * 20))
+        return Statistics(29 + 11 * level, 13 + 7*level, 0, 0, 0, 1, 1, (2 - 2 * (e ** (level / 13)) * 100),  (5 - 5 * (e ** (level / 19)) * 20))

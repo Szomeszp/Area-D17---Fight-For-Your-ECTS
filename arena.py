@@ -252,7 +252,7 @@ class Arena:
                 self.monster.spawn.last_spawn = pg.time.get_ticks()
                 self.monster.spawn.current_monsters -= 1
                 self.monster.kill()
-                self.game.arena.player.level_up(2000)
+                self.game.arena.player.level_up(200)
 
             elif self.result == -1:
                 # co jak my zginiemy
