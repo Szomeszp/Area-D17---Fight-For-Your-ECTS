@@ -91,6 +91,18 @@ class Arena:
                         tile_object.name
                     )
                 )
+            if tile_object.name == "item1":
+                if len(self.player.items) > 0:
+                    self.player.items[0].rect.x = tile_object.x
+                    self.player.items[0].rect.y = tile_object.y
+                    self.game.map.all_sprites.add(self.player.items[0])
+                    self.game.map.items.add(self.player.items[0])
+            if tile_object.name == "item2":
+                if len(self.player.items) > 1:
+                    self.player.items[1].rect.x = tile_object.x
+                    self.player.items[1].rect.y = tile_object.y
+                    self.game.map.all_sprites.add(self.player.items[1])
+                    self.game.map.items.add(self.player.items[1])
 
             if tile_object.name == "monsterHealthBar":
                 # print(tile_object.x, tile_object.y, tile_object.width, monster.statistics.health)
@@ -210,12 +222,17 @@ class Arena:
                                 self.possible_moves -= abs(dx) + abs(dy)
                                 # print("po")
                                 # print(self.player.x, self.player.y)
-                                self.battle_log.add_log("Player moved")
+                                self.battle_log.add_log("Player poruszyl sie")
                     if self.player.check_opponent_in_range(self.monster):
                         if self.monster.rect.collidepoint(pos):
                             if self.game.arena.player.attack(self.game.arena.monster):
                                 self.result = 1
                             print("Monster zaatakowany")
+                    # z itemow mamy tylko potiony
+                    for item in self.game.map.items:
+                        if item.rect.collidepoint(pos):
+                            hp = self.player.heal(item)
+                            self.battle_log.add_log(f"Player uleczyl się za {hp} hp")
 
             else:
                 if self.monster.check_opponent_in_range(self.player):
@@ -223,7 +240,7 @@ class Arena:
                         self.result = -1
                 else:
                     self.monster.move_to_opponent(self.player)
-                    self.battle_log.add_log("Monster moved")
+                    self.battle_log.add_log("Monster poruszyl sie")
                 self.possible_moves = self.player.statistics.move_range
                 self.cant_move_logged = False
                 self.turn += 1

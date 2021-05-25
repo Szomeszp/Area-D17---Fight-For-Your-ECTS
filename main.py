@@ -3,6 +3,8 @@ from time import sleep
 import pygame as pg
 import sys
 from os import path
+
+from items import HealthPotion
 from player import *
 from settings import *
 from sprites import *
@@ -123,6 +125,9 @@ class Game:
                     self.map.secret_doors_spawns.append(SecretDoorSpawn(self, self.map, tile_object.x,tile_object.y,
                                                                         tile_object.width, tile_object.height))
         if not objs_created:
+            if self.map.map_name == "map_alpha2.tmx":
+                HealthPotion(self, self.map, 480, 1664, 500, "big_potion")
+                HealthPotion(self, self.map, 512, 1696, 100, "small_potion")
             for secret_door in self.map.secret_doors_spawns:
                 secret_door.spawn_secret_door()
         self.camera = Camera(self.map.width, self.map.height)
@@ -170,7 +175,9 @@ class Game:
         if self.arena:
             self.arena.draw_arena()
         for sprite in self.map.all_sprites:
-            self.screen.blit(sprite.image, self.camera.apply(sprite))
+            if sprite != self.player:
+                self.screen.blit(sprite.image, self.camera.apply(sprite))
+        self.screen.blit(self.player.image, self.camera.apply(self.player))
         # TODO
         if not self.arena:
             self.player.draw_gui()
@@ -199,6 +206,8 @@ class Game:
                         self.player.interact()
                     if event.key == pg.K_q:
                         self.player.fight()
+                    if event.key == pg.K_c:
+                        self.player.collect_item()
         if not moved:
             if self.staticFrames > 15:
                 self.player.stand()

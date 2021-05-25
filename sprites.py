@@ -89,8 +89,9 @@ class NPC(pg.sprite.Sprite):
         self.rect = pg.Rect(x, y, w, h)
         self.x = x
         self.y = y
-        self.rect.x = x
-        self.rect.y = y
+        # chyba niepotrzebne
+        # self.rect.x = x
+        # self.rect.y = y
 
         self.name = name
 

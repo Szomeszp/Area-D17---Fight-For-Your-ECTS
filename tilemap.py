@@ -20,6 +20,7 @@ class TiledMap:
         self.doors = pg.sprite.Group()
         self.npcs = pg.sprite.Group()
         self.monsters = pg.sprite.Group()
+        self.items = pg.sprite.Group()
         self.monsters_spawns = []
         self.secret_doors_spawns = []
 

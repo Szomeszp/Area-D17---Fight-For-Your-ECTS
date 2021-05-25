@@ -19,7 +19,7 @@ class Player(pg.sprite.Sprite, Character):
         self.map = map
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = self.getImage()
-
+        self.items = []
     def level_up(self, experience):
         self.experience = min(self.experience + experience, -5000 * math.log(- 7 / 8 + 1))
         self.level = min(math.ceil(8 - 8 * (e ** (-self.experience * 0.0002))), 7)
@@ -174,3 +174,19 @@ class Player(pg.sprite.Sprite, Character):
         text = self.game.my_small_font.render(f"LEVEL {self.level}", 1, (0, 0, 0))
         text_size = self.game.my_small_font.size(f"HEALTH")
         self.game.screen.blit(text, (208 - text_size[0] / 2, 17 - text_size[1] / 2))
+
+    def collect_item(self):
+        for item in self.map.items:
+            if self.rect.colliderect(item):
+                self.items.append(item)
+                self.map.items.remove(item)
+                self.map.all_sprites.remove(item)
+                print("Zebrałeś item")
+
+    def heal(self, potion):
+        prev_hp = self.statistics.current_health
+        self.statistics.current_health = min(self.statistics.current_health + potion.health, self.statistics.max_health)
+        hp = self.statistics.current_health - prev_hp
+        self.items.remove(potion)
+        potion.kill()
+        return hp
