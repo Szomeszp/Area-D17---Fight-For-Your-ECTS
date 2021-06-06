@@ -22,3 +22,16 @@ class HealthPotion(Item):
         super().__init__(game, map, x, y)
         self.health = health
         self.image = pg.image.load(path.join(IMG_FOLDER, image_name + ".png"))
+
+
+class Key(pg.sprite.Sprite):
+    def __init__(self, game, map, x, y):
+        self.game = game
+        self.map = map
+        self.groups = map.all_sprites, map.items
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
+        self.x = x
+        self.y = y
+        self.image = pg.image.load(path.join(IMG_FOLDER, "key" + ".png"))

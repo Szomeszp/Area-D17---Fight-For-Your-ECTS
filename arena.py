@@ -3,6 +3,7 @@ from time import sleep
 
 import pygame as pg
 
+from items import Key
 from sprites import Monster
 from player import Player
 from statistics import *
@@ -103,6 +104,14 @@ class Arena:
                     self.player.items[1].rect.y = tile_object.y
                     self.game.map.all_sprites.add(self.player.items[1])
                     self.game.map.items.add(self.player.items[1])
+
+            # if tile_object.name == "item4":
+            #     for item in self.player.items:
+            #         if isinstance(item, Key):
+            #             item.rect.x = tile_object.x
+            #             item.rect.y = tile_object.y
+            #             self.game.map.all_sprites.add(item)
+            #             self.game.map.items.add(item)
 
             if tile_object.name == "monsterHealthBar":
                 # print(tile_object.x, tile_object.y, tile_object.width, monster.statistics.health)
@@ -273,8 +282,6 @@ class Arena:
                 # self.turn += 1
                 pg.event.clear()
 
-
-
     def draw_move_range(self):
         for rect in self.move_rects:
             rect.draw_rect()
@@ -339,8 +346,6 @@ class HealthBar:
 
     def draw_health(self):
         ratio = self.character.statistics.current_health / self.character.statistics.max_health
-
-
         if ratio == 1:
             pg.draw.rect(self.game.screen, GREEN, pg.Rect((self.x, self.y), (self.width, self.height)), border_radius=4)
         elif ratio == 0:
@@ -384,8 +389,6 @@ class StatisticsPanel:
         self.arena.game.screen.blit(text,
                               (self.x + 4, self.y + 4 + i * text_size[1]))
         i = i + 1
-
-
 
 class BattleInfo:
     def __init__(self, game, x, y, w, h, info):

@@ -202,7 +202,6 @@ class Player(pg.sprite.Sprite, Character):
         self.game.screen.blit(text, ((WIDTH - text_size[0]) / 2, (HEIGHT - text_size[1]) / 2))
         self.remaining_respawn_time -= 1
 
-
     def collect_item(self):
         for item in self.map.items:
             if self.rect.colliderect(item):

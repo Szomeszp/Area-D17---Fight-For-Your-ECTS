@@ -67,6 +67,54 @@
 
   "npc_three":
   {
+    "paths": [
+      {
+        "id": 0,
+        "main_text": "Witam, czego szukasz?",
+        "number_of_sub_paths" : 2,
+        "sub_paths": [
+          {
+            "text": "Widziałeś może sekretny klucz?",
+            "go_to": 1
+          },
+          {
+            "text": "Niczego, przyszedłem się tylko rozglądnąć.",
+            "go_to": -1
+          }
+        ]
+      },
 
+      {
+        "id": 1,
+        "main_text": "Tak, to ja go mam! Potrzebujesz go?",
+        "number_of_sub_paths" : 2,
+        "sub_paths": [
+          {
+            "text": "Tak, czy mógłbyś mi go dać?",
+            "go_to": 2
+          },
+          {
+            "text": "Nie, tak tylko pytam, do widzenia!",
+            "go_to": -1
+          }
+        ]
+      },
+
+      {
+        "id": 2,
+        "main_text": "Weź go, ale używaj go z rozwagą!",
+        "number_of_sub_paths" : 2,
+        "sub_paths": [
+          {
+            "text": "Dzięki, tak tez zrobię!!!",
+            "go_to": 1000
+          },
+          {
+            "text": "Jednak, aż tak bardzo go nie potrzebuje.",
+            "go_to": -1
+          }
+        ]
+      }
+    ]
   }
 }

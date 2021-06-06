@@ -2,6 +2,8 @@ import random
 import json
 
 import pygame as pg
+
+from items import Key
 from statistics import *
 from settings import *
 from os import path
@@ -118,6 +120,12 @@ class NPC(pg.sprite.Sprite):
             position = 152
             if self.current_path == -1 or self.name not in dialogues_file:
                 text = "..."
+            elif self.current_path == GET_KEY:
+                key = Key(self.game, self.game.map, -1, -1)
+                self.game.player.items.append(key)
+                print("Dostałeś klucz!")
+                text = ""
+                return
             else:
                 text = dialogues_file[self.name]["paths"][self.current_path]["main_text"]
             rendered_text = self.game.my_big_font.render(text, 1, (255, 255, 255))

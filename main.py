@@ -127,7 +127,7 @@ class Game:
         if not objs_created:
             print(self.map.map_name)
             if self.map.map_name == "map_alpha2.tmx":
-                print("potionspawned")
+                print("Potions spawned")
                 HealthPotion(self, self.map, 480, 1664, 500, "big_potion")
                 HealthPotion(self, self.map, 512, 1696, 100, "small_potion")
             for secret_door in self.map.secret_doors_spawns:
