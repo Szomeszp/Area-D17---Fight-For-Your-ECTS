@@ -121,10 +121,14 @@ class NPC(pg.sprite.Sprite):
             if self.current_path == -1 or self.name not in dialogues_file:
                 text = "..."
             elif self.current_path == GET_KEY:
-                key = Key(self.game, self.game.map, -1, -1)
+                # musimy zdecydować czy chcemy go kiedykolwiek wyswietlac, jesli nie to nie potrzbna jest mu mapa ani połozenie
+                key = Key(self.game, self.game.map, -100, -100)
                 self.game.player.items.append(key)
-                print("Dostałeś klucz!")
-                text = ""
+                self.game.add_message(Message("Dostałeś klucz!"))
+                return
+            elif self.current_path == GET_MEDICINE:
+                self.game.player.statistics.current_health = self.game.player.statistics.max_health
+                self.game.add_message(Message("Zostałeś wyleczony"))
                 return
             else:
                 text = dialogues_file[self.name]["paths"][self.current_path]["main_text"]

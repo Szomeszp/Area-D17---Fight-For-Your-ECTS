@@ -111,5 +111,38 @@
         ]
       }
     ]
+  },
+
+  "npc_six":
+  {
+    "paths": [
+      {
+        "id": 0,
+        "main_text": "Dzień dobry, jak się czujesz?",
+        "number_of_sub_paths" : 2,
+        "sub_paths": [
+          {
+            "text": "Nie najlepiej, możesz mi jakoś pomóc?",
+            "go_to": 1
+          },
+          {
+            "text": "Bardzo dobrze.",
+            "go_to": -1
+          }
+        ]
+      },
+
+      {
+        "id": 1,
+        "main_text": "Jasne, od tego tu jestem. Proszę, wypij to lekarstwo.",
+        "number_of_sub_paths" : 1,
+        "sub_paths": [
+          {
+            "text": "Dziękuje, od razu mi lepiej!",
+            "go_to": 2000
+          }
+        ]
+      }
+    ]
   }
 }

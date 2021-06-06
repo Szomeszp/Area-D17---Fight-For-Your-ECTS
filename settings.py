@@ -2,6 +2,7 @@ import pygame as pg
 from enum import Enum
 from os import path
 
+
 class Message:
     def __init__(self, text):
         self.text = text
@@ -64,3 +65,4 @@ CAN_MOVE_IMG = pg.image.load(path.join(IMG_FOLDER, "can_move.png"))
 CAN_ATTACK_IMG = pg.image.load(path.join(IMG_FOLDER, "can_attack.png"))
 
 GET_KEY = 1000
+GET_MEDICINE = 2000
