@@ -135,7 +135,7 @@ class Game:
         self.camera = Camera(self.map.width, self.map.height)
 
     def create_arena(self, monster, arena):
-        self.last_position = ((self.player.x, self.player.y), (monster.rect.x, monster.rect.y), self.map)
+        self.last_position = [[self.player.x, self.player.y], [monster.rect.x, monster.rect.y], self.map]
         self.arena = Arena(self, self.player, monster, arena)
         self.render_map(self.player, "", 1)
 
@@ -154,7 +154,11 @@ class Game:
             self.dt = self.clock.tick(FPS) / 1000
             # self.events()
             if not self.arena:
-                self.game_events()
+                if self.player.is_dead:
+                    pass
+                else:
+                    self.game_events()
+
                 self.update()
                 self.draw()
             else:
@@ -180,9 +184,16 @@ class Game:
             if sprite != self.player:
                 self.screen.blit(sprite.image, self.camera.apply(sprite))
         self.screen.blit(self.player.image, self.camera.apply(self.player))
+
         # TODO
         if not self.arena:
-            self.player.draw_gui()
+            if self.player.is_dead:
+                print("PLAYER IS DEAD!")
+                self.player.dead_screen()
+                print("IM BACK!!!!")
+            else:
+                self.player.draw_gui()
+
         pg.display.flip()
 
     def game_events(self):

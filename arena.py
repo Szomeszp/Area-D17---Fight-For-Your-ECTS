@@ -253,20 +253,19 @@ class Arena:
                 self.monster.spawn.current_monsters -= 1
                 self.monster.kill()
                 self.game.arena.player.level_up(200)
+                self.battle_log.add_log("Player wygrał")
 
             elif self.result == -1:
-                # co jak my zginiemy
-                # TODO
-                pass
+                self.player.is_dead = True
+                self.player.remaining_respawn_time = self.player.respawn_time
+                self.game.last_position[0][0] = 5
+                self.game.last_position[0][1] = 5
+                self.battle_log.add_log("Player zginal")
 
             self.game.update()
             self.game.draw()
 
             if self.result != 0:
-                # TODO
-                # To będzie do poprawki
-                # rysowanie wyniku końcowego
-                # krótki sleep
                 sleep(1)
                 self.exit_arena()
                 break

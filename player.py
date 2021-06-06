@@ -1,4 +1,5 @@
 import random
+from time import sleep
 
 import pygame as pg
 from sprites import Character
@@ -20,6 +21,11 @@ class Player(pg.sprite.Sprite, Character):
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = self.getImage()
         self.items = []
+
+        self.is_dead = False
+        self.respawn_time = 5
+        self.remaining_respawn_time = 0
+
     def level_up(self, experience):
         tmp_level = self.level
         self.experience = min(self.experience + experience, -5000 * math.log(- 7 / 8 + 1))
@@ -176,6 +182,26 @@ class Player(pg.sprite.Sprite, Character):
         text = self.game.my_small_font.render(f"LEVEL {self.level}", 1, (0, 0, 0))
         text_size = self.game.my_small_font.size(f"HEALTH")
         self.game.screen.blit(text, (208 - text_size[0] / 2, 17 - text_size[1] / 2))
+
+    def dead_screen(self):
+        sleep(1)
+
+        if self.remaining_respawn_time == 0:
+            self.is_dead = False
+            return
+
+        print(self.remaining_respawn_time)
+
+        pg.draw.rect(self.game.screen, BLACK, pg.Rect((0, 0), (WIDTH, HEIGHT)),
+                     border_radius=4)
+
+        info = f"Dziekanka byq: {self.remaining_respawn_time}..."
+        text = self.game.my_big_font.render(info, 1, (255, 255, 255))
+        text_size = self.game.my_big_font.size(info)
+
+        self.game.screen.blit(text, ((WIDTH - text_size[0]) / 2, (HEIGHT - text_size[1]) / 2))
+        self.remaining_respawn_time -= 1
+
 
     def collect_item(self):
         for item in self.map.items:
