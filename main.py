@@ -22,6 +22,7 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.main_map = "map_alpha2.tmx"
+        self.respawn_map = "map_hospital.tmx"
         self.maps = {}
         self.secret_room_entered = False
         self.my_small_font = pg.font.SysFont('Arial Unicode MS', 16)
@@ -29,6 +30,7 @@ class Game:
         self.my_big_font = pg.font.SysFont('Arial Unicode MS', 32)
         self.arena = None
         self.load_map(self.main_map)
+        self.load_map(self.respawn_map)
         self.load_data()
         self.current_time = 0
         # self.init_groups()

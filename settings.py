@@ -54,4 +54,7 @@ BUTTON_THREE = "Heal"
 BUTTON_FOUR = "NEXT TURN"
 BUTTON_FIVE = "EXIT"
 
+CAN_MOVE_IMG = pg.image.load(path.join(IMG_FOLDER, "can_move.png"))
+CAN_ATTACK_IMG = pg.image.load(path.join(IMG_FOLDER, "can_attack.png"))
+
 GET_KEY = 1000

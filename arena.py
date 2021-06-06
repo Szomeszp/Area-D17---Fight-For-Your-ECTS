@@ -267,8 +267,9 @@ class Arena:
             elif self.result == -1:
                 self.player.is_dead = True
                 self.player.remaining_respawn_time = self.player.respawn_time
-                self.game.last_position[0][0] = 5
-                self.game.last_position[0][1] = 5
+                self.game.last_position[0][0] = 30
+                self.game.last_position[0][1] = 21
+                self.game.last_position[2] = self.game.maps[self.game.respawn_map]
                 self.battle_log.add_log("Player zginal")
 
             self.game.update()
