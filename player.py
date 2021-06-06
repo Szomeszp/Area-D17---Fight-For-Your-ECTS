@@ -2,7 +2,9 @@ import random
 from time import sleep
 
 import pygame as pg
-from sprites import Character
+
+from items import Key
+from sprites import Character, SecretDoor
 from statistics import *
 from settings import *
 from numpy import e
@@ -39,8 +41,16 @@ class Player(pg.sprite.Sprite, Character):
     def move(self, dx=0, dy=0):
         door = self.collide_with_door()
         if door:
-            self.game.get_through_door(door)
-        else:
+            if isinstance(door, SecretDoor):
+                if not any(isinstance(item, Key) for item in self.items):
+                    self.game.show_message("Nie masz klucza!")
+                    print("Nie masz klucza!")
+                    door = None
+                else:
+                    self.game.get_through_door(door)
+            else:
+                self.game.get_through_door(door)
+        if not door:
             if not self.collide_with_walls(dx, dy):
                 self.x += dx
                 self.y += dy

@@ -195,8 +195,26 @@ class Game:
                 print("IM BACK!!!!")
             else:
                 self.player.draw_gui()
+                self.show_message("siema")
 
         pg.display.flip()
+
+    def show_message(self, text):
+        message = self.my_small_font.render(text, 1, (255, 255, 255))
+        message_size = self.my_small_font.size(text)
+
+        x = self.player.rect.x
+        y = self.player.rect.y
+        # print(x, y)
+        # draw background
+        pos = (x - message_size[0] / 2 + 16, y - message_size[1])
+        size = (message_size[0] + 8, message_size[1] + 8)
+        pg.draw.rect(self.screen, BLACK, pg.Rect(pos, size), border_radius=4)
+        # draw text
+        self.screen.blit(message, (x - message_size[0] / 2 + 24, y - message_size[1]))
+
+
+
 
     def game_events(self):
         # catch all events here
