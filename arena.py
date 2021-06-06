@@ -285,7 +285,8 @@ class Arena:
 
     def draw_move_range(self):
         for rect in self.move_rects:
-            rect.draw_rect()
+            # rect.draw_rect()
+            self.game.screen.blit(CAN_MOVE_IMG, (rect.x, rect.y))
 
     def create_move_rects(self):
         self.move_rects = []
@@ -314,7 +315,8 @@ class Arena:
             x = self.monster.rect.x
             y = self.monster.rect.y
             print(x, y)
-            pg.draw.circle(self.game.screen, RED, (x + TILESIZE/2, y + TILESIZE/2), 16)
+            # pg.draw.circle(self.game.screen, RED, (x + TILESIZE/2, y + TILESIZE/2), 16)
+            self.game.screen.blit(CAN_ATTACK_IMG, (x, y))
             print("Circle drawn!")
 
 

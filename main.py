@@ -33,6 +33,7 @@ class Game:
         self.load_map(self.respawn_map)
         self.load_data()
         self.current_time = 0
+        self.messages = []
         # self.init_groups()
 
     # def init_groups(self):
@@ -110,11 +111,13 @@ class Game:
                     Wall(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
                 if tile_object.type == "door":
                     print(tile_object.map)
-                    Door(self, tile_object.map, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
+                    Door(self, tile_object.map, self.map, tile_object.x, tile_object.y, tile_object.width,
+                         tile_object.height,
                          tile_object.name)
                 if tile_object.type == "npc":
                     print("Npc")
-                    NPC(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height, tile_object.name)
+                    NPC(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
+                        tile_object.name)
                 # if tile_object.type == "monster":
                 #     stats = Statistics.generateMonsterStatistics(self, 1)
                 #     Monster(self, self.map, int(tile_object.x // TILESIZE) * TILESIZE,
@@ -124,7 +127,7 @@ class Game:
                     self.map.monsters_spawns.append(MonsterSpawn(self, self.map, tile_object.x, tile_object.y,
                                                                  tile_object.width, tile_object.height, 2))
                 if tile_object.type == "secret_door_spawn":
-                    self.map.secret_doors_spawns.append(SecretDoorSpawn(self, self.map, tile_object.x,tile_object.y,
+                    self.map.secret_doors_spawns.append(SecretDoorSpawn(self, self.map, tile_object.x, tile_object.y,
                                                                         tile_object.width, tile_object.height))
         if not objs_created:
             print(self.map.map_name)
@@ -195,26 +198,36 @@ class Game:
                 print("IM BACK!!!!")
             else:
                 self.player.draw_gui()
-                self.show_message("siema")
+                # self.show_message("SIEEEEEEEEEEEEEEMA")
+                if len(self.messages) > 0:
+                    self.show_message()
 
         pg.display.flip()
 
-    def show_message(self, text):
-        message = self.my_small_font.render(text, 1, (255, 255, 255))
-        message_size = self.my_small_font.size(text)
+    def add_message(self, message):
+        self.messages.append(message)
 
-        x = self.player.rect.x
-        y = self.player.rect.y
+    def show_message(self):
+        text = self.messages[0].text
+        message = self.my_medium_font.render(text, 1, (255, 255, 255))
+        message_size = self.my_medium_font.size(text)
+
+        x = self.camera.apply_rect(self.map_rect).x + self.player.rect.x
+        y = self.camera.apply_rect(self.map_rect).y + self.player.rect.y
+
         # print(x, y)
         # draw background
-        pos = (x - message_size[0] / 2 + 16, y - message_size[1])
-        size = (message_size[0] + 8, message_size[1] + 8)
+        pos = (x - message_size[0] / 2 + 12, y - message_size[1] - 2)
+        size = (message_size[0] + 8, message_size[1] + 4)
         pg.draw.rect(self.screen, BLACK, pg.Rect(pos, size), border_radius=4)
         # draw text
-        self.screen.blit(message, (x - message_size[0] / 2 + 24, y - message_size[1]))
+        self.screen.blit(message, (x - message_size[0] / 2 + 16, y - message_size[
+            1] + 1))  # tu trzeba to jakoś ładniej zrobić bo te przesunięcia to były na kartce liczone xD
 
+        self.messages[0].duration -= 1
 
-
+        if self.messages[0].duration == 0:
+            self.messages.pop(0)
 
     def game_events(self):
         # catch all events here

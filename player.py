@@ -43,7 +43,7 @@ class Player(pg.sprite.Sprite, Character):
         if door:
             if isinstance(door, SecretDoor):
                 if not any(isinstance(item, Key) for item in self.items):
-                    self.game.show_message("Nie masz klucza!")
+                    self.game.add_message(Message("Nie masz klucza!"))
                     print("Nie masz klucza!")
                     door = None
                 else:

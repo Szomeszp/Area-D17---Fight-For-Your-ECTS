@@ -2,6 +2,12 @@ import pygame as pg
 from enum import Enum
 from os import path
 
+class Message:
+    def __init__(self, text):
+        self.text = text
+        self.duration = 100
+
+
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 DARKGREY = (40, 40, 40)
