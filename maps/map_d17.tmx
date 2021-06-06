@@ -163,7 +163,7 @@
   <object id="19" name="wall" x="33.9095" y="549.094" width="185.181" height="55.811"/>
   <object id="20" name="wall" x="227.909" y="293.095" width="23.181" height="406.811"/>
   <object id="24" name="npc_one" type="npc" x="37" y="389" width="21" height="22"/>
-  <object id="26" name="npc_second" type="npc" x="69.5" y="646" width="21" height="22"/>
+  <object id="26" name="npc_two" type="npc" x="69.5" y="646" width="21" height="22"/>
   <object id="27" name="npc_main" type="npc" x="483.5" y="357" width="21" height="22"/>
   <object id="28" name="random_door" type="secret_door_spawn" x="361" y="103" width="494" height="179"/>
  </objectgroup>

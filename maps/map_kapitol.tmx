@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="left-up" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="22">
+<map version="1.5" tiledversion="1.5.0" orientation="orthogonal" renderorder="left-up" width="32" height="24" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="24">
  <tileset firstgid="1" source="roguelikeSheet_transparent.tsx"/>
+ <tileset firstgid="1768" source="tilemap_packed2.tsx"/>
  <layer id="1" name="Warstwa Kafelków 1" width="32" height="24">
   <data encoding="csv">
 921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,921,
@@ -100,7 +101,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,550,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,901,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,546,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,546,2118,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,547,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -137,5 +138,6 @@
   </object>
   <object id="18" name="door_kapitol_in_spawn" type="door_spawn" x="387" y="706" width="58" height="25"/>
   <object id="20" name="secret_door_out_spawn" x="33.5" y="65" width="26.5" height="26.5"/>
+  <object id="23" name="npc_three" type="npc" x="66" y="417.667" width="27.6667" height="28.6667"/>
  </objectgroup>
 </map>
