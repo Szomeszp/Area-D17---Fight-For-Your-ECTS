@@ -226,7 +226,7 @@ class Arena:
 
                     for item in self.game.map.items:
                         if item.rect.collidepoint(pos):
-                            hp = self.player.heal(item)
+                            hp = self.player.use_potion(item)
                             self.battle_log.add_log(f"Player uleczyl się za {hp} hp")
 
             else:

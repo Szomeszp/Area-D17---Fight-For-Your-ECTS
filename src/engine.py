@@ -129,6 +129,9 @@ class Game:
                     pass
                 else:
                     self.game_events()
+
+                self.player.static_heal()
+
                 self.update()
                 self.draw()
             else:

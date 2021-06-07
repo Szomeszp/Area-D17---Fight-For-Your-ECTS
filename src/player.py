@@ -225,10 +225,15 @@ class Player(pg.sprite.Sprite, Character):
                 self.map.items.remove(item)
                 self.map.all_sprites.remove(item)
 
-    def heal(self, potion):
+    def use_potion(self, potion):
         prev_hp = self.statistics.current_health
         self.statistics.current_health = min(self.statistics.current_health + potion.health, self.statistics.max_health)
         hp = self.statistics.current_health - prev_hp
         self.items.remove(potion)
         potion.kill()
         return hp
+
+    def static_heal(self):
+        self.statistics.current_health = min(self.statistics.max_health, 
+                                             self.statistics.current_health + self.level / 100)
+
