@@ -67,6 +67,7 @@ class MonsterSpawn(Spawn):
         self.current_monsters = 0
         self.last_spawn = -30001
         self.monster_name = name
+        self.level = 1
 
     def spawn_n_monsters(self, n):
         self.last_spawn = self.game.current_time
@@ -82,7 +83,7 @@ class MonsterSpawn(Spawn):
                     if rect.colliderect(monster):
                         continue
                 break
-            stats = Statistics.generate_monster_statistics(1)
+            stats = Statistics.generate_monster_statistics(self.level)
             Monster(self.game, self.map, self, x, y, self.monster_name, stats)
             self.current_monsters += 1
             i += 1

@@ -22,6 +22,8 @@ class Player(pg.sprite.Sprite, Character):
         self.items = []
         self.is_dead = False
 
+        self.money = 0
+
     def level_up(self, experience):
         tmp_level = self.level
         self.experience = min(self.experience + experience, -5000 * log(- 7 / 8 + 1))
@@ -186,6 +188,16 @@ class Player(pg.sprite.Sprite, Character):
         text = self.game.my_small_font.render(f"LEVEL {self.level}", 1, (0, 0, 0))
         text_size = self.game.my_small_font.size(f"HEALTH")
         self.game.screen.blit(text, (208 - text_size[0] / 2, 17 - text_size[1] / 2))
+
+
+        # GOLD
+        pg.draw.rect(self.game.screen, BLACK, pg.Rect((287, 7), (98, 18)),
+                     border_radius=4)
+
+        text = self.game.my_small_font.render(f"GOLD {self.money}", 1, (255, 255, 255))
+        text_size = self.game.my_small_font.size(f"GOLD {self.money}")
+        self.game.screen.blit(text, (336 - text_size[0] / 2, 17 - text_size[1] / 2))
+
 
     def dead_screen(self):
         sleep(1)

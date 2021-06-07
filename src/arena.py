@@ -245,8 +245,10 @@ class Arena:
             if self.result == 1:
                 self.game.last_position[2].monsters.remove(self.monster)
                 self.game.last_position[2].all_sprites.remove(self.monster)
+                self.player.money += self.monster.statistics.max_health
                 self.monster.spawn.last_spawn = pg.time.get_ticks()
                 self.monster.spawn.current_monsters -= 1
+                self.monster.spawn.level += 1
                 self.monster.kill()
                 self.game.arena.player.level_up(200)
                 self.battle_log.add_log("Player wygrał")
@@ -255,6 +257,7 @@ class Arena:
             elif self.result == -1:
                 self.player.is_dead = True
                 self.player.remaining_respawn_time = self.player.respawn_time
+                self.player.money //= 2
                 self.game.last_position[0][0] = 30
                 self.game.last_position[0][1] = 21
                 self.game.last_position[2] = self.game.maps[self.game.respawn_map]

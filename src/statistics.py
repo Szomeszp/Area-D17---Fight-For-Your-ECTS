@@ -1,3 +1,5 @@
+from math import ceil
+
 from numpy import e
 
 
@@ -22,24 +24,24 @@ class Statistics:
 
     @staticmethod
     def generate_player_statistics(level):
-        return Statistics(29 + 11 * level,
-                          23 + 7 * level,
+        return Statistics(100 + 10 * level,
+                          10 + 5 * level,
                           0,
                           0,
                           0,
-                          1,
-                          1,
-                          (2 - 2 * (e ** (level / 13)) * 100),
-                          (5 - 5 * (e ** (level / 19)) * 20))
+                          ceil(3 - 3 * (e ** (-level * 0.16))),
+                          ceil(3 - 3 * (e ** (-level * 0.16))),
+                          ceil(200 - 200 * (e ** (-level * 0.123))),
+                          ceil(100 - 100 * (e ** (-level * 0.15))))
 
     @staticmethod
     def generate_monster_statistics(level):
-        return Statistics(29 + 11 * level,
-                          23 + 7 * level,
+        return Statistics(50 + 5 * level,
+                          10 + 1 * level,
                           0,
                           0,
                           0,
                           1,
                           1,
-                          (2 - 2 * (e ** (level / 13)) * 100),
-                          (5 - 5 * (e ** (level / 19)) * 20))
+                          ceil(200 - 200 * (e ** (-level * 0.0223))),
+                          ceil(100 - 100 * (e ** (-level * 0.05))))
