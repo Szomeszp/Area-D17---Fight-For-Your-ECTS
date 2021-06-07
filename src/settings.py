@@ -42,7 +42,7 @@ PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)
 
 BATTLE_ARENA = "arena.tmx"
 
-MONSTER_PNG = "monster.png"
+MONSTER_PNG = "white_monster.png"
 
 BUTTON_ONE = "Attack"
 BUTTON_TWO = "Attack but more"

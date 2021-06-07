@@ -92,7 +92,8 @@ class Game:
                         tile_object.name)
                 if tile_object.type == "monster_spawn":
                     self.map.monsters_spawns.append(MonsterSpawn(self, self.map, tile_object.x, tile_object.y,
-                                                                 tile_object.width, tile_object.height, 2))
+                                                                 tile_object.width, tile_object.height, 1,
+                                                                 tile_object.name))
                 if tile_object.type == "secret_door_spawn":
                     self.map.secret_doors_spawns.append(SecretDoorSpawn(self, self.map, tile_object.x, tile_object.y,
                                                                         tile_object.width, tile_object.height))

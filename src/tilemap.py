@@ -61,11 +61,12 @@ class SecretDoorSpawn(Spawn):
 
 
 class MonsterSpawn(Spawn):
-    def __init__(self, game, map, x, y, w, h, max):
+    def __init__(self, game, map, x, y, w, h, max_monsters, name):
         super().__init__(game, map, x, y, w, h)
-        self.max_monsters = max
+        self.max_monsters = max_monsters
         self.current_monsters = 0
         self.last_spawn = -30001
+        self.monster_name = name
 
     def spawn_n_monsters(self, n):
         self.last_spawn = self.game.current_time
@@ -82,7 +83,7 @@ class MonsterSpawn(Spawn):
                         continue
                 break
             stats = Statistics.generate_monster_statistics(1)
-            Monster(self.game, self.map, self, x, y, "monster", stats)
+            Monster(self.game, self.map, self, x, y, self.monster_name, stats)
             self.current_monsters += 1
             i += 1
 
