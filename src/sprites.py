@@ -1,26 +1,21 @@
-import random
-import json
-
-import pygame as pg
-
-from items import Key
-from statistics import *
-from settings import *
+from random import randint
+from json import load as json_load
+from src.items import Key
+from src.settings import *
 from os import path
 
 
 class Character:
-    def __init__(self, game, x, y, type, statistics):
+    def __init__(self, game, x, y, character_type, statistics):
         self.game = game
-        self.type = type
-        self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
+        self.type = character_type
+        self.rect = pg.Rect(x, y, TILE_SIZE, TILE_SIZE)
         self.x = x
         self.y = y
         self.statistics = statistics
 
     def attack(self, player):
-        rng = random.randint(0, 100)
-
+        rng = randint(0, 100)
         if 0 <= rng <= self.statistics.critical_damage_chance:
             damage = float(self.statistics.damage * (1 + self.statistics.critical_damage_multiplier / 100))
         else:
@@ -32,7 +27,6 @@ class Character:
         return player.hurt(damage)
 
     def hurt(self, damage):
-        # usunięcie ujemnego hp
         self.statistics.current_health = max(self.statistics.current_health - damage, 0)
         if self.statistics.current_health <= 0:
             return 1
@@ -40,16 +34,11 @@ class Character:
 
     def check_opponent_in_range(self, opponent):
         attack_range = self.statistics.attack_range
-        # print("Rect")
-        # print(self.rect)
-        # print(opponent.rect)
         for i in range(-attack_range, attack_range + 1):
             for j in range(-attack_range, attack_range + 1):
                 if abs(i) + abs(j) <= attack_range:
-                    # musialem zmienic na recty zeby dzialalo tez dla monstera
-                    rect = pg.Rect(self.rect.x + i * TILESIZE, self.rect.y + j * TILESIZE, TILESIZE, TILESIZE)
+                    rect = pg.Rect(self.rect.x + i * TILE_SIZE, self.rect.y + j * TILE_SIZE, TILE_SIZE, TILE_SIZE)
                     if rect.colliderect(opponent):
-                        # print("Opponent in range!")
                         return True
         return False
 
@@ -59,8 +48,6 @@ class Wall(pg.sprite.Sprite):
         self.groups = map.walls
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        # self.image = pg.Surface((w, h))
-        # self.image.fill(GREEN)
         self.rect = pg.Rect(x, y, w, h)
         self.x = x
         self.y = y
@@ -69,9 +56,8 @@ class Wall(pg.sprite.Sprite):
 
 
 class Door(pg.sprite.Sprite):
-    def __init__(self, game, map_name, map, x, y, w, h, out_name):
-        print(map_name)
-        self.groups = map.doors
+    def __init__(self, game, map_name, tiled_map, x, y, w, h, out_name):
+        self.groups = tiled_map.doors
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = pg.Rect(x, y, w, h)
@@ -84,32 +70,25 @@ class Door(pg.sprite.Sprite):
 
 
 class NPC(pg.sprite.Sprite):
-    def __init__(self, game, map, x, y, w, h, name):
-        self.groups = map.walls, map.npcs
+    def __init__(self, game, tiled_map, x, y, w, h, name):
+        self.groups = tiled_map.walls, tiled_map.npcs
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
         self.rect = pg.Rect(x, y, w, h)
         self.x = x
         self.y = y
-        # chyba niepotrzebne
-        # self.rect.x = x
-        # self.rect.y = y
-
         self.name = name
-
         self.current_path = 0
         self.current_sub_path = -1
 
     def dialogue(self):
-        print("Dialog")
-
-        with open('dialogues.json') as file:
-            dialogues_file = json.load(file)
+        with open(path.join(GAME_FOLDER, "../src/dialogues.json")) as file:
+            dialogues_file = json_load(file)
 
         def print_dialogue():
-            blackBarRectPos = (32, self.game.screen.get_height() - 160)
-            blackBarRectSize = (self.game.screen.get_width() - 64, 128)
-            pg.draw.rect(self.game.screen, (128, 64, 32), pg.Rect(blackBarRectPos, blackBarRectSize),
+            black_bar_rect_pos = (32, self.game.screen.get_height() - 160)
+            black_bar_rect_size = (self.game.screen.get_width() - 64, 128)
+            pg.draw.rect(self.game.screen, (128, 64, 32), pg.Rect(black_bar_rect_pos, black_bar_rect_size),
                          border_radius=4)
 
             space_text = self.game.my_small_font.render("Click [space] to continue", 1, (255, 255, 255))
@@ -121,7 +100,6 @@ class NPC(pg.sprite.Sprite):
             if self.current_path == -1 or self.name not in dialogues_file:
                 text = "..."
             elif self.current_path == GET_KEY:
-                # musimy zdecydować czy chcemy go kiedykolwiek wyswietlac, jesli nie to nie potrzbna jest mu mapa ani połozenie
                 key = Key(self.game, self.game.map, -100, -100)
                 self.game.player.items.append(key)
                 self.game.add_message(Message("Dostałeś klucz!"))
@@ -159,12 +137,12 @@ class NPC(pg.sprite.Sprite):
                 reload = False
 
                 if event.type == pg.KEYDOWN:
-                    # pg.event.pump()
                     if event.key == pg.K_RETURN:
                         if self.name in dialogues_file:
                             self.current_path = \
-                            dialogues_file[self.name]["paths"][self.current_path]["sub_paths"][self.current_sub_path][
-                                "go_to"]
+                                dialogues_file[self.name]["paths"][self.current_path]["sub_paths"][
+                                    self.current_sub_path][
+                                    "go_to"]
                             self.current_sub_path = -1
                             reload = True
                     elif event.key == pg.K_SPACE:
@@ -194,7 +172,6 @@ class SecretDoor(Door):
         self.groups = map.doors, map.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         self.image = pg.image.load(path.join(IMG_FOLDER, "stairs1.png"))
-        # self.image.fill(GREEN)
 
 
 class Monster(pg.sprite.Sprite, Character):
@@ -202,40 +179,42 @@ class Monster(pg.sprite.Sprite, Character):
         self.groups = map.walls, map.monsters, map.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
         Character.__init__(self, game, x, y, type, statistics)
-        self.image = self.getImage()
+        self.image = self.get_image()
         self.spawn = spawn
 
-        # print(self.image)
-
-    def getImage(self):
+    def get_image(self):
         return pg.image.load(path.join(IMG_FOLDER, self.type + ".png"))
 
     def move_to_opponent(self, opponent):
-        # zmieniam tylko recty bo w arenie operuje na rectach
-        # to dzialanie na rectach, jest mega nie intuicyjne
         def x_move(dx):
             if dx > 0:
-                self.rect.x += TILESIZE
+                self.rect.x += TILE_SIZE
             else:
-                self.rect.x -= TILESIZE
+                self.rect.x -= TILE_SIZE
 
         def y_move(dy):
             if dy > 0:
-                self.rect.y += TILESIZE
+                self.rect.y += TILE_SIZE
             else:
-                self.rect.y -= TILESIZE
+                self.rect.y -= TILE_SIZE
 
         moves = self.statistics.move_range
         for i in range(moves):
-            dy = opponent.y - self.rect.y // TILESIZE
-            dx = opponent.x - self.rect.x // TILESIZE
+            dy = opponent.y - self.rect.y // TILE_SIZE
+            dx = opponent.x - self.rect.x // TILE_SIZE
             print(dx, dy)
             if abs(dx) > abs(dy):
                 x_move(dx)
             elif abs(dx) < abs(dy):
                 y_move(dy)
             else:
-                if bool(random.randint(0, 1)):
+                if bool(randint(0, 1)):
                     x_move(dx)
                 else:
                     y_move(dy)
+
+
+class Message:
+    def __init__(self, text):
+        self.text = text
+        self.duration = 100

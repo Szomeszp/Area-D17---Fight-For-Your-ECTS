@@ -3,12 +3,6 @@ from enum import Enum
 from os import path
 
 
-class Message:
-    def __init__(self, text):
-        self.text = text
-        self.duration = 100
-
-
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 DARKGREY = (40, 40, 40)
@@ -21,11 +15,8 @@ WIDTH = 1024   # 16 * 64 or 32 * 32 or 64 * 16
 HEIGHT = 768  # 16 * 48 or 32 * 24 or 64 * 12
 FPS = 60
 TITLE = "Area-D17---Fight-For-Your-ECTS"
-BGCOLOR = DARKGREY
-
-TILESIZE = 32
-GRIDWIDTH = WIDTH / TILESIZE
-GRIDHEIGHT = HEIGHT / TILESIZE
+BG_COLOR = DARKGREY
+TILE_SIZE = 32
 
 
 class PlayerImg(Enum):
@@ -44,14 +35,12 @@ class PlayerImg(Enum):
 
 
 GAME_FOLDER = path.dirname(__file__)
-IMG_FOLDER = path.join(GAME_FOLDER, "img")
-MAP_FOLDER = path.join(GAME_FOLDER, "maps")
+IMG_FOLDER = path.join(GAME_FOLDER, "../img")
+MAP_FOLDER = path.join(GAME_FOLDER, "../maps")
 
 PLAYER_HIT_RECT = pg.Rect(0, 0, 35, 35)
 
-BATTLE_ARENA = "arena2.tmx"
-
-SECRET_ROOM_PNG = ""
+BATTLE_ARENA = "arena.tmx"
 
 MONSTER_PNG = "monster.png"
 

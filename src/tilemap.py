@@ -1,23 +1,17 @@
-import random
-
-import pygame as pg
-from settings import *
-import pytmx
-
-from sprites import Monster, SecretDoor
-from statistics import Statistics
+from random import randint
 from os import path
+from src.settings import *
+from pytmx import load_pygame, TiledTileLayer
+from src.sprites import Monster, SecretDoor
+from src.statistics import Statistics
 
 
 class TiledMap:
     def __init__(self, filename):
-        tm = pytmx.load_pygame(filename, pixelalpha=True)
-        # self.map_name = filename.split("\\")[-1]
-        # FIXED???
+        self.tmx_data = load_pygame(filename, pixelalpha=True)
         self.map_name = filename.split(path.sep)[-1]
-        self.width = tm.width * tm.tilewidth
-        self.height = tm.height * tm.tileheight
-        self.tmxdata = tm
+        self.width = self.tmx_data.width * self.tmx_data.tilewidth
+        self.height = self.tmx_data.height * self.tmx_data.tileheight
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.doors = pg.sprite.Group()
@@ -28,14 +22,14 @@ class TiledMap:
         self.secret_doors_spawns = []
 
     def render(self, surface):
-        ti = self.tmxdata.get_tile_image_by_gid
-        for layer in self.tmxdata.visible_layers:
-            if isinstance(layer, pytmx.TiledTileLayer):
+        ti = self.tmx_data.get_tile_image_by_gid
+        for layer in self.tmx_data.visible_layers:
+            if isinstance(layer, TiledTileLayer):
                 for x, y, gid, in layer:
                     tile = ti(gid)
                     if tile:
-                        surface.blit(tile, (x * self.tmxdata.tilewidth,
-                                                y * self.tmxdata.tileheight))
+                        surface.blit(tile, (x * self.tmx_data.tilewidth,
+                                                y * self.tmx_data.tileheight))
 
     def make_map(self):
         temp_surface = pg.Surface((self.width, self.height))
@@ -58,12 +52,12 @@ class SecretDoorSpawn(Spawn):
         super().__init__(game, map, x, y, w, h)
 
     def spawn_secret_door(self):
-        dx = random.randint(0, int(self.width // TILESIZE) - 1)
-        dy = random.randint(0, int(self.height // TILESIZE) - 1)
-        x = int((self.x // TILESIZE) + dx) * TILESIZE
-        y = int((self.y // TILESIZE) + dy) * TILESIZE
+        dx = randint(0, int(self.width // TILE_SIZE) - 1)
+        dy = randint(0, int(self.height // TILE_SIZE) - 1)
+        x = int((self.x // TILE_SIZE) + dx) * TILE_SIZE
+        y = int((self.y // TILE_SIZE) + dy) * TILE_SIZE
         out_map_name = "map_kapitol.tmx"
-        SecretDoor(self, out_map_name, self.map, x, y, TILESIZE, TILESIZE, "secret_door_out")
+        SecretDoor(self, out_map_name, self.map, x, y, TILE_SIZE, TILE_SIZE, "secret_door_out")
 
 
 class MonsterSpawn(Spawn):
@@ -78,21 +72,19 @@ class MonsterSpawn(Spawn):
         i = 0
         while i < n and self.current_monsters < self.max_monsters:
             while True:
-                dx = random.randint(0, int(self.width // TILESIZE) - 1)
-                dy = random.randint(0, int(self.height // TILESIZE) - 1)
-                x = int((self.x // TILESIZE) + dx) * TILESIZE
-                y = int((self.y // TILESIZE) + dy) * TILESIZE
-                rect = pg.Rect(x, y, TILESIZE, TILESIZE)
+                dx = randint(0, int(self.width // TILE_SIZE) - 1)
+                dy = randint(0, int(self.height // TILE_SIZE) - 1)
+                x = int((self.x // TILE_SIZE) + dx) * TILE_SIZE
+                y = int((self.y // TILE_SIZE) + dy) * TILE_SIZE
+                rect = pg.Rect(x, y, TILE_SIZE, TILE_SIZE)
                 for monster in self.map.monsters:
                     if rect.colliderect(monster):
                         continue
                 break
-            stats = Statistics.generateMonsterStatistics(1)
+            stats = Statistics.generate_monster_statistics(1)
             Monster(self.game, self.map, self, x, y, "monster", stats)
             self.current_monsters += 1
             i += 1
-
-
 
 
 class Camera:
@@ -108,7 +100,6 @@ class Camera:
         return rect.move(self.camera.topleft)
 
     def update(self, target):
-        # players moves to the right sa offset moves to the left
         x = -target.rect.x + int(WIDTH / 2)
         y = -target.rect.y + int(HEIGHT / 2)
 

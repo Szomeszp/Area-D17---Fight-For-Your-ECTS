@@ -1,50 +1,44 @@
-import random
 from time import sleep
-
-import pygame as pg
-
-from items import Key
-from sprites import Character, SecretDoor
-from statistics import *
-from settings import *
 from numpy import e
-from os import path
-import math
-from statistics import Statistics
+from math import ceil, log
+from src.items import Key
+from src.sprites import Character, SecretDoor, Message
+from src.settings import *
+from src.statistics import Statistics
 
 
 class Player(pg.sprite.Sprite, Character):
-    def __init__(self, game, map, x, y, type):
+    def __init__(self, game, tiled_map, x, y, img_type):
+        self.map = tiled_map
         self.level = 1
         self.experience = 0
-        Character.__init__(self, game, x, y, type, Statistics.generatePlayerStatistics(self.level))
-        self.groups = map.all_sprites
-        self.map = map
+        Character.__init__(self, game, x, y, img_type, Statistics.generate_player_statistics(self.level))
+        self.groups = tiled_map.all_sprites
         pg.sprite.Sprite.__init__(self, self.groups)
-        self.image = self.getImage()
-        self.items = []
-
-        self.is_dead = False
+        self.image = self.get_image()
         self.respawn_time = 5
         self.remaining_respawn_time = 0
+        self.static_frames = 0
+        self.items = []
+        self.is_dead = False
 
     def level_up(self, experience):
         tmp_level = self.level
-        self.experience = min(self.experience + experience, -5000 * math.log(- 7 / 8 + 1))
-        self.level = min(math.ceil(8 - 8 * (e ** (-self.experience * 0.0002))), 7)
+        self.experience = min(self.experience + experience, -5000 * log(- 7 / 8 + 1))
+        self.level = min(ceil(8 - 8 * (e ** (-self.experience * 0.0002))), 7)
         if tmp_level - self.level != 0:
-            self.statistics = Statistics.generatePlayerStatistics(self.level)
+            self.statistics = Statistics.generate_player_statistics(self.level)
 
-    def getImage(self):
+    def get_image(self):
         return pg.image.load(path.join(IMG_FOLDER, self.game.player_img.value))
 
     def move(self, dx=0, dy=0):
+        self.static_frames = 0
         door = self.collide_with_door()
         if door:
             if isinstance(door, SecretDoor):
                 if not any(isinstance(item, Key) for item in self.items):
                     self.game.add_message(Message("Nie masz klucza!"))
-                    print("Nie masz klucza!")
                     door = None
                 else:
                     self.game.get_through_door(door)
@@ -89,40 +83,41 @@ class Player(pg.sprite.Sprite, Character):
             self.image = pg.image.load(path.join(IMG_FOLDER, image1.value))
 
     def collide_with_walls(self, dx=0, dy=0):
-        rect_copy = self.rect
-        rect_copy.x += dx * TILESIZE
-        rect_copy.y += dy * TILESIZE
-        # pygame.rect.collidelistall instead of for loop
-        for wall in self.map.walls:
-            if rect_copy.colliderect(wall.rect):
-                return True
-        return False
+        self.rect.x += dx * TILE_SIZE
+        self.rect.y += dy * TILE_SIZE
+        wall = pg.sprite.spritecollideany(self, self.map.walls)
+        if not wall:
+            self.rect.x -= dx * TILE_SIZE
+            self.rect.y -= dy * TILE_SIZE
+        return wall
 
     def collide_with_door(self, dx=0, dy=0):
-        rect_copy = self.rect
-        rect_copy.x += dx * TILESIZE
-        rect_copy.y += dy * TILESIZE
-        # pygame.rect.collidelistall instead of for loop
-        for door in self.map.doors:
-            if rect_copy.colliderect(door.rect):
-                return door
-        return None
+        self.rect.x += dx * TILE_SIZE
+        self.rect.y += dy * TILE_SIZE
+        door = pg.sprite.spritecollideany(self, self.map.doors)
+        if not door:
+            self.rect.x -= dx * TILE_SIZE
+            self.rect.y -= dy * TILE_SIZE
+        return door
 
     def update(self):
-        self.rect.x = self.x * TILESIZE
-        self.rect.y = self.y * TILESIZE
+        if self.static_frames == 15:
+            self.stand()
+        elif self.static_frames < 15:
+            self.static_frames += 1
+        self.rect.x = self.x * TILE_SIZE
+        self.rect.y = self.y * TILE_SIZE
 
     def interact(self):
         flag = False
         for x in range(self.x - 1, self.x + 2):
             for y in range(self.y - 1, self.y + 2):
                 if not flag:
-                    if 0 <= x < self.game.map.width // TILESIZE and 0 <= y < self.game.map.height // TILESIZE:
+                    if 0 <= x < self.game.map.width // TILE_SIZE and 0 <= y < self.game.map.height // TILE_SIZE:
                         rect = self.rect
-                        rect.x = x * TILESIZE
-                        rect.y = y * TILESIZE
+                        rect.x = x * TILE_SIZE
+                        rect.y = y * TILE_SIZE
                         for npc in self.map.npcs:
-                            print(rect.x, rect.y)
                             if rect.colliderect(npc.rect):
                                 npc.dialogue()
                                 flag = True
@@ -133,12 +128,11 @@ class Player(pg.sprite.Sprite, Character):
         for x in range(self.x - 1, self.x + 2):
             for y in range(self.y - 1, self.y + 2):
                 if not flag:
-                    if 0 <= x < self.game.map.width // TILESIZE and 0 <= y < self.game.map.height // TILESIZE:
+                    if 0 <= x < self.game.map.width // TILE_SIZE and 0 <= y < self.game.map.height // TILE_SIZE:
                         rect = self.rect
-                        rect.x = x * TILESIZE
-                        rect.y = y * TILESIZE
+                        rect.x = x * TILE_SIZE
+                        rect.y = y * TILE_SIZE
                         for monster in self.map.monsters:
-                            print(rect.x, rect.y)
                             if rect.colliderect(monster.rect):
                                 self.game.create_arena(monster, BATTLE_ARENA)
                                 self.game.arena.enter_battle_arena()
@@ -170,7 +164,7 @@ class Player(pg.sprite.Sprite, Character):
 
         # EXP BAR
         def get_exp(level):
-            return -5000 * math.log(- (level - 1) / 8 + 1)
+            return -5000 * log(- (level - 1) / 8 + 1)
 
         ratio = (self.experience - get_exp(self.level)) / (get_exp(self.level + 1) - get_exp(self.level))
 
@@ -200,8 +194,6 @@ class Player(pg.sprite.Sprite, Character):
             self.is_dead = False
             return
 
-        print(self.remaining_respawn_time)
-
         pg.draw.rect(self.game.screen, BLACK, pg.Rect((0, 0), (WIDTH, HEIGHT)),
                      border_radius=4)
 
@@ -218,7 +210,6 @@ class Player(pg.sprite.Sprite, Character):
                 self.items.append(item)
                 self.map.items.remove(item)
                 self.map.all_sprites.remove(item)
-                print("Zebrałeś item")
 
     def heal(self, potion):
         prev_hp = self.statistics.current_health

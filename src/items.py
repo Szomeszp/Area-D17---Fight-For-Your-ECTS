@@ -1,18 +1,16 @@
-from os import path
-
 import pygame as pg
-
-from settings import IMG_FOLDER, TILESIZE
+from os import path
+from settings import IMG_FOLDER, TILE_SIZE
 
 
 class Item(pg.sprite.Sprite):
     def __init__(self, game, map, x, y):
-        self.game = game
-        self.map = map
         self.groups = map.all_sprites, map.items
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
+        self.map = map
+        self.game = game
+        self.rect = pg.Rect(x, y, TILE_SIZE, TILE_SIZE)
         self.x = x
         self.y = y
 
@@ -26,12 +24,12 @@ class HealthPotion(Item):
 
 class Key(pg.sprite.Sprite):
     def __init__(self, game, map, x, y):
-        self.game = game
-        self.map = map
         self.groups = map.all_sprites, map.items
         pg.sprite.Sprite.__init__(self, self.groups)
         self.game = game
-        self.rect = pg.Rect(x, y, TILESIZE, TILESIZE)
+        self.map = map
+        self.game = game
+        self.rect = pg.Rect(x, y, TILE_SIZE, TILE_SIZE)
         self.x = x
         self.y = y
         self.image = pg.image.load(path.join(IMG_FOLDER, "key" + ".png"))
