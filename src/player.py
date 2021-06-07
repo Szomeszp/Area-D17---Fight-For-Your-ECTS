@@ -1,7 +1,7 @@
 from time import sleep
 from numpy import e
 from math import ceil, log
-from src.items import Key
+from src.items import Key, Coin
 from src.sprites import Character, SecretDoor, Message
 from src.settings import *
 from src.statistics import Statistics
@@ -198,7 +198,6 @@ class Player(pg.sprite.Sprite, Character):
         text_size = self.game.my_small_font.size(f"GOLD {self.money}")
         self.game.screen.blit(text, (336 - text_size[0] / 2, 17 - text_size[1] / 2))
 
-
     def dead_screen(self):
         sleep(1)
 
@@ -219,7 +218,10 @@ class Player(pg.sprite.Sprite, Character):
     def collect_item(self):
         for item in self.map.items:
             if self.rect.colliderect(item):
-                self.items.append(item)
+                if isinstance(item, Coin):
+                    self.money += 20
+                else:
+                    self.items.append(item)
                 self.map.items.remove(item)
                 self.map.all_sprites.remove(item)
 

@@ -202,7 +202,6 @@ class Monster(pg.sprite.Sprite, Character):
         for i in range(moves):
             dy = opponent.y - self.rect.y // TILE_SIZE
             dx = opponent.x - self.rect.x // TILE_SIZE
-            print(dx, dy)
             if abs(dx) > abs(dy):
                 x_move(dx)
             elif abs(dx) < abs(dy):

@@ -53,8 +53,12 @@ class Game:
         if door is not None:
             new_map = door.map_name
             spawn = door.out_name + "_spawn"
-            if door.out_name == "secret_door_out":
+            if door.out_name == "door_secret_room_in":
+                self.last_position = [door.x, door.y, door.map_name]
                 door.kill()
+            elif door.out_name == "door_secret_room_out":
+                self.player.x = self.last_position[0] // TILE_SIZE
+                self.player.y = self.last_position[1] // TILE_SIZE
         else:
             spawn = " "
             new_map = self.main_map
@@ -82,25 +86,28 @@ class Game:
                 if tile_object.name == "wall":
                     Wall(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height)
                 if tile_object.type == "door":
-                    print(tile_object.map)
                     Door(self, tile_object.map, self.map, tile_object.x, tile_object.y, tile_object.width,
                          tile_object.height,
                          tile_object.name)
                 if tile_object.type == "npc":
-                    print("Npc")
                     NPC(self, self.map, tile_object.x, tile_object.y, tile_object.width, tile_object.height,
                         tile_object.name)
                 if tile_object.type == "monster_spawn":
                     self.map.monsters_spawns.append(MonsterSpawn(self, self.map, tile_object.x, tile_object.y,
                                                                  tile_object.width, tile_object.height, 1,
-                                                                 tile_object.name))
+                                                                 tile_object.name, randint(20000, 30000)))
                 if tile_object.type == "secret_door_spawn":
                     self.map.secret_doors_spawns.append(SecretDoorSpawn(self, self.map, tile_object.x, tile_object.y,
                                                                         tile_object.width, tile_object.height))
+                if tile_object.type == "money_spawn":
+                    MoneySpawn(self, self.map, tile_object.x, tile_object.y,
+                               tile_object.width, tile_object.height, 20)
+                if tile_object.name == "small_potion":
+                    HealthPotion(self, self.map, tile_object.x, tile_object.y, 100, "small_potion")
+                if tile_object.name == "big_potion":
+                    HealthPotion(self, self.map, tile_object.x, tile_object.y, 500, "big_potion")
+
         if not objs_created:
-            if self.map.map_name == "map_alpha2.tmx":
-                HealthPotion(self, self.map, 480, 1664, 500, "big_potion")
-                HealthPotion(self, self.map, 512, 1696, 100, "small_potion")
             for secret_door in self.map.secret_doors_spawns:
                 secret_door.spawn_secret_door()
         self.camera = Camera(self.map.width, self.map.height)
@@ -131,7 +138,7 @@ class Game:
 
     def update(self):
         for spawn in self.map.monsters_spawns:
-            if self.current_time - spawn.last_spawn > 10000:
+            if self.current_time - spawn.last_spawn > spawn.spawn_time:
                 spawn.spawn_n_monsters(1)
         self.map.all_sprites.update()
         self.camera.update(self.player)

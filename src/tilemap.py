@@ -1,5 +1,7 @@
 from random import randint
 from os import path
+
+from src.items import Coin
 from src.settings import *
 from pytmx import load_pygame, TiledTileLayer
 from src.sprites import Monster, SecretDoor
@@ -56,18 +58,19 @@ class SecretDoorSpawn(Spawn):
         dy = randint(0, int(self.height // TILE_SIZE) - 1)
         x = int((self.x // TILE_SIZE) + dx) * TILE_SIZE
         y = int((self.y // TILE_SIZE) + dy) * TILE_SIZE
-        out_map_name = "map_kapitol.tmx"
-        SecretDoor(self, out_map_name, self.map, x, y, TILE_SIZE, TILE_SIZE, "secret_door_out")
+        out_map_name = "secret_room.tmx"
+        SecretDoor(self, out_map_name, self.map, x, y, TILE_SIZE, TILE_SIZE, "door_secret_room_in")
 
 
 class MonsterSpawn(Spawn):
-    def __init__(self, game, map, x, y, w, h, max_monsters, name):
+    def __init__(self, game, map, x, y, w, h, max_monsters, name, spawn_time):
         super().__init__(game, map, x, y, w, h)
         self.max_monsters = max_monsters
         self.current_monsters = 0
         self.last_spawn = -30001
         self.monster_name = name
         self.level = 1
+        self.spawn_time = spawn_time
 
     def spawn_n_monsters(self, n):
         self.last_spawn = self.game.current_time
@@ -86,6 +89,29 @@ class MonsterSpawn(Spawn):
             stats = Statistics.generate_monster_statistics(self.level)
             Monster(self.game, self.map, self, x, y, self.monster_name, stats)
             self.current_monsters += 1
+            i += 1
+
+
+class MoneySpawn(Spawn):
+    def __init__(self, game, map, x, y, w, h, max_coins):
+        super().__init__(game, map, x, y, w, h)
+        self.max_coins = max_coins
+        self.spawn_coins()
+
+    def spawn_coins(self):
+        i = 0
+        while i < self.max_coins:
+            while True:
+                dx = randint(0, int(self.width // TILE_SIZE) - 1)
+                dy = randint(0, int(self.height // TILE_SIZE) - 1)
+                x = int((self.x // TILE_SIZE) + dx) * TILE_SIZE
+                y = int((self.y // TILE_SIZE) + dy) * TILE_SIZE
+                rect = pg.Rect(x, y, TILE_SIZE, TILE_SIZE)
+                for item in self.map.items:
+                    if rect.colliderect(item):
+                        continue
+                break
+            Coin(self.game, self.map, x, y)
             i += 1
 
 

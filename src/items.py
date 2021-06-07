@@ -33,3 +33,16 @@ class Key(pg.sprite.Sprite):
         self.x = x
         self.y = y
         self.image = pg.image.load(path.join(IMG_FOLDER, "key" + ".png"))
+
+
+class Coin(pg.sprite.Sprite):
+    def __init__(self, game, tiled_map, x, y):
+        self.groups = tiled_map.all_sprites, tiled_map.items
+        pg.sprite.Sprite.__init__(self, self.groups)
+        self.game = game
+        self.map = tiled_map
+        self.game = game
+        self.rect = pg.Rect(x, y, TILE_SIZE, TILE_SIZE)
+        self.x = x
+        self.y = y
+        self.image = pg.image.load(path.join(IMG_FOLDER, "coin" + ".png"))
