@@ -104,11 +104,21 @@ class NPC(pg.sprite.Sprite):
                 self.game.player.items.append(key)
                 self.game.add_message(Message("Dostałeś klucz!"))
                 return
-            elif self.current_path == GET_MEDICINE:
-                self.game.player.statistics.current_health = self.game.player.statistics.max_health
-                self.game.add_message(Message("Zostałeś wyleczony"))
-                return
-            else:
+            elif self.current_path == GET_SMALL_MEDICINE:
+                if self.game.player.pay(20):
+                    self.game.player.heal(self.game.player.statistics.max_health // 2)
+                    self.game.add_message(Message("Zostałeś wyleczony"))
+                    self.current_path = GET_SMALL_MEDICINE // 1000
+                else:
+                    self.current_path = NO_MONEY
+            elif self.current_path == GET_BIG_MEDICINE:
+                if self.game.player.pay(40):
+                    self.game.player.heal(self.game.player.statistics.max_health)
+                    self.game.add_message(Message("Zostałeś wyleczony"))
+                    self.current_path = GET_BIG_MEDICINE // 1000
+                else:
+                    self.current_path = NO_MONEY
+            if self.current_path != -1:
                 text = dialogues_file[self.name]["paths"][self.current_path]["main_text"]
             rendered_text = self.game.my_big_font.render(text, 1, (255, 255, 255))
             self.game.screen.blit(rendered_text, (40, self.game.screen.get_height() - position))

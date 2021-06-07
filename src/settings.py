@@ -45,8 +45,8 @@ BATTLE_ARENA = "arena.tmx"
 MONSTER_PNG = "white_monster.png"
 
 BUTTON_ONE = "Attack"
-BUTTON_TWO = "Attack but more"
-BUTTON_THREE = "Heal"
+BUTTON_TWO = "TO DO BUTTON"
+BUTTON_THREE = "TO DO BUTTON"
 BUTTON_FOUR = "NEXT TURN"
 BUTTON_FIVE = "EXIT"
 
@@ -54,4 +54,6 @@ CAN_MOVE_IMG = pg.image.load(path.join(IMG_FOLDER, "can_move.png"))
 CAN_ATTACK_IMG = pg.image.load(path.join(IMG_FOLDER, "can_attack.png"))
 
 GET_KEY = 1000
-GET_MEDICINE = 2000
+GET_SMALL_MEDICINE = 2000
+GET_BIG_MEDICINE = 3000
+NO_MONEY = 4

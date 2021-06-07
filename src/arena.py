@@ -66,26 +66,6 @@ class Arena:
                     )
                 )
 
-            if str(tile_object.name)[-6:] == "Button":
-                name_to_arrow = {
-                    "left": "\u2190",
-                    "right": "\u2192",
-                    "forward": "\u2191",
-                    "backward": "\u2193",
-                    "center": "\u2022"
-                }
-
-                self.control_panel.add_button(
-                    Button(
-                        self.game,
-                        tile_object.x,
-                        tile_object.y,
-                        tile_object.width,
-                        tile_object.height,
-                        name_to_arrow[str(tile_object.name)[:-6]],
-                        tile_object.name
-                    )
-                )
             if tile_object.name == "item1":
                 if len(self.player.items) > 0 and isinstance(self.player.items[0], HealthPotion):
                     self.player.items[0].rect.x = tile_object.x
@@ -158,9 +138,9 @@ class Arena:
                     else:
                         self.battle_log.add_log("YOU ALREADY ATTACKED!", RED)
                 elif btn.type == "button2":
-                    self.turn += 1
+                    pass
                 elif btn.type == "button3":
-                    self.exit_arena()
+                    pass
                 elif btn.type == "button4":
                     self.turn += 1
                 elif btn.type == "button5":

@@ -134,12 +134,52 @@
 
       {
         "id": 1,
-        "main_text": "Jasne, od tego tu jestem. Proszę, wypij to lekarstwo.",
+        "main_text": "Jasne, od tego tu jestem. Mały Lek - [20 gold], Duży Lek - [40 gold]",
+        "number_of_sub_paths" : 2,
+        "sub_paths": [
+          {
+            "text": "Poproszę Mały Lek",
+            "go_to": 2000
+          },
+          {
+            "text": "Poproszę Duży Lek",
+            "go_to": 3000
+          }
+        ]
+      },
+
+      {
+        "id": 2,
+        "main_text": "Proszę bardzo, Mały Lek!",
         "number_of_sub_paths" : 1,
         "sub_paths": [
           {
-            "text": "Dziękuje, od razu mi lepiej!",
-            "go_to": 2000
+            "text": "Dziękuję, od razu czuje się lepiej.",
+            "go_to": -1
+          }
+        ]
+      },
+
+      {
+        "id": 3,
+        "main_text": "Proszę bardzo, Duży Lek!",
+        "number_of_sub_paths" : 1,
+        "sub_paths": [
+          {
+            "text": "Dziękuję, stawia na nogi!!!.",
+            "go_to": -1
+          }
+        ]
+      },
+
+      {
+        "id": 4,
+        "main_text": "Sorry, nie ma pieniążków, nie ma leku!",
+        "number_of_sub_paths" : 1,
+        "sub_paths": [
+          {
+            "text": ";(",
+            "go_to": -1
           }
         ]
       }

@@ -237,3 +237,13 @@ class Player(pg.sprite.Sprite, Character):
         self.statistics.current_health = min(self.statistics.max_health, 
                                              self.statistics.current_health + self.level / 100)
 
+    def heal(self, health):
+        self.statistics.current_health = min(self.statistics.current_health + health, self.statistics.max_health)
+
+    def pay(self, money):
+        if self.money < money:
+            return False
+        else:
+            self.money -= money
+            return True
+
