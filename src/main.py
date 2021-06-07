@@ -1,4 +1,4 @@
-from engine import Game
+from src.engine import Game
 
 if __name__ == "__main__":
     g = Game()

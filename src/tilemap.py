@@ -38,9 +38,9 @@ class TiledMap:
 
 
 class Spawn:
-    def __init__(self, game, map, x, y, w, h):
+    def __init__(self, game, tiled_map, x, y, w, h):
         self.game = game
-        self.map = map
+        self.map = tiled_map
         self.x = x
         self.y = y
         self.width = w
@@ -48,8 +48,8 @@ class Spawn:
 
 
 class SecretDoorSpawn(Spawn):
-    def __init__(self, game, map, x, y, w, h):
-        super().__init__(game, map, x, y, w, h)
+    def __init__(self, game, tiled_map, x, y, w, h):
+        super().__init__(game, tiled_map, x, y, w, h)
 
     def spawn_secret_door(self):
         dx = randint(0, int(self.width // TILE_SIZE) - 1)

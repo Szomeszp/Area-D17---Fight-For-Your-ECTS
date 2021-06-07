@@ -1,8 +1,8 @@
 from random import randint
 from time import sleep
-from settings import *
+from src.settings import *
 from src.items import HealthPotion
-from tilemap import TiledMap, Camera
+from src.tilemap import TiledMap, Camera
 
 
 class Arena:
@@ -27,6 +27,7 @@ class Arena:
         self.ring = None
         self.random_token = randint(0, 1)
         self.possible_moves = player.statistics.move_range
+        self.possible_attacks = 1
 
     def draw_arena(self):
         self.monster_hp_bar.draw_health()
@@ -147,11 +148,15 @@ class Arena:
         for btn in self.control_panel.buttons:
             if btn.rect.collidepoint(pos):
                 if btn.type == "button1":
-                    if self.player.check_opponent_in_range(self.monster):
-                        if self.player.attack(self.monster):
-                            self.result = 1
+                    if self.possible_attacks:
+                        if self.player.check_opponent_in_range(self.monster):
+                            if self.player.attack(self.monster):
+                                self.result = 1
+                            self.possible_attacks -= 1
+                        else:
+                            self.battle_log.add_log("MONSTER OUT OF RANGE!", RED)
                     else:
-                        self.battle_log.add_log("MONSTER OUT OF RANGE!", RED)
+                        self.battle_log.add_log("YOU ALREADY ATTACKED!", RED)
                 elif btn.type == "button2":
                     self.turn += 1
                 elif btn.type == "button3":
@@ -161,24 +166,27 @@ class Arena:
                 elif btn.type == "button5":
                     self.exit_arena()
 
-                elif btn.type == "leftButton":
-                    self.player.move(dx=-1)
-                elif btn.type == "rightButton":
-                    self.player.move(dx=1)
-                elif btn.type == "forwardButton":
-                    self.player.move(dy=-1)
-                elif btn.type == "backwardButton":
-                    self.player.move(dy=1)
-                elif btn.type == "centerButton":
-                    self.player.check_opponent_in_range(self.monster)
+                # elif btn.type == "leftButton":s
+                #     self.player.move(dx=-1)
+                # elif btn.type == "rightButton":
+                #     self.player.move(dx=1)
+                # elif btn.type == "forwardButton":
+                #     self.player.move(dy=-1)
+                # elif btn.type == "backwardButton":
+                #     self.player.move(dy=1)
+                # elif btn.type == "centerButton":
+                #     self.player.check_opponent_in_range(self.monster)
                 self.player.stand()
 
     def arena_events(self):
-        for event in pg.event.get():
-            self.result = 0
+        def quit_game():
+            pg.quit()
+            exit()
 
+        self.result = 0
+        for event in pg.event.get():
             if event.type == pg.QUIT:
-                self.game.quit()
+                quit_game()
 
             if self.turn % 2 == self.random_token:
                 self.create_move_rects()
@@ -206,10 +214,16 @@ class Arena:
                                 dy = self.player.y - prev_y
                                 self.possible_moves -= abs(dx) + abs(dy)
                                 self.battle_log.add_log("Player poruszyl sie")
+
                     if self.player.check_opponent_in_range(self.monster):
                         if self.monster.rect.collidepoint(pos):
-                            if self.player.attack(self.game.arena.monster):
-                                self.result = 1
+                            if self.possible_attacks:
+                                if self.player.attack(self.monster):
+                                    self.result = 1
+                                self.possible_attacks -= 1
+                            else:
+                                self.battle_log.add_log("YOU ALREADY ATTACKED!", RED)
+
                     for item in self.game.map.items:
                         if item.rect.collidepoint(pos):
                             hp = self.player.heal(item)
@@ -223,6 +237,7 @@ class Arena:
                     self.monster.move_to_opponent(self.player)
                     self.battle_log.add_log("Monster poruszyl sie")
                 self.possible_moves = self.player.statistics.move_range
+                self.possible_attacks = 1
                 self.cant_move_logged = False
                 self.turn += 1
 

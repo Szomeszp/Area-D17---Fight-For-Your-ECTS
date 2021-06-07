@@ -126,6 +126,8 @@ class Game:
             else:
                 self.arena.arena_events()
 
+            pg.time.Clock().tick(30)
+
     def update(self):
         for spawn in self.map.monsters_spawns:
             if self.current_time - spawn.last_spawn > 10000:
