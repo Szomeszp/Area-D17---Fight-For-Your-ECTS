@@ -92,3 +92,5 @@ Zdobywamy doświadczenie, które następnie przekłada się na nasze obecne umie
 </ul>
 
 <img src="./img/dialogue.png" width=1016 height=793 alt="Main view">
+
+# Miłego grania!!!
