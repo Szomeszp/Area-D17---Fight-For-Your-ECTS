@@ -82,7 +82,7 @@ class NPC(pg.sprite.Sprite):
         self.current_sub_path = -1
 
     def dialogue(self):
-        with open(path.join(GAME_FOLDER, "../src/dialogues.json")) as file:
+        with open(path.join(GAME_FOLDER, "../src/dialogues.json"), encoding='utf8') as file:
             dialogues_file = json_load(file)
 
         def print_dialogue():
