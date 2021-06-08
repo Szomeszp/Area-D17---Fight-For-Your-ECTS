@@ -165,6 +165,7 @@ class Arena:
                     self.button_handler(pos)
 
                     if self.player.rect.collidepoint(pos):
+                        # show_move_range = not show_move_range
                         if self.show_move_range:
                             self.show_move_range = False
                         else:
