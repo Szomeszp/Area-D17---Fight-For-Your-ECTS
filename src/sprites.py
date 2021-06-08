@@ -103,6 +103,7 @@ class NPC(pg.sprite.Sprite):
                 key = Key(self.game, self.game.map, -100, -100)
                 self.game.player.items.append(key)
                 self.game.add_message(Message("Dostałeś klucz!"))
+                self.current_path = -1
                 return
             elif self.current_path == GET_SMALL_MEDICINE:
                 if self.game.player.pay(20):
@@ -140,7 +141,8 @@ class NPC(pg.sprite.Sprite):
         while cnt:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    self.game.quit()
+                    pg.quit()
+                    exit()
 
                 if reload:
                     print_dialogue()
