@@ -67,17 +67,17 @@ class Arena:
                 )
 
             if tile_object.name == "item1":
-                if len(self.player.items) > 0 and isinstance(self.player.items[0], HealthPotion):
-                    self.player.items[0].rect.x = tile_object.x
-                    self.player.items[0].rect.y = tile_object.y
-                    self.game.map.all_sprites.add(self.player.items[0])
-                    self.game.map.items.add(self.player.items[0])
-            if tile_object.name == "item2":
-                if len(self.player.items) > 1 and isinstance(self.player.items[0], HealthPotion):
+                if len(self.player.items) > 1 and isinstance(self.player.items[1], HealthPotion):
                     self.player.items[1].rect.x = tile_object.x
                     self.player.items[1].rect.y = tile_object.y
                     self.game.map.all_sprites.add(self.player.items[1])
                     self.game.map.items.add(self.player.items[1])
+            if tile_object.name == "item2":
+                if len(self.player.items) > 2 and isinstance(self.player.items[2], HealthPotion):
+                    self.player.items[2].rect.x = tile_object.x
+                    self.player.items[2].rect.y = tile_object.y
+                    self.game.map.all_sprites.add(self.player.items[2])
+                    self.game.map.items.add(self.player.items[2])
 
             if tile_object.name == "monsterHealthBar":
                 self.monster_hp_bar = HealthBar(self.game, tile_object.x, tile_object.y, tile_object.width,
