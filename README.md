@@ -73,7 +73,10 @@ Zdobywamy doświadczenie, które następnie przekłada się na nasze obecne umie
   
 <li> Potrzebujesz klucza by wejść do Secret Room'u. Możesz go zdobyć od pewnego Starca. </li>
 
-<li> Secret Room pojawia się w losowym miejscu </li>
+<li> Secret Room pojawia się w losowym miejscu. </li>
+
+<li> Zbierasz przedmioty "c". </li>
+
 
 </ul>
 
