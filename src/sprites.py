@@ -119,7 +119,7 @@ class NPC(pg.sprite.Sprite):
                     self.current_path = GET_BIG_MEDICINE // 1000
                 else:
                     self.current_path = NO_MONEY
-            if self.current_path != -1:
+            if self.current_path != -1 and self.name in dialogues_file:
                 text = dialogues_file[self.name]["paths"][self.current_path]["main_text"]
             rendered_text = self.game.my_big_font.render(text, 1, (255, 255, 255))
             self.game.screen.blit(rendered_text, (40, self.game.screen.get_height() - position))
