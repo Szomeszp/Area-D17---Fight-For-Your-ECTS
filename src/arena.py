@@ -146,16 +146,6 @@ class Arena:
                 elif btn.type == "button5":
                     self.exit_arena()
 
-                # elif btn.type == "leftButton":s
-                #     self.player.move(dx=-1)
-                # elif btn.type == "rightButton":
-                #     self.player.move(dx=1)
-                # elif btn.type == "forwardButton":
-                #     self.player.move(dy=-1)
-                # elif btn.type == "backwardButton":
-                #     self.player.move(dy=1)
-                # elif btn.type == "centerButton":
-                #     self.player.check_opponent_in_range(self.monster)
                 self.player.stand()
 
     def arena_events(self):
